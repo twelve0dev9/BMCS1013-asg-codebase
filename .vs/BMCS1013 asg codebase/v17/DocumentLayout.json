@@ -14,28 +14,32 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 3,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "FileName.cpp",
-              "DocumentMoniker": "M:\\0. Inbox\\BMCS1013 asg codebase\\BCMS1013 asg codebase\\FileName.cpp",
-              "RelativeDocumentMoniker": "BCMS1013 asg codebase\\FileName.cpp",
-              "ToolTip": "M:\\0. Inbox\\BMCS1013 asg codebase\\BCMS1013 asg codebase\\FileName.cpp",
-              "RelativeToolTip": "BCMS1013 asg codebase\\FileName.cpp",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAKAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2025-07-24T03:40:18.41Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
             },
             {
               "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Bookmark",
               "Name": "ST:0:0:{1c64b9c2-e352-428e-a56d-0ace190b99a6}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "FileName.cpp",
+              "DocumentMoniker": "M:\\0. Inbox\\BMCS1013 asg codebase\\BCMS1013 asg codebase\\FileName.cpp",
+              "RelativeDocumentMoniker": "BCMS1013 asg codebase\\FileName.cpp",
+              "ToolTip": "M:\\0. Inbox\\BMCS1013 asg codebase\\BCMS1013 asg codebase\\FileName.cpp*",
+              "RelativeToolTip": "BCMS1013 asg codebase\\FileName.cpp*",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-07-24T03:40:18.41Z",
+              "EditorCaption": ""
             }
           ]
         }
