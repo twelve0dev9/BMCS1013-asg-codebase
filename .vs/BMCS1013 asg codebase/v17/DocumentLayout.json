@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "M:\\0. Inbox\\BMCS1013 asg codebase\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{CCE7C7E0-A4F0-4FA5-9DE4-7AB95E0B1DCE}|BCMS1013 asg codebase\\BCMS1013 asg codebase.vcxproj|M:\\0. Inbox\\BMCS1013 asg codebase\\BCMS1013 asg codebase\\test driver.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{CCE7C7E0-A4F0-4FA5-9DE4-7AB95E0B1DCE}|BCMS1013 asg codebase\\BCMS1013 asg codebase.vcxproj|solutionrelative:BCMS1013 asg codebase\\test driver.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{CCE7C7E0-A4F0-4FA5-9DE4-7AB95E0B1DCE}|BCMS1013 asg codebase\\BCMS1013 asg codebase.vcxproj|M:\\0. Inbox\\BMCS1013 asg codebase\\BCMS1013 asg codebase\\FileName.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{CCE7C7E0-A4F0-4FA5-9DE4-7AB95E0B1DCE}|BCMS1013 asg codebase\\BCMS1013 asg codebase.vcxproj|solutionrelative:BCMS1013 asg codebase\\FileName.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
@@ -14,28 +18,49 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
             },
             {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "FileName.cpp",
-              "DocumentMoniker": "M:\\0. Inbox\\BMCS1013 asg codebase\\BCMS1013 asg codebase\\FileName.cpp",
-              "RelativeDocumentMoniker": "BCMS1013 asg codebase\\FileName.cpp",
-              "ToolTip": "M:\\0. Inbox\\BMCS1013 asg codebase\\BCMS1013 asg codebase\\FileName.cpp",
-              "RelativeToolTip": "BCMS1013 asg codebase\\FileName.cpp",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAA==",
+              "Title": "test driver.cpp",
+              "DocumentMoniker": "M:\\0. Inbox\\BMCS1013 asg codebase\\BCMS1013 asg codebase\\test driver.cpp",
+              "RelativeDocumentMoniker": "BCMS1013 asg codebase\\test driver.cpp",
+              "ToolTip": "M:\\0. Inbox\\BMCS1013 asg codebase\\BCMS1013 asg codebase\\test driver.cpp*",
+              "RelativeToolTip": "BCMS1013 asg codebase\\test driver.cpp*",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2025-07-24T03:40:18.41Z",
+              "WhenOpened": "2025-08-03T15:41:26.568Z",
               "EditorCaption": ""
             },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "FileName.cpp",
+              "DocumentMoniker": "M:\\0. Inbox\\BMCS1013 asg codebase\\BCMS1013 asg codebase\\FileName.cpp",
+              "RelativeDocumentMoniker": "BCMS1013 asg codebase\\FileName.cpp",
+              "ToolTip": "M:\\0. Inbox\\BMCS1013 asg codebase\\BCMS1013 asg codebase\\FileName.cpp",
+              "RelativeToolTip": "BCMS1013 asg codebase\\FileName.cpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAKUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-07-24T03:40:18.41Z",
+              "EditorCaption": ""
             }
           ]
         }
