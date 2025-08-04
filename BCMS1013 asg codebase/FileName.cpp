@@ -15,12 +15,16 @@ struct users {
 	char gender;
 	string user_email;
 	string user_password;
-	string user_Type[3];
+	string user_Type[3] = {"admin", "expert", "customer"};
 	string Specialization[4];
 	int working_days[5];
 };
+users expert1 = {"001", "Aina", 24, 'F', "aina2312@gmail.com", "passwordbruh102"};
 struct appointments {
-	
+	string expert_assigned; // dis is gon be the username of experts
+	string services;
+	int time_slot;
+
 };
 void login(){
 }
@@ -81,6 +85,11 @@ void login(){
 //	}
 //	return;
 //}
+void alphanumInputs_validation(string x) {
+	// validates if the input provided is alphenumeric or not similar to that of Python
+	char x[];
+	for 
+}
 void payment(){
 	//payment module
 	//display & input prompts, fake(:verb) the credentials
@@ -89,38 +98,37 @@ void payment(){
 void displayCalendar(){
 	//display the calendar & highlights days that our experts have slots for customer to view
 	const int row = 5, col = 8;
-	int date_day[5][8] = {
+	int time_slotsDay[5][8] = {
 		{1, 2, 3, 4, 5, 6, 7},
 		{8, 9, 10, 11, 12, 13, 14},
 		{15, 16, 17, 18, 19, 20, 21},
 		{22, 23, 24, 25, 26, 27, 28},
 		{29, 30, 31, 0, 0, 0, 0, 0}
 	};
+	string hourly_timeSlots[6] = { //we keep it fixed for now, maybe in the future we'll make the hourly time slots more varrying idk
+		"1. 12:00--15:00", 
+		"2. 14:00--17:00", 
+		"3. 16:00--19:00", 
+		"4. 18:00--21:00", 
+		"5. 21:00--00:00", 
+		"6. 22:00--01:00"
+	};
 	for (int i = 0; i < row; ++i) {
 		for (int j = 0; j < col; ++j) {
-			if (date_day[i][j] != 0)
-				cout << date_day[i][j] << " ";
-			if (date_day[i][j] == 12)
-				cout << "\033[47m" << date_day[i][j] << "\033[0m";
+			if (time_slotsDay[i][j] == 0) continue;
+			if (time_slotsDay[i][j] == 12) // condition for days whr there are available time 
+				cout << "\033[1;4m" << time_slotsDay[i][j] << "\033[0m ";
+			else
+				cout << time_slotsDay[i][j] << " ";
 		}
 		cout << endl;
 	}
 }
 void viewbookedSchedule(){
 }
-void stringValidation() {
-	//validation for string inputs from users
-}
 void customerFunctionalities()
 {
-	int temp[31];
-	for (int i = 0; i <= 31; ++i) {
-		cin >> temp[i];
-	}
-	for (int i = 0; i <= 31; ++i) {
-		cout << temp[i];
-	}
-	int menu_choice = 0, services_choice = 0, expert = 0, bookingTime = 0;	
+	int choice_menu = 0, choice_service = 0, choice_expert = 0, choice_timeSlot = 0;
 	string bookingStatus[2] = {"Successful", "Failed"};
 	string services[4] = {"Haircuts & Trims", "Bread grooming", "Facial skin care", "Massage therapy"};
 
@@ -150,7 +158,7 @@ void customerFunctionalities()
 		// a for loop to iterate thru the service array in numbered list
 		// use structure, array, pointers to filter out expert w\ relevant services only
 		if (services_choice == 1) {
-			cout << "Choose one of our experts" << expert;
+			cout << "Choose one of our experts" << ;
 			cin >> expert;
 		}
 		else if (services_choice == 2) {
