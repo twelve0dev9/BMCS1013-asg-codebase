@@ -8,24 +8,31 @@ int main() {
 	return 0;
 }
 
+enum UserType { admin, expert, customer };
+enum Specialization { Haircuts_Trims, Beard_Grooming, FacialSkinCare, MassageTherapy };
+//enum HourlyTimeSlots { 1, 2, 3, 4, 5, 6};
+
 struct users {
-	string userID;
+	int userID;
 	string username;
 	int age;
 	char gender;
 	string user_email;
 	string user_password;
-	string user_Type[3] = {"admin", "expert", "customer"};
-	string Specialization[4];
-	int working_days[5];
+	UserType user_Type;
+	Specialization specialization[2]; // 2 because dis it makes more sense, ain't no way u gon have experts serving > 2 services duhh
 };
-users expert1 = {"001", "Aina", 24, 'F', "aina2312@gmail.com", "passwordbruh102"};
-struct appointments {
-	string expert_assigned; // dis is gon be the username of experts
-	string services;
-	int time_slot;
+users expert[];
+expert[0] = {001, "Aina", 24, 'F', "aina2312@gmail.com", "passwordbruh102", expert, {MassageTherapy, Haircuts_Trims}};
+expert[1] = {002, "SashimmiMI", 23, 'M', "sashimidelicious@gmail.com", "anitam4xw8n", expert, {Beard_Grooming, FacialSkinCare}};
+users customer1 = {}
+
+struct bookings { //for hourly time slots variable
+	struct users expert_info;
+	bool booking_status = 0; // by default it shudn't be booked unless changed
 
 };
+
 void login(){
 }
 //void admin_login() {
@@ -95,7 +102,7 @@ void payment(){
 	//display & input prompts, fake(:verb) the credentials
 	//returns a true bool
 }
-void displayCalendar(){
+void appointment(){
 	//display the calendar & highlights days that our experts have slots for customer to view
 	const int row = 5, col = 8;
 	int time_slotsDay[5][8] = {
@@ -113,7 +120,10 @@ void displayCalendar(){
 		"5. 21:00--00:00", 
 		"6. 22:00--01:00"
 	};
-	for (int i = 0; i < row; ++i) {
+	int hourlyTimeSlots_booked = 0;
+	cout << setw(8) << "December" << endl 
+		<< "-------------------------------------";
+	for (int i = 0; i < row; ++i) { // calendar display
 		for (int j = 0; j < col; ++j) {
 			if (time_slotsDay[i][j] == 0) continue;
 			if (time_slotsDay[i][j] == 12) // condition for days whr there are available time 
@@ -123,14 +133,22 @@ void displayCalendar(){
 		}
 		cout << endl;
 	}
+	// processing for the constraints of booking appointments
+	switch (hourlyTimeSlots_booked) {
+	case 1:
+	case 2:
+	case 3:
+	case 4:
+	case 5:
+	case 6:
+	}
 }
 void viewbookedSchedule(){
 }
 void customerFunctionalities()
 {
 	int choice_menu = 0, choice_service = 0, choice_expert = 0, choice_timeSlot = 0;
-	string bookingStatus[2] = {"Successful", "Failed"};
-	string services[4] = {"Haircuts & Trims", "Bread grooming", "Facial skin care", "Massage therapy"};
+	string services[4] = {"1. Haircuts & Trims", "2. Bread grooming", "3. Facial skin care", "4. Massage therapy"};
 
 	cout << setw(8) << "Men's LOOKMAXXIN Spa" 
 		<< "-------------------------------------------------"
@@ -146,23 +164,31 @@ void customerFunctionalities()
 	cout << "Welcome " << username << "!\n";
 	cout << "1. View our serivces\n2. Book an appointment\n3. View booked schedule\n4. Exit";
 	
-	cin >> menu_choice;
+	cin >> choice_menu;
 	
-	switch(menu_choice)
+	switch(choice_menu)
 	{
 	case 1:
-		cout << "Our available services : " << services;
+		cout << "Our available services : \n" << "--------------------------------";
+		for (int i = 0; i < 4; ++i)
+			cout << services[i] << endl;
 		break;
 	case 2:
-		cout << "Pick one serivces : " << services;
-		// a for loop to iterate thru the service array in numbered list
+		cout << "Pick one serivces : \n" << "------------------------------";
+		for (int i = 0; i < 4; ++i) // a for loop to iterate thru the service array in numbered list
+			cout << services[i] << endl;
+		cin >> choice_service;
 		// use structure, array, pointers to filter out expert w\ relevant services only
-		if (services_choice == 1) {
-			cout << "Choose one of our experts" << ;
-			cin >> expert;
-		}
-		else if (services_choice == 2) {
+		switch(choice_service)
+		{
+		case 1:
+			cout << "Choose experts you'd like to book an appointment with (>O<) : " << endl;
+			cout << expert[0].Specialization
+			cin >> choice_expert;
+			break;
+		case 2:
 			cout ;
+			break;
 		}
 		break;
 	case 3:
