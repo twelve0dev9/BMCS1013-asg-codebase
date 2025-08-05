@@ -67,7 +67,11 @@ int main() {
 
 enum UserType { admin, expert, customer };
 enum Specialization { Haircuts_Trims, Beard_Grooming, FacialSkinCare, MassageTherapy };
-//enum HourlyTimeSlots { 1, 2, 3, 4, 5, 6};
+enum hourly_timeSlots {slot1, slot2, slot3, slot4, slot5, slot6};
+//typedef int kukubird;
+//	kukubird kkb1 = 1;
+//	kukubird kkb2 = 2;
+//	kukubird arry[6] = { kkb1, kkb2 };
 
 struct services {
 	int serviceID = 0;
@@ -75,7 +79,10 @@ struct services {
 	float serviceTime = 0.00; //unit is Hours
 };
 services services_available[10] = {
-	{1, "Massage Therapy", 3}
+	{1, "Haircuts & Trims", 3}, 
+	{2, "Bread Grooming", 3}, 
+	{3, "Facial Skin Care", 3}, 
+	{4, "Massage Therapy", 3}
 };
 struct users {//the users records might put under sum kind of function 
 //no point in importing the user records from the file globally when not in use
@@ -86,22 +93,41 @@ struct users {//the users records might put under sum kind of function
 	string user_email = " ";
 	string user_password = " ";
 	UserType user_Type;
-	Specialization specialization[2]; // 2 because dis it makes more sense, ain't no way u gon have experts serving > 2 services duhh
-	services services_specializing_at[10];
+	//Specialization specialization[2]; // 2 because dis it makes more sense, ain't no way u gon have experts serving > 2 services duhh
+	services * services_specializing_at[2] ;
 };
-users niama[] = {
-	{1, "Aina", 24, 'F', "aina2312@gmail.com", "passwordbruh102", expert, {MassageTherapy, Haircuts_Trims}}, 
-	{2, "Hitler", 23, 'M', "sashimidelicious@gmail.com", "anitam4xw8n", expert, {Beard_Grooming, FacialSkinCare}}, 
-	{3, "Hitler", 23, 'M', "sashimidelicious@gmail.com", "anitam4xw8n", expert, {Beard_Grooming, FacialSkinCare}, /*i think dis is whr we need to use pointer*/}
+users experts[] = {
+	{1, "Aina", 24, 'F', "aina2312@gmail.com", "passwordbruh102", expert, {&services_available[0], &services_available[2]}},
+	{3, "Hitler", 23, 'M', "sashimidelicious@gmail.com", "anitam4xw8n", expert, {&services_available[1], &services_available[3]}}
 };																			//to point to the array struct var which we have it as a record for services available on the spa
-typedef int hourly_timeSlots;
-	hourly_timeSlots slot1 = 1;
-	hourly_timeSlots slot2 = 2;
-	hourly_timeSlots slot3 = 3;
-	hourly_timeSlots slot4 = 4;
-	hourly_timeSlots slot5 = 5;
-	hourly_timeSlots slot6 = 6;
-//enum hourly_timeSlots {slot1, slot2, slot3, slot4, slot5, slot6};
+users customer_users[] = {
+	{4, "pukimakkau", 16, 'M', "expertschaoheweui@gmail.com", "birdbidshit-89632", customer}, 
+	{5, "ishowmeat", 20, 'M', "ishowmeatfrfr@gmail.com", "uncsucks666", customer}
+};
+struct bookings { //for hourly time slots variable
+	users book_byCustomer; // pointer (i want the customer name only)
+	users expert_booked; // pointer
+	bool booking_status = 0; // by default it shudn't be booked unless changed
+	int booked_day; //have sum control structures for telling customer user to input valid date of booking this
+	hourly_timeSlots booked_timeSlot;
+	services service_booked; // smtg connected or linked to the services array we had idk but maybe can apply pointer here
+};
+bookings booked_appointments[] = {
+	{customer_users[0], experts[0], 1, 28, slot3, services_available[1]},
+	{customer_users[1], experts[0], 1, 23, slot2, services_available[1]}
+};
+
+
+
+
+
+
+
+
+
+
+
+
 string hourly_timeSlotss[6] = { //we keep it fixed for now, maybe in the future we'll make the hourly time slots more varrying idk
 	"1. 12:00--15:00",
 	"2. 14:00--17:00",
@@ -109,12 +135,6 @@ string hourly_timeSlotss[6] = { //we keep it fixed for now, maybe in the future 
 	"4. 18:00--21:00",
 	"5. 21:00--00:00",
 	"6. 22:00--01:00"
-};
-struct bookings { //for hourly time slots variable
-	struct users expert_info;
-	bool booking_status = 0; // by default it shudn't be booked unless changed
-	int booked_day[31];
-	hourly_timeSlots booked_timeSlot;
 };
 void login(){
 	//read all from "User records.txt" file`
@@ -183,7 +203,7 @@ void customerFunctionalities()
 		<< "Whether you're preparing for a big event, need routine maintenance, or just deserve a break—our skilled barbers, aestheticians, and therapists are here to elevate your grooming experience.\n"
 		<< "\n\nOperating hours : \nMonday--Saturday  | 12PM - 1AM"
 		<< "Contact email : lookmaxxin2day@gmail.com\nContact phone : 03-3788 46567";
-	cout << "Welcome " << niama->username << "!\n";
+	cout << "Welcome " << experts->username << "!\n";
 	cout << "1. View our serivces\n2. Book an appointment\n3. View booked schedule\n4. Exit";
 	
 	cin >> choice_menu;
@@ -205,10 +225,10 @@ void customerFunctionalities()
 		{
 		case 1:
 			cout << "Choose experts you'd like to book an appointment with (>O<) : " << endl;
-			if (niama[10].specialization == 0) {
+			if (experts[10].specialization == 0) {
 				
 			}
-			cout << niama[1].specialization; //access the member value of specilization 
+			cout << experts[1].specialization; //access the member value of specilization 
 			cin >> choice_expert;
 			break;
 		case 2:
