@@ -69,6 +69,14 @@ enum UserType { admin, expert, customer };
 enum Specialization { Haircuts_Trims, Beard_Grooming, FacialSkinCare, MassageTherapy };
 //enum HourlyTimeSlots { 1, 2, 3, 4, 5, 6};
 
+struct services {
+	int serviceID = 0;
+	string service_name = " ";
+	float serviceTime = 0.00; //unit is Hours
+};
+services services_available[10] = {
+	{1, "Massage Therapy", 3}
+};
 struct users {//the users records might put under sum kind of function 
 //no point in importing the user records from the file globally when not in use
 	int userID = 0;
@@ -86,21 +94,30 @@ users niama[] = {
 	{2, "Hitler", 23, 'M', "sashimidelicious@gmail.com", "anitam4xw8n", expert, {Beard_Grooming, FacialSkinCare}}, 
 	{3, "Hitler", 23, 'M', "sashimidelicious@gmail.com", "anitam4xw8n", expert, {Beard_Grooming, FacialSkinCare}, /*i think dis is whr we need to use pointer*/}
 };																			//to point to the array struct var which we have it as a record for services available on the spa
+typedef int hourly_timeSlots;
+	hourly_timeSlots slot1 = 1;
+	hourly_timeSlots slot2 = 2;
+	hourly_timeSlots slot3 = 3;
+	hourly_timeSlots slot4 = 4;
+	hourly_timeSlots slot5 = 5;
+	hourly_timeSlots slot6 = 6;
+//enum hourly_timeSlots {slot1, slot2, slot3, slot4, slot5, slot6};
+string hourly_timeSlotss[6] = { //we keep it fixed for now, maybe in the future we'll make the hourly time slots more varrying idk
+	"1. 12:00--15:00",
+	"2. 14:00--17:00",
+	"3. 16:00--19:00",
+	"4. 18:00--21:00",
+	"5. 21:00--00:00",
+	"6. 22:00--01:00"
+};
 struct bookings { //for hourly time slots variable
 	struct users expert_info;
 	bool booking_status = 0; // by default it shudn't be booked unless changed
+	int booked_day[31];
+	hourly_timeSlots booked_timeSlot;
 };
-struct services {
-	int serviceID = 0;
-	string service_name = " ";
-	float serviceTime = 0.00; //unit is Hours
-};
-services services_available[10] = {
-	{1, "Massage Therapy", 3}
-};
-
 void login(){
-	//read all from "User records.txt" file
+	//read all from "User records.txt" file`
 		//if possible find ways to read from user records w\ username entered by user only, instead of reading all of the records
 
 	//compare the credentials with the read records
@@ -124,14 +141,6 @@ void appointment(){
 		{15, 16, 17, 18, 19, 20, 21},
 		{22, 23, 24, 25, 26, 27, 28},
 		{29, 30, 31, 0, 0, 0, 0, 0}
-	};
-	string hourly_timeSlots[6] = { //we keep it fixed for now, maybe in the future we'll make the hourly time slots more varrying idk
-		"1. 12:00--15:00", 
-		"2. 14:00--17:00", 
-		"3. 16:00--19:00", 
-		"4. 18:00--21:00", 
-		"5. 21:00--00:00", 
-		"6. 22:00--01:00"
 	};
 	int hourlyTimeSlots_booked = 0;
 	cout << setw(8) << "December" << endl 
