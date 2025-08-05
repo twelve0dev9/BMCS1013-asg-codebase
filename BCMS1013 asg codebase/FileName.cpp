@@ -13,20 +13,21 @@ enum Specialization { Haircuts_Trims, Beard_Grooming, FacialSkinCare, MassageThe
 //enum HourlyTimeSlots { 1, 2, 3, 4, 5, 6};
 
 struct users {
-	int userID;
-	string username;
-	int age;
-	char gender;
-	string user_email;
-	string user_password;
+	int userID = 0;
+	string username = " ";
+	int age = 0;
+	char gender = ' ';
+	string user_email = " ";
+	string user_password = " ";
 	UserType user_Type;
 	Specialization specialization[2]; // 2 because dis it makes more sense, ain't no way u gon have experts serving > 2 services duhh
 };
-users expert[];
-expert[0] = {001, "Aina", 24, 'F', "aina2312@gmail.com", "passwordbruh102", expert, {MassageTherapy, Haircuts_Trims}};
-expert[1] = {002, "SashimmiMI", 23, 'M', "sashimidelicious@gmail.com", "anitam4xw8n", expert, {Beard_Grooming, FacialSkinCare}};
-users customer1 = {}
-
+users niama[] = {
+	{1, "Aina", 24, 'F', "aina2312@gmail.com", "passwordbruh102", expert, {MassageTherapy, Haircuts_Trims}}, 
+	{2, "SashimmiMI", 23, 'M', "sashimidelicious@gmail.com", "anitam4xw8n", expert, {Beard_Grooming, FacialSkinCare}}
+};
+//the users records might put under sum kind of function 
+//no point in importing the user records from the file globally when not in use
 struct bookings { //for hourly time slots variable
 	struct users expert_info;
 	bool booking_status = 0; // by default it shudn't be booked unless changed
@@ -34,6 +35,10 @@ struct bookings { //for hourly time slots variable
 };
 
 void login(){
+	//read all from "User records.txt" file
+		//if possible find ways to read from user records w\ username entered by user only, instead of reading all of the records
+
+	//compare the credentials with the read records
 }
 //void admin_login() {
 //	string username;
@@ -183,7 +188,10 @@ void customerFunctionalities()
 		{
 		case 1:
 			cout << "Choose experts you'd like to book an appointment with (>O<) : " << endl;
-			cout << expert[0].Specialization
+			if (niama[10].specialization == 0) {
+				
+			}
+			cout << niama[1].specialization; //access the member value of specilization 
 			cin >> choice_expert;
 			break;
 		case 2:
