@@ -7,39 +7,6 @@ int main() {
 
 	return 0;
 }
-
-enum UserType { admin, expert, customer };
-enum Specialization { Haircuts_Trims, Beard_Grooming, FacialSkinCare, MassageTherapy };
-//enum HourlyTimeSlots { 1, 2, 3, 4, 5, 6};
-
-struct users {
-	int userID = 0;
-	string username = " ";
-	int age = 0;
-	char gender = ' ';
-	string user_email = " ";
-	string user_password = " ";
-	UserType user_Type;
-	Specialization specialization[2]; // 2 because dis it makes more sense, ain't no way u gon have experts serving > 2 services duhh
-};
-users niama[] = {
-	{1, "Aina", 24, 'F', "aina2312@gmail.com", "passwordbruh102", expert, {MassageTherapy, Haircuts_Trims}}, 
-	{2, "SashimmiMI", 23, 'M', "sashimidelicious@gmail.com", "anitam4xw8n", expert, {Beard_Grooming, FacialSkinCare}}
-};
-//the users records might put under sum kind of function 
-//no point in importing the user records from the file globally when not in use
-struct bookings { //for hourly time slots variable
-	struct users expert_info;
-	bool booking_status = 0; // by default it shudn't be booked unless changed
-
-};
-
-void login(){
-	//read all from "User records.txt" file
-		//if possible find ways to read from user records w\ username entered by user only, instead of reading all of the records
-
-	//compare the credentials with the read records
-}
 //void admin_login() {
 //	string username;
 //	string password;
@@ -97,6 +64,47 @@ void login(){
 //	}
 //	return;
 //}
+
+enum UserType { admin, expert, customer };
+enum Specialization { Haircuts_Trims, Beard_Grooming, FacialSkinCare, MassageTherapy };
+//enum HourlyTimeSlots { 1, 2, 3, 4, 5, 6};
+
+struct users {//the users records might put under sum kind of function 
+//no point in importing the user records from the file globally when not in use
+	int userID = 0;
+	string username = " ";
+	int age = 0;
+	char gender = ' ';
+	string user_email = " ";
+	string user_password = " ";
+	UserType user_Type;
+	Specialization specialization[2]; // 2 because dis it makes more sense, ain't no way u gon have experts serving > 2 services duhh
+	services services_specializing_at[10];
+};
+users niama[] = {
+	{1, "Aina", 24, 'F', "aina2312@gmail.com", "passwordbruh102", expert, {MassageTherapy, Haircuts_Trims}}, 
+	{2, "Hitler", 23, 'M', "sashimidelicious@gmail.com", "anitam4xw8n", expert, {Beard_Grooming, FacialSkinCare}}, 
+	{3, "Hitler", 23, 'M', "sashimidelicious@gmail.com", "anitam4xw8n", expert, {Beard_Grooming, FacialSkinCare}, /*i think dis is whr we need to use pointer*/}
+};																			//to point to the array struct var which we have it as a record for services available on the spa
+struct bookings { //for hourly time slots variable
+	struct users expert_info;
+	bool booking_status = 0; // by default it shudn't be booked unless changed
+};
+struct services {
+	int serviceID = 0;
+	string service_name = " ";
+	float serviceTime = 0.00; //unit is Hours
+};
+services services_available[10] = {
+	{1, "Massage Therapy", 3}
+};
+
+void login(){
+	//read all from "User records.txt" file
+		//if possible find ways to read from user records w\ username entered by user only, instead of reading all of the records
+
+	//compare the credentials with the read records
+}
 void alphanumInputs_validation(string x) {
 	// validates if the input provided is alphenumeric or not similar to that of Python
 	char x[];
@@ -166,7 +174,7 @@ void customerFunctionalities()
 		<< "Whether you're preparing for a big event, need routine maintenance, or just deserve a break—our skilled barbers, aestheticians, and therapists are here to elevate your grooming experience.\n"
 		<< "\n\nOperating hours : \nMonday--Saturday  | 12PM - 1AM"
 		<< "Contact email : lookmaxxin2day@gmail.com\nContact phone : 03-3788 46567";
-	cout << "Welcome " << username << "!\n";
+	cout << "Welcome " << niama->username << "!\n";
 	cout << "1. View our serivces\n2. Book an appointment\n3. View booked schedule\n4. Exit";
 	
 	cin >> choice_menu;
