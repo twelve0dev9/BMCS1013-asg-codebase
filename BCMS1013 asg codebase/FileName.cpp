@@ -124,8 +124,8 @@ void login(){
 }
 void alphanumInputs_validation(string x) {
 	// validates if the input provided is alphenumeric or not similar to that of Python
-	char x[];
-	for 
+
+	//this part use C-string functions	
 }
 void payment(){
 	//payment module
