@@ -7,13 +7,72 @@ int main() {
 
 	return 0;
 }
+//void admin_login() {
+//	string username;
+//	string password;
+//	string admin_user = "ansel";
+//	string admin_pass = "iu123";
+//	cout << "             ADMIN LOGIN             " << endl;
+//	cout << "------------------------------------" << endl;
+//	cout << "Enter username : ";
+//	cin >> username;
+//	cout << "Enter password : ";
+//	cin >> password;
+//	if (username != admin_user || password != admin_pass) {
+//		cout << "Invalid username or password." << endl;
+//		cout << "Returning to main menu..." << endl;
+//		main_menu();
+//	}
+//	else {
+//		cout << endl;
+//		cout << "Admin Login Successful" << endl;
+//		cout << "Welcome, " << username << ".";
+//		cout << endl;
+//		admin_menu();
+//	}
+//	//return;
+//}
+//void main_menu() {
+//	int login_type;
+//	cout << "     MAIN MENU      " << endl;
+//	cout << "--------------------" << endl;
+//	cout << "Select Login: " << endl;
+//	cout << "1. Customer Login" << endl;
+//	cout << "2. Administrator Login" << endl;
+//	cout << "3. Expert Login" << endl;
+//	cout << "4. Exit Program" << endl;
+//	cout << "-------------------" << endl;
+//	cout << ">";
+//	cin >> login_type;
+//	switch (login_type) {
+//	case 1:
+//		customerFunctionalities();
+//		break;
+//	case 2:
+//		admin_login();
+//		break;
+//	case 3:
+//		expert_login();
+//		break;
+//	case 4:
+//		cout << "=== PROGRAM END ===";
+//		break;
+//	default:
+//		cout << "Invalid Input, please enter a value from 1-4" << endl;
+//		main_menu();
+//		break;
+//	}
+//	return;
+//}
 enum UserType { admin, expert, customer };
-enum Specialization { Haircuts_Trims, Beard_Grooming, FacialSkinCare, MassageTherapy };
-enum hourly_timeSlots {slot1, slot2, slot3, slot4, slot5, slot6};
-//typedef int kukubird;
-//	kukubird kkb1 = 1;
-//	kukubird kkb2 = 2;
-//	kukubird arry[6] = { kkb1, kkb2 };
+typedef int hourly_timeSlots;
+	hourly_timeSlots slot1 = 1;
+	hourly_timeSlots slot2 = 2;
+	hourly_timeSlots slot3 = 3;
+	hourly_timeSlots slot4 = 4;
+	hourly_timeSlots slot5 = 5;
+	hourly_timeSlots slot6 = 6;
+hourly_timeSlots time_Slots[6] = {slot1, slot2, slot3, slot4, slot5, slot6}; // might endup having another struct for dis TO implement varrying time slots (not fixed at 3 hours)
 
 struct services {
 	int serviceID = 0;
@@ -35,9 +94,8 @@ struct users {//the users records might put under sum kind of function
 	string user_email = " ";
 	string user_password = " ";
 	UserType user_Type;
-	//Specialization specialization[2]; // 2 because dis it makes more sense, ain't no way u gon have experts serving > 2 services duhh
 	services * services_specializing_at[2] ;
-};
+}; //we might need to divide the users struct into more nested struct, considering need to do sum manipulation w\ the emails,passwords, names, etc. If member access & pointers makes it difficult to access for modification
 users experts[] = {
 	{1, "Aina", 24, 'F', "aina2312@gmail.com", "passwordbruh102", expert, {&services_available[0], &services_available[2]}},
 	{3, "Hitler", 23, 'M', "sashimidelicious@gmail.com", "anitam4xw8n", expert, {&services_available[1], &services_available[3]}}
@@ -46,17 +104,17 @@ users customer_users[] = {
 	{4, "pukimakkau", 16, 'M', "expertschaoheweui@gmail.com", "birdbidshit-89632", customer}, 
 	{5, "ishowmeat", 20, 'M', "ishowmeatfrfr@gmail.com", "uncsucks666", customer}
 };
-struct bookings { //for hourly time slots variable
-	users book_byCustomer; // pointer (i want the customer name only)
-	users expert_booked; // pointer
+struct bookings {
+	users * book_byCustomer;
+	users * expert_booked;
 	bool booking_status = 0; // by default it shudn't be booked unless changed
 	int booked_day; //have sum control structures for telling customer user to input valid date of booking this
-	hourly_timeSlots booked_timeSlot;
-	services service_booked; // smtg connected or linked to the services array we had idk but maybe can apply pointer here
+	hourly_timeSlots * booked_timeSlot;
+	services * service_booked;
 };
 bookings booked_appointments[] = {
-	{customer_users[0], experts[0], 1, 28, slot3, services_available[1]},
-	{customer_users[1], experts[0], 1, 23, slot2, services_available[1]}
+	{&customer_users[0], &experts[0], true, 28, &time_Slots[0], &services_available[0]},
+	{&customer_users[1], &experts[0], true, 23, &time_Slots[3], &services_available[3]}
 };
 
 
