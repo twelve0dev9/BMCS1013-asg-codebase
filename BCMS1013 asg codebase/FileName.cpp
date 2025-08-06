@@ -99,10 +99,10 @@ struct users {//the users records might put under sum kind of function
 users experts[] = {
 	{1, "Aina", 24, 'F', "aina2312@gmail.com", "passwordbruh102", expert, {&services_available[0], &services_available[2]}},
 	{3, "Hitler", 23, 'M', "sashimidelicious@gmail.com", "anitam4xw8n", expert, {&services_available[1], &services_available[3]}}
-};																			//to point to the array struct var which we have it as a record for services available on the spa
+};
 users customer_users[] = {
-	{4, "pukimakkau", 16, 'M', "expertschaoheweui@gmail.com", "birdbidshit-89632", customer}, 
-	{5, "ishowmeat", 20, 'M', "ishowmeatfrfr@gmail.com", "uncsucks666", customer}
+	{4, "John", 16, 'M', "expertschaoheweui@gmail.com", "apopejakicetruck-89632", customer}, 
+	{5, "Wayne", 20, 'M', "ishowmeatfrfr@gmail.com", "uncsucks666", customer}
 };
 struct bookings {
 	users * book_byCustomer;
@@ -181,8 +181,7 @@ void viewbookedSchedule(){
 }
 void customerFunctionalities()
 {
-	int choice_menu = 0, choice_service = 0, choice_expert = 0, choice_timeSlot = 0;
-	string services[4] = {"1. Haircuts & Trims", "2. Bread grooming", "3. Facial skin care", "4. Massage therapy"};
+	int choice_menu = 0, choice_service = 0, choice_expert = 0, choice_timeSlot = 0, numberedlist = 1;
 
 	cout << setw(8) << "Men's LOOKMAXXIN Spa" 
 		<< "-------------------------------------------------"
@@ -200,12 +199,14 @@ void customerFunctionalities()
 	
 	cin >> choice_menu;
 	
-	switch(choice_menu)
+	switch (choice_menu)
 	{
 	case 1:
 		cout << "Our available services : \n" << "--------------------------------";
-		for (int i = 0; i < 4; ++i)
-			cout << services[i] << endl;
+		for (int i = 0; i < 4; ++i) {
+			cout << numberedlist << ". " << services_available[i].service_name << endl;
+			++numberedlist;
+		}
 		break;
 	case 2:
 		cout << "Pick one serivces : \n" << "------------------------------";
