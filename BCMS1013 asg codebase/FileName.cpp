@@ -210,12 +210,13 @@ void customerFunctionalities()
 		break;
 	case 2:
 		cout << "Pick one serivces : \n" << "------------------------------";
-		for (int i = 0; i < 4; ++i) // a for loop to iterate thru the service array in numbered list
-			cout << services[i] << endl;
+		for (int i = 0; i < 4; ++i) {
+			cout << numberedlist << ". " << services_available[i].service_name << endl;
+			++numberedlist;
+		}
 		cin >> choice_service;
 		// use structure, array, pointers to filter out expert w\ relevant services only
-		switch(choice_service)
-		{
+		switch(choice_service) {
 		case 1:
 			cout << "Choose experts you'd like to book an appointment with (>O<) : " << endl;
 			if (experts[1].services_specializing_at[0]->serviceID == choice_service) {
@@ -227,6 +228,8 @@ void customerFunctionalities()
 		case 2:
 			cout ;
 			break;
+		default : 
+			cout << "Enter the valid choice please !! " //use for loop to iterate for the valid option
 		}
 		break;
 	case 3:
