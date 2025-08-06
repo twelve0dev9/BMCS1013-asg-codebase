@@ -79,12 +79,6 @@ struct services {
 	string service_name = " ";
 	float serviceTime = 0.00; //unit is Hours
 };
-services services_available[10] = {
-	{1, "Haircuts & Trims", 3}, 
-	{2, "Bread Grooming", 3}, 
-	{3, "Facial Skin Care", 3}, 
-	{4, "Massage Therapy", 3}
-};
 struct users {//the users records might put under sum kind of function 
 //no point in importing the user records from the file globally when not in use
 	int userID = 0;
@@ -94,16 +88,8 @@ struct users {//the users records might put under sum kind of function
 	string user_email = " ";
 	string user_password = " ";
 	UserType user_Type;
-	services * services_specializing_at[2] ;
+	services * specialization[2] ;
 }; //we might need to divide the users struct into more nested struct, considering need to do sum manipulation w\ the emails,passwords, names, etc. If member access & pointers makes it difficult to access for modification
-users experts[] = {
-	{1, "Aina", 24, 'F', "aina2312@gmail.com", "passwordbruh102", expert, {&services_available[0], &services_available[2]}},
-	{3, "Hitler", 23, 'M', "sashimidelicious@gmail.com", "anitam4xw8n", expert, {&services_available[1], &services_available[3]}}
-};
-users customer_users[] = {
-	{4, "John", 16, 'M', "expertschaoheweui@gmail.com", "apopejakicetruck-89632", customer}, 
-	{5, "Wayne", 20, 'M', "ishowmeatfrfr@gmail.com", "uncsucks666", customer}
-};
 struct bookings {
 	users * book_byCustomer;
 	users * expert_booked;
@@ -111,10 +97,6 @@ struct bookings {
 	int booked_day; //have sum control structures for telling customer user to input valid date of booking this
 	hourly_timeSlots * booked_timeSlot;
 	services * service_booked;
-};
-bookings booked_appointments[] = {
-	{&customer_users[0], &experts[0], true, 28, &time_Slots[0], &services_available[0]},
-	{&customer_users[1], &experts[0], true, 23, &time_Slots[3], &services_available[3]}
 };
 
 
@@ -182,6 +164,25 @@ void viewbookedSchedule(){
 void customerFunctionalities()
 {
 	int choice_menu = 0, choice_service = 0, choice_expert = 0, choice_timeSlot = 0, numberedlist = 1;
+	const int arrySize_services = 4;
+	services services_available[arrySize_services] = {
+		{1, "Haircuts & Trims", 3},
+		{2, "Bread Grooming", 3},
+		{3, "Facial Skin Care", 3},
+		{4, "Massage Therapy", 3}
+	};
+	users experts[] = {
+		{1, "Aina", 24, 'F', "aina2312@gmail.com", "passwordbruh102", expert, {&services_available[0], &services_available[2]}},
+		{3, "Hitler", 23, 'M', "sashimidelicious@gmail.com", "anitam4xw8n", expert, {&services_available[1], &services_available[3]}}
+	};
+	users customer_users[] = {
+		{4, "John", 16, 'M', "expertschaoheweui@gmail.com", "apopejakicetruck-89632", customer},
+		{5, "Wayne", 20, 'M', "ishowmeatfrfr@gmail.com", "uncsucks666", customer}
+	};
+	bookings booked_appointments[] = {
+		{&customer_users[0], &experts[0], true, 28, &time_Slots[0], &services_available[0]},
+		{&customer_users[1], &experts[0], true, 23, &time_Slots[3], &services_available[3]}
+	};
 
 	cout << setw(8) << "Men's LOOKMAXXIN Spa" 
 		<< "-------------------------------------------------"
@@ -219,7 +220,19 @@ void customerFunctionalities()
 		switch(choice_service) {
 		case 1:
 			cout << "Choose experts you'd like to book an appointment with (>O<) : " << endl;
-			if (experts[1].services_specializing_at[0]->serviceID == choice_service) {
+			for (int i = 0; i < arrySize_services;++i) {
+				if (experts[i].specialization[0]->serviceID == choice_service) 
+{
+					for (int j = 0; j < i; ++j)
+					{
+						cout << numberedlist << ". " << experts[i].username << endl;
+						++numberedlist;
+					}
+				} else if (experts[i].specialization[1]->serviceID == choice_service) {
+
+				}
+			}
+			if (experts[1].specialization[0]->serviceID == choice_service /*the services ID starts from 1, so it matches the choice_service*/) {
 				
 			}
 			cout << experts[1].specialization; //access the member value of specilization 
