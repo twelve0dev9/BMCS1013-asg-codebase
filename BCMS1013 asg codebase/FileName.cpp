@@ -7,63 +7,6 @@ int main() {
 
 	return 0;
 }
-//void admin_login() {
-//	string username;
-//	string password;
-//	string admin_user = "ansel";
-//	string admin_pass = "iu123";
-//	cout << "             ADMIN LOGIN             " << endl;
-//	cout << "------------------------------------" << endl;
-//	cout << "Enter username : ";
-//	cin >> username;
-//	cout << "Enter password : ";
-//	cin >> password;
-//	if (username != admin_user || password != admin_pass) {
-//		cout << "Invalid username or password." << endl;
-//		cout << "Returning to main menu..." << endl;
-//		main_menu();
-//	}
-//	else {
-//		cout << endl;
-//		cout << "Admin Login Successful" << endl;
-//		cout << "Welcome, " << username << ".";
-//		cout << endl;
-//		admin_menu();
-//	}
-//	//return;
-//}
-//void main_menu() {
-//	int login_type;
-//	cout << "     MAIN MENU      " << endl;
-//	cout << "--------------------" << endl;
-//	cout << "Select Login: " << endl;
-//	cout << "1. Customer Login" << endl;
-//	cout << "2. Administrator Login" << endl;
-//	cout << "3. Expert Login" << endl;
-//	cout << "4. Exit Program" << endl;
-//	cout << "-------------------" << endl;
-//	cout << ">";
-//	cin >> login_type;
-//	switch (login_type) {
-//	case 1:
-//		customerFunctionalities();
-//		break;
-//	case 2:
-//		admin_login();
-//		break;
-//	case 3:
-//		expert_login();
-//		break;
-//	case 4:
-//		cout << "=== PROGRAM END ===";
-//		break;
-//	default:
-//		cout << "Invalid Input, please enter a value from 1-4" << endl;
-//		main_menu();
-//		break;
-//	}
-//	return;
-//}
 enum UserType { admin, expert, customer };
 
 struct services {
