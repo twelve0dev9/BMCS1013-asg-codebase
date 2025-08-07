@@ -142,9 +142,14 @@ void appointment(int choice_expert, services services_available[], users experts
 		for (int j = 0; j < col; ++j) {
 			if (time_slotsDay[i][j] == 0) continue;
 			if (time_slotsDay[i][j] == 12) // condition for days whr there are available time 
+				// how to 
 				cout << "\033[1;4m" << time_slotsDay[i][j] << "\033[0m ";
 			else
 				cout << time_slotsDay[i][j] << " ";
+		}
+		for (int i = 0; i < arrySize_bookings ; ++i){
+			//goes over the bookings list iteratively
+			bookings[i].booking_status && 
 		}
 		cout << endl;
 	}
@@ -163,7 +168,7 @@ void viewbookedSchedule(){
 void customerFunctionalities()
 {
 	int choice_menu = 0, choice_service = 0, choice_expert = 0, choice_timeSlot = 0, numberedlist = 1;
-	const int arrySize_experts = 10;
+	const int arrySize_experts = 10, arrySize_bookings = 10;
 	int* ptr_numberliste = &numberedlist;
 	services services_available[4] = {
 		{1, "Haircuts & Trims", 3},
@@ -182,7 +187,7 @@ void customerFunctionalities()
 		{4, "John", 16, 'M', "expertschaoheweui@gmail.com", "apopejakicetruck-89632", customer},
 		{5, "Wayne", 20, 'M', "ishowmeatfrfr@gmail.com", "uncsucks666", customer}
 	};
-	bookings booked_appointments[] = {
+	bookings booked_appointments[arrySize_bookings] = {
 		{&customer_users[0], &experts[0], true, 28, &time_Slots[0], &services_available[0]},
 		{&customer_users[1], &experts[0], true, 23, &time_Slots[3], &services_available[3]}
 	};
@@ -191,11 +196,11 @@ void customerFunctionalities()
 		<< "-------------------------------------------------"
 		<< endl;
 	cout << "\033[1mWhere Style Meets Self-Care.\033[0m\n"
-		<< "Welcome to Men’s LOOKMAXXIN Spa, as our name suggests, We WILL make you LOOKMAXXING.\n"
+		<< "Welcome to Menï¿½s LOOKMAXXIN Spa, as our name suggests, We WILL make you LOOKMAXXING.\n"
 		<< "A premium grooming spa designed exclusively for men who value sharp style, total relaxation, and modern self-care.\n"
-		<< "We offer a full range of services—from precision haircuts and classic straight-razor shaves to revitalizing facials, deep tissue massages, and expert beard grooming.\n"
-		<< "Our space blends the sophistication of a gentleman’s club with the tranquility of a day spa, providing a relaxing environment where you can unwind, refresh, and leave feeling your absolute best.\n"
-		<< "Whether you're preparing for a big event, need routine maintenance, or just deserve a break—our skilled barbers, aestheticians, and therapists are here to elevate your grooming experience.\n"
+		<< "We offer a full range of servicesï¿½from precision haircuts and classic straight-razor shaves to revitalizing facials, deep tissue massages, and expert beard grooming.\n"
+		<< "Our space blends the sophistication of a gentlemanï¿½s club with the tranquility of a day spa, providing a relaxing environment where you can unwind, refresh, and leave feeling your absolute best.\n"
+		<< "Whether you're preparing for a big event, need routine maintenance, or just deserve a breakï¿½our skilled barbers, aestheticians, and therapists are here to elevate your grooming experience.\n"
 		<< "\n\nOperating hours : \nMonday--Saturday  | 12PM - 1AM"
 		<< "Contact email : lookmaxxin2day@gmail.com\nContact phone : 03-3788 46567";
 	cout << "Welcome " << experts->username << "!\n";
