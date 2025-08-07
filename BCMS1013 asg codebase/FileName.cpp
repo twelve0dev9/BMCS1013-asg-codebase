@@ -93,12 +93,15 @@ struct users {//the users records might put under sum kind of function
 struct bookings {
 	users * book_byCustomer;
 	users * expert_booked;
-	bool booking_status = 0; // by default it shudn't be booked unless changed
+	timeSlots timeslot;
 	int booked_day; //have sum control structures for telling customer user to input valid date of booking this
 	hourly_timeSlots * booked_timeSlot;
 	services * service_booked;
 };
-
+struct timeSlots{
+	int timeslotID; // dis is gon correspond to the number
+	bool booking_status = 0;
+}
 
 
 string hourly_timeSlotss[6] = { //we keep it fixed for now, maybe in the future we'll make the hourly time slots more varrying idk
@@ -128,6 +131,7 @@ void payment(){
 void appointment(int choice_expert, services services_available[], users experts[], users customers[], bookings booked_appointments[]) {
 	//display the calendar & highlights days that our experts have slots for customer to view
 	const int row = 5, col = 8;
+	bool day_bookingStatus = 0;
 	int time_slotsDay[5][8] = {
 		{1, 2, 3, 4, 5, 6, 7},
 		{8, 9, 10, 11, 12, 13, 14},
@@ -149,7 +153,9 @@ void appointment(int choice_expert, services services_available[], users experts
 		}
 		for (int i = 0; i < arrySize_bookings ; ++i){
 			//goes over the bookings list iteratively
-			bookings[i].booking_status && 
+			if (bookings[i].booking_status == true  && ){
+
+			}
 		}
 		cout << endl;
 	}
@@ -240,13 +246,12 @@ void customerFunctionalities()
 		}
 		cout << "\nWhat experts would you like to book an appointment with ? (enter the corresponding number)\n";
 		cin >> choice_expert;
-		cout << "What experts would you like to book an appointment with ? (enter the corresponding number)";
-		cin >> choice_expert;
 		appointment(choice_expert, services_available, experts, customer_users, booked_appointments);
 	case 3:
 		viewbookedSchedule();
 		break;
 	case 4:
 		cout << "Exitting ...";
+		break;
 	}
 }
