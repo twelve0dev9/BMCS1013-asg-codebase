@@ -66,13 +66,13 @@ int main() {
 //}
 enum UserType { admin, expert, customer };
 typedef int hourly_timeSlots;
-	hourly_timeSlots slot1 = 1;
-	hourly_timeSlots slot2 = 2;
-	hourly_timeSlots slot3 = 3;
-	hourly_timeSlots slot4 = 4;
-	hourly_timeSlots slot5 = 5;
-	hourly_timeSlots slot6 = 6;
-hourly_timeSlots time_Slots[6] = {slot1, slot2, slot3, slot4, slot5, slot6}; // might endup having another struct for dis TO implement varrying time slots (not fixed at 3 hours)
+hourly_timeSlots slot1 = 1;
+hourly_timeSlots slot2 = 2;
+hourly_timeSlots slot3 = 3;
+hourly_timeSlots slot4 = 4;
+hourly_timeSlots slot5 = 5;
+hourly_timeSlots slot6 = 6;
+hourly_timeSlots time_Slots[6] = { slot1, slot2, slot3, slot4, slot5, slot6 }; // might endup having another struct for dis TO implement varrying time slots (not fixed at 3 hours)
 
 struct services {
 	int serviceID = 0;
@@ -80,7 +80,7 @@ struct services {
 	float serviceTime = 0.00; //unit is Hours
 };
 struct users {//the users records might put under sum kind of function 
-//no point in importing the user records from the file globally when not in use
+	//no point in importing the user records from the file globally when not in use
 	int userID = 0;
 	string username = " ";
 	int age = 0;
@@ -88,20 +88,17 @@ struct users {//the users records might put under sum kind of function
 	string user_email = " ";
 	string user_password = " ";
 	UserType user_Type;
-	services * specialization[2] ;
+	services* specialization[2];
 }; //we might need to divide the users struct into more nested struct, considering need to do sum manipulation w\ the emails,passwords, names, etc. If member access & pointers makes it difficult to access for modification
 struct bookings {
-	users * book_byCustomer;
-	users * expert_booked;
-	timeSlots timeslot;
+	users* book_byCustomer;
+	users* expert_booked;
+	bool booking_status = 0; // by default it shudn't be booked unless changed
 	int booked_day; //have sum control structures for telling customer user to input valid date of booking this
-	hourly_timeSlots * booked_timeSlot;
-	services * service_booked;
+	hourly_timeSlots* booked_timeSlot;
+	services* service_booked;
 };
-struct timeSlots{
-	int timeslotID; // dis is gon correspond to the number
-	bool booking_status = 0;
-}
+
 
 
 string hourly_timeSlotss[6] = { //we keep it fixed for now, maybe in the future we'll make the hourly time slots more varrying idk
@@ -112,7 +109,7 @@ string hourly_timeSlotss[6] = { //we keep it fixed for now, maybe in the future 
 	"5. 21:00--00:00",
 	"6. 22:00--01:00"
 };
-void login(){
+void login() {
 	//read all from "User records.txt" file`
 		//if possible find ways to read from user records w\ username entered by user only, instead of reading all of the records
 
@@ -123,7 +120,7 @@ void alphanumInputs_validation(string x) {
 
 	//this part use C-string functions	
 }
-void payment(){
+void payment() {
 	//payment module
 	//display & input prompts, fake(:verb) the credentials
 	//returns a true bool
@@ -131,7 +128,6 @@ void payment(){
 void appointment(int choice_expert, services services_available[], users experts[], users customers[], bookings booked_appointments[]) {
 	//display the calendar & highlights days that our experts have slots for customer to view
 	const int row = 5, col = 8;
-	bool day_bookingStatus = 0;
 	int time_slotsDay[5][8] = {
 		{1, 2, 3, 4, 5, 6, 7},
 		{8, 9, 10, 11, 12, 13, 14},
@@ -140,22 +136,15 @@ void appointment(int choice_expert, services services_available[], users experts
 		{29, 30, 31, 0, 0, 0, 0, 0}
 	};
 	int hourlyTimeSlots_booked = 0;
-	cout << setw(8) << "December" << endl 
+	cout << setw(8) << "December" << endl
 		<< "-------------------------------------";
 	for (int i = 0; i < row; ++i) { // calendar display
 		for (int j = 0; j < col; ++j) {
 			if (time_slotsDay[i][j] == 0) continue;
 			if (time_slotsDay[i][j] == 12) // condition for days whr there are available time 
-				// how to 
 				cout << "\033[1;4m" << time_slotsDay[i][j] << "\033[0m ";
 			else
 				cout << time_slotsDay[i][j] << " ";
-		}
-		for (int i = 0; i < arrySize_bookings ; ++i){
-			//goes over the bookings list iteratively
-			if (bookings[i].booking_status == true  && ){
-
-			}
 		}
 		cout << endl;
 	}
@@ -169,12 +158,12 @@ void appointment(int choice_expert, services services_available[], users experts
 	case 6:
 	}
 }
-void viewbookedSchedule(){
+void viewbookedSchedule() {
 }
 void customerFunctionalities()
 {
 	int choice_menu = 0, choice_service = 0, choice_expert = 0, choice_timeSlot = 0, numberedlist = 1;
-	const int arrySize_experts = 10, arrySize_bookings = 10;
+	const int arrySize_experts = 10;
 	int* ptr_numberliste = &numberedlist;
 	services services_available[4] = {
 		{1, "Haircuts & Trims", 3},
@@ -193,27 +182,27 @@ void customerFunctionalities()
 		{4, "John", 16, 'M', "expertschaoheweui@gmail.com", "apopejakicetruck-89632", customer},
 		{5, "Wayne", 20, 'M', "ishowmeatfrfr@gmail.com", "uncsucks666", customer}
 	};
-	bookings booked_appointments[arrySize_bookings] = {
+	bookings booked_appointments[] = {
 		{&customer_users[0], &experts[0], true, 28, &time_Slots[0], &services_available[0]},
 		{&customer_users[1], &experts[0], true, 23, &time_Slots[3], &services_available[3]}
 	};
 
-	cout << setw(8) << "Men's LOOKMAXXIN Spa" 
+	cout << setw(8) << "Men's LOOKMAXXIN Spa"
 		<< "-------------------------------------------------"
 		<< endl;
 	cout << "\033[1mWhere Style Meets Self-Care.\033[0m\n"
-		<< "Welcome to Men�s LOOKMAXXIN Spa, as our name suggests, We WILL make you LOOKMAXXING.\n"
+		<< "Welcome to Men’s LOOKMAXXIN Spa, as our name suggests, We WILL make you LOOKMAXXING.\n"
 		<< "A premium grooming spa designed exclusively for men who value sharp style, total relaxation, and modern self-care.\n"
-		<< "We offer a full range of services�from precision haircuts and classic straight-razor shaves to revitalizing facials, deep tissue massages, and expert beard grooming.\n"
-		<< "Our space blends the sophistication of a gentleman�s club with the tranquility of a day spa, providing a relaxing environment where you can unwind, refresh, and leave feeling your absolute best.\n"
-		<< "Whether you're preparing for a big event, need routine maintenance, or just deserve a break�our skilled barbers, aestheticians, and therapists are here to elevate your grooming experience.\n"
+		<< "We offer a full range of services—from precision haircuts and classic straight-razor shaves to revitalizing facials, deep tissue massages, and expert beard grooming.\n"
+		<< "Our space blends the sophistication of a gentleman’s club with the tranquility of a day spa, providing a relaxing environment where you can unwind, refresh, and leave feeling your absolute best.\n"
+		<< "Whether you're preparing for a big event, need routine maintenance, or just deserve a break—our skilled barbers, aestheticians, and therapists are here to elevate your grooming experience.\n"
 		<< "\n\nOperating hours : \nMonday--Saturday  | 12PM - 1AM"
 		<< "Contact email : lookmaxxin2day@gmail.com\nContact phone : 03-3788 46567";
 	cout << "Welcome " << experts->username << "!\n";
 	cout << "1. View our serivces\n2. Book an appointment\n3. View booked schedule\n4. Exit";
-	
+
 	cin >> choice_menu;
-	
+
 	switch (choice_menu)
 	{
 	case 1:
@@ -246,12 +235,13 @@ void customerFunctionalities()
 		}
 		cout << "\nWhat experts would you like to book an appointment with ? (enter the corresponding number)\n";
 		cin >> choice_expert;
+		cout << "What experts would you like to book an appointment with ? (enter the corresponding number)";
+		cin >> choice_expert;
 		appointment(choice_expert, services_available, experts, customer_users, booked_appointments);
 	case 3:
 		viewbookedSchedule();
 		break;
 	case 4:
 		cout << "Exitting ...";
-		break;
 	}
 }
