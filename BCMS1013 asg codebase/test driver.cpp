@@ -34,7 +34,7 @@ int main() {
 		{42, "Beyonce", 34, 'F', "diddyparty@gmail.com", "nobabyoil", expert, {&services_available[2], &services_available[3]}}, 
 		{10, "Hela", 30, 'M', "helathor@gmail.com", "oyud6759iu41", expert, {&services_available[0], &services_available[1]}}
 	};
-	cout << "Pick one services : \n" << "------------------------------\n";
+	cout << "Pick one serivces : \n" << "------------------------------\n";
 	for (int i = 0; i < 4; ++i) {
 		cout << numberedlist << ". " << services_available[i].service_name << endl;
 		++numberedlist;
@@ -42,25 +42,19 @@ int main() {
 	*ptr_numberliste = 1;
 	cout << endl;
 	cin >> choice_service;
-	cout << "Services selected : " << services_available[choice_service - 1].service_name << endl;
-	cout << endl;
-	for (int i = 0; i <= arrySize_experts; ++i) { //using for loop is kinda slow, optimize this
+	// use structure, array, pointers to filter out expert w\ relevant services only
+	cout << "\nOur experts that provides " << services_available[choice_service - 1].service_name << ": \n";
+	for (int i = 0; i <= 5; ++i) { //using for loop is kinda slow, optimize this
 		//cout << i << endl;
-		if (experts[i].specialization[0]->serviceID == choice_service)
-		{
+		users& expert = experts[i];
+		services* spec0 = expert.specialization[0];
+		services* spec1 = expert.specialization[1];
+		if ((spec0 && spec0->serviceID == choice_service) || (spec1 && spec1->serviceID == choice_service)) {//the services ID starts from 1, so it matches the choice_service
 			cout << numberedlist << ". " << experts[i].username << endl;
 			++numberedlist;
-			/*cout << experts[i].username << " | "
-				<< services_available[choice_service - 1].service_name
-				<< "\n";*/	
-		}
-		else if (experts[i].specialization[1]->serviceID == choice_service) {
-			cout << numberedlist << ". " << experts[i].username << endl;
-			++numberedlist;
-			/*cout << experts[i].username << " | "
-				<< services_available[choice_service - 1].service_name
-				<< "\n";*/
 		}
 	}
+	cout << "\nWhat experts would you like to book an appointment with ? (enter the corresponding number)\n";
+	cin >> choice_expert;
 	return 0;
 }
