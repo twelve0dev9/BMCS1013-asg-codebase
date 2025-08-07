@@ -123,6 +123,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ansel%27s.cpp" />
     <ClCompile Include="FileName.cpp" />
     <ClCompile Include="test driver.cpp" />
   </ItemGroup>

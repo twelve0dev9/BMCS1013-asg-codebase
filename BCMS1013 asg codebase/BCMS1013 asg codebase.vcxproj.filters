@@ -21,5 +21,8 @@
     <ClCompile Include="test driver.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ansel%27s.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
