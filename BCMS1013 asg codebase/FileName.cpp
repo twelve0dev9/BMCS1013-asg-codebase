@@ -35,8 +35,6 @@ struct bookings {
 	users* expert_booked;
 	services* service_booked;
 };
-
-
 void login() {
 	//read all from "User records.txt" file`
 		//if possible find ways to read from user records w\ username entered by user only, instead of reading all of the records
@@ -53,127 +51,15 @@ void payment() {
 	//display & input prompts, fake(:verb) the credentials
 	//returns a true bool
 }
-void viewAvailable_days(int choice_expert, services services_available[], 
-	users experts[], users customers[], bookings appointments_schedule[], int totalBookings) {
-	//display the calendar & highlights days that our experts have slots for customer to view
-	const int row = 5, col = 8, totalSlotsperDay = 6;
-	int i = 0, j = 0, bookingsPerDay[32] = { 0 };
-	int time_slotsDay[5][8] = {
-		{1, 2, 3, 4, 5, 6, 7},
-		{8, 9, 10, 11, 12, 13, 14},
-		{15, 16, 17, 18, 19, 20, 21},
-		{22, 23, 24, 25, 26, 27, 28},
-		{29, 30, 31, 0, 0, 0, 0, 0}
-	};
-	cout << endl << endl;
-	for (int k = 0; k < totalBookings; ++k) //goes over the bookings list iteratively
-	{							//dis compares if the appointments' booked expert is the same as what user choosed
- 			//in dis case is our choice_expert, but becuz of 0-based indices, i tolak satu to account for 0-based indices
-		int date = appointments_schedule[k].booking_date;
-		if (appointments_schedule[k].expert_booked->userID == experts[choice_expert - 1].userID && appointments_schedule[k].booking_status == true)
-		{										// display the availability of chosen expert's schedule in December
-			if (date >= 1 && date <= 31)
-			{
-				bookingsPerDay[date]++;
-			}
-		}
-	}
-	cout << setw(23) << "December" << endl
-		<< "-------------------------------------\n";
-	for (i = 0; i < row; ++i) 
-	{ 
-		// calendar display
-		for (j = 0; j < col; ++j) 
-		{
-			int date = time_slotsDay[i][j];
-			std::ostringstream oss;
-			oss << setw(3) << date;
-			if (date == 0) continue;
-
-			if (bookingsPerDay[date] < totalSlotsperDay) // condition for days whr there are available time 
-				cout << " " << oss.str() << " ";
-			else
-				cout << " " << "\033[101;30m" << oss.str() << "\033[0m ";
-		}
-		cout << endl;
-	} 
-	cout << "LEGEND | \033[101;30mUnavailable\033[0m, Available\n\n";
-}
-void bookAppointment() {
-	//processing for the constraints of booking appointments
-	int hourlyTimeSlots_booked = 0;
-	/*switch (hourlyTimeSlots_booked) {
-	case 1:
-	case 2:
-	case 3:
-	case 4:
-	case 5:
-	case 6:
-	}*/
-}
-void viewbookedSchedule() {
-}
-void customerFunctionalities(int choice_menu, int choice_service, int choice_expert, int choice_timeSlot, 
-	int numberedlist, int * ptr_numberliste, services services_available[], services* P_services_available,
-	users experts[], users* P_experts, users customers[], users * P_customers, timeSlots hourly_timeSlots[], 
-	timeSlots * P_hourlyTimeSlots, bookings appointments_schedule[], bookings * P_appointments_schedule)
-{
-	int totalBookings = sizeof(*appointments_schedule) / sizeof(appointments_schedule)[0];
-					//get the size of appointments_schedule (the entire array)
-					//get the size of one element only in appointments_scehdule
-					//dividing 'em gets the number of elements we have in our appointments_schedule()
-					//putting into context means the number of bookings we have
-					//this integer we later need to pass to void viewAvailable_days() for processings
-	cin >> choice_menu;
-	switch (choice_menu)
-	{
-	case 1:
-		cout << "Our available services : \n" << "--------------------------------";
-		for (int i = 0; i < 4; ++i)
-		{
-			cout << *ptr_numberliste<< ". " << services_available[i].service_name << endl;
-			++*ptr_numberliste;
-		}
-		*ptr_numberliste = 1;
-		break;
-	case 2:
-		cout << "Pick one serivces : \n" << "------------------------------\n";
-		for (int i = 0; i < 4; ++i) 
-		{ 
-			// list the number of services available
-			cout << numberedlist << ". " << P_services_available[i].service_name << endl;
-			++numberedlist;
-		}
-		cout << endl;
-		cin >> choice_service; // input validation pending
-		cout << "\nOur experts that provides " << P_services_available[choice_service - 1].service_name << ": \n";
-		for (int i = 0; i < sizeof(*experts) / sizeof(experts)[0]; ++i) 
-		{
-			// display of experts accordingly in a numbered list based-on matching specialization w\ the services customer chose
-			users& expert = experts[i];
-			services* spec0 = expert.specialization[0];
-			services* spec1 = expert.specialization[1];
-			if ((spec0 && spec0->serviceID == choice_service) || (spec1 && spec1->serviceID == choice_service))
-			{								//the services ID starts from 1, so it matches the choice_service
-				cout << *ptr_numberliste << ". " << expert.username << endl;
-				++*ptr_numberliste;
-			}
-		}
-		*ptr_numberliste = 1;
-		cout << "\nWhat experts would you like to book an appointment with ? (enter the corresponding number)\n";
-		cin >> choice_expert;
-		viewAvailable_days(choice_expert, services_available, experts, customers, appointments_schedule, totalBookings);
-	case 3:
-		viewbookedSchedule();
-		break;
-	case 4:
-		cout << "Exitting ...";
-	}
-}
+void viewAvailable_days(int* choice_expert, services services_available[],
+	users experts[], users customers[], bookings appointments_schedule[], int totalBookings);
+void bookAppointment();
+void viewbookedSchedule() {}
+void customerFunctionalities(int* choice_menu, int* choice_service, int* choice_expert, int* choice_timeSlot, int* numberedlist,
+	services services_available[], users experts[], users customers[], timeSlots hourly_timeSlots[], bookings appointments_schedule[]);
 
 int main() {
 	int choice_menu = 0, choice_service = 0, choice_expert = 0, choice_timeSlot = 0, numberedlist = 1;
-	int* ptr_numberliste = &numberedlist;
 	services services_available[4] = {
 		{1, "Haircuts & Trims", 3},
 		{2, "Bread Grooming", 3},
@@ -294,9 +180,121 @@ int main() {
 		<< "Contact email : lookmaxxin2day@gmail.com\nContact phone : 03-3788 46567\n\n";
 	cout << "Welcome " << experts->username << "!\n";
 	cout << "1. View our serivces\n2. Book an appointment\n3. View booked schedule\n4. Exit\n\n";
-	customerFunctionalities(choice_menu, choice_service, choice_expert, choice_timeSlot,
-		numberedlist, ptr_numberliste, services_available, P_services_available,
-		experts, P_experts, customer_users, P_customers, hourly_timeSlots,
-		P_hourlyTimeSlots, appointments_schedule, P_appointments_schedule);
+	customerFunctionalities(&choice_menu, &choice_service, &choice_expert, &choice_timeSlot, &numberedlist, 
+		services_available, experts, customer_users, hourly_timeSlots, appointments_schedule);
 	return 0;
+}
+void customerFunctionalities(int* choice_menu, int* choice_service, int* choice_expert, int* choice_timeSlot, int* numberedlist,
+	services services_available[], users experts[], users customers[], timeSlots hourly_timeSlots[], bookings appointments_schedule[])
+{
+	int totalBookings = sizeof(*appointments_schedule) / sizeof(appointments_schedule)[0];
+	//get the size of appointments_schedule (the entire array)
+	//get the size of one element only in appointments_scehdule
+	//dividing 'em gets the number of elements we have in our appointments_schedule()
+	//putting into context means the number of bookings we have
+	//this integer we later need to pass to void viewAvailable_days() for processings
+	cin >> *choice_menu;
+	switch (*choice_menu)
+	{
+	case 1:
+		cout << "Our available services : \n" << "--------------------------------";
+		for (int i = 0; i < 4; ++i)
+		{
+			cout << *numberedlist << ". " << services_available[i].service_name << endl;
+			++*numberedlist;
+		}
+		*numberedlist = 1;
+		break;
+	case 2:
+		cout << "Pick one serivces : \n" << "------------------------------\n";
+		for (int i = 0; i < 4; ++i)
+		{
+			// list the number of services available
+			cout << *numberedlist << ". " << services_available[i].service_name << endl;
+			++*numberedlist;
+		}
+		*numberedlist = 1;
+		cout << endl;
+		cin >> *choice_service; // input validation pending
+		cout << "\nOur experts that provides " << services_available[*choice_service - 1].service_name << ": \n";
+		for (int i = 0; i < sizeof(*experts) / sizeof(experts)[0]; ++i)
+		{
+			// display of experts accordingly in a numbered list based-on matching specialization w\ the services customer chose
+			users& expert = experts[i];
+			services* spec0 = expert.specialization[0];
+			services* spec1 = expert.specialization[1];
+			if ((spec0 && spec0->serviceID == *choice_service) || (spec1 && spec1->serviceID == *choice_service))
+			{								//the services ID starts from 1, so it matches the choice_service
+				cout << *numberedlist << ". " << expert.username << endl;
+				++*numberedlist;
+			}
+		}
+		*numberedlist = 1;
+		cout << "\nWhat experts would you like to book an appointment with ? (enter the corresponding number)\n";
+		cin >> *choice_expert;
+		viewAvailable_days(choice_expert, services_available, experts, customers, appointments_schedule, totalBookings);
+	case 3:
+		viewbookedSchedule();
+		break;
+	case 4:
+		cout << "Exitting ...";
+	}
+}
+void viewAvailable_days(int *choice_expert, services services_available[],
+	users experts[], users customers[], bookings appointments_schedule[], int totalBookings) {
+	//display the calendar & highlights days that our experts have slots for customer to view
+	const int row = 5, col = 8, totalSlotsperDay = 6;
+	int i = 0, j = 0, bookingsPerDay[32] = { 0 };
+	int time_slotsDay[5][8] = {
+		{1, 2, 3, 4, 5, 6, 7},
+		{8, 9, 10, 11, 12, 13, 14},
+		{15, 16, 17, 18, 19, 20, 21},
+		{22, 23, 24, 25, 26, 27, 28},
+		{29, 30, 31, 0, 0, 0, 0, 0}
+	};
+	cout << endl << endl;
+	for (int k = 0; k < totalBookings; ++k) //goes over the bookings list iteratively
+	{							//dis compares if the appointments' booked expert is the same as what user choosed
+			//in dis case is our choice_expert, but becuz of 0-based indices, i tolak satu to account for 0-based indices
+		int date = appointments_schedule[k].booking_date;
+		if (appointments_schedule[k].expert_booked->userID == experts[*choice_expert - 1].userID && appointments_schedule[k].booking_status == true)
+		{										// display the availability of chosen expert's schedule in December
+			if (date >= 1 && date <= 31)
+			{
+				bookingsPerDay[date]++;
+			}
+		}
+	}
+	cout << setw(23) << "December" << endl
+		<< "-------------------------------------\n";
+	for (i = 0; i < row; ++i)
+	{
+		// calendar display
+		for (j = 0; j < col; ++j)
+		{
+			int date = time_slotsDay[i][j];
+			std::ostringstream oss;
+			oss << setw(3) << date;
+			if (date == 0) continue;
+
+			if (bookingsPerDay[date] < totalSlotsperDay) // condition for days whr there are available time 
+				cout << " " << oss.str() << " ";
+			else
+				cout << " " << "\033[101;30m" << oss.str() << "\033[0m ";
+		}
+		cout << endl;
+	}
+	cout << "LEGEND | \033[101;30mUnavailable\033[0m, Available\n\n";
+}
+void bookAppointment() {
+	//processing for the constraints of booking appointments
+	int hourlyTimeSlots_booked = 0;
+	/*switch (hourlyTimeSlots_booked) {
+	case 1:
+	case 2:
+	case 3:
+	case 4:
+	case 5:
+	case 6:
+	}*/
 }
