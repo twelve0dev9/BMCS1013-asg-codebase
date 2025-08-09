@@ -51,9 +51,7 @@ void viewAvailable_days(int choice_expert, services services_available[],
 	cout << "total bookings : " << 62 << endl;
 	for (int k = 0; k < totalBookings; ++k) //goes over the bookings list iteratively
 	{							//dis compares if the appointments' booked expert is the same as what user choosed
-																				//what the user has chosen depends on choice_expert - 1
-		//cout << "\nProcessing appointment " << k + 1 << "th\n";
-		//cout << "Date of " << k + 1 << "th appointment : " << appointments_schedule[k].booking_date << endl;
+ 			//in dis case is our choice_expert, but becuz of 0-based indices, i tolak satu to account for 0-based indices
 		int date = appointments_schedule[k].booking_date;
 		if (appointments_schedule[k].expert_booked->userID == experts[choice_expert - 1].userID && appointments_schedule[k].booking_status == true)
 		{										// display the availability of chosen expert's schedule in December
@@ -82,7 +80,7 @@ void viewAvailable_days(int choice_expert, services services_available[],
 		}
 		cout << endl;
 	}
-	cout << "LEGEND | \033[101;30mUnavailable\033[0m, Available";
+	cout << "LEGEND | \033[101;30mUnavailable\033[0m, Available\n\n";
 }
 void bookAppointment() {
 	//processing for the constraints of booking appointments
