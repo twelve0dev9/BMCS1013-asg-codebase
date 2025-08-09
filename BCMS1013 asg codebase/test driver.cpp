@@ -52,13 +52,15 @@ void viewAvailable_days(int choice_expert, services services_available[],
 	{							//dis compares if the appointments' booked expert is the same as what user choosed
 																				//what the user has chosen depends on choice_expert var - 1
 		cout << "\nProcessing appointment " << k + 1 << "th\n";
+		cout << "Date of " << k + 1 << "th appointment : " << appointments_schedule[k].booking_date << endl;
 		int date = appointments_schedule[k].booking_date;
-		bookingsPerDay[date]++;
-		if (appointments_schedule[k].expert_booked->userID == experts[choice_expert + 1].userID && appointments_schedule[k].booking_status == true)
-		{
+		if (appointments_schedule[k].expert_booked->userID == experts[choice_expert - 1].userID && appointments_schedule[k].booking_status == true)
+		{ // it only goes thru the list if i place bookingsPerDay outside, that mean my if statement condition isn't met
+			// the nested if statement & the body isn't performed, some of em is skipped, a few array element (i.e. our appointments met the condition
 			if (date >= 1 && date <= 31)
 			{
-				cout << "is in if statement\n";
+				bookingsPerDay[date]++;
+				cout << "\033[48;2;255;165;0m\033[38;2;0;0;0mis in if statement\033[0m\n";
 			}
 		}
 	}
@@ -73,9 +75,9 @@ void viewAvailable_days(int choice_expert, services services_available[],
 			if (date == 0) continue;
 
 			if (bookingsPerDay[date] < totalSlotsperDay) // condition for days whr there are available time 
-				cout << "\033[48;2;255;165;0m\033[38;2;0;0;0m" << setw(4) << date << "\033[0m ";
-			else
 				cout << setw(4) << date << " ";
+			else
+				cout << "\033[101;30m" << setw(4) << date << "\033[0m ";
 		}
 		cout << endl;
 	}
@@ -135,11 +137,11 @@ int main() {
 	timeSlots* P_hourlyTimeSlots = hourly_timeSlots;
 	bookings appointments_schedule[] = {
 		{&hourly_timeSlots[0], true, 18, &customer_users[2], &experts[0], &services_available[0]},
-		{&hourly_timeSlots[1], true, 18, &customer_users[4], &experts[1], &services_available[1]},
-		{&hourly_timeSlots[2], true, 18, &customer_users[0], &experts[3], &services_available[2]},
-		{&hourly_timeSlots[3], true, 18, &customer_users[2], &experts[4], &services_available[3]},
-		{&hourly_timeSlots[4], true, 18, &customer_users[7], &experts[1], &services_available[2]},
-		{&hourly_timeSlots[5], true, 18, &customer_users[8], &experts[2], &services_available[1]},
+		{&hourly_timeSlots[1], true, 18, &customer_users[4], &experts[0], &services_available[0]},
+		{&hourly_timeSlots[2], true, 18, &customer_users[0], &experts[0], &services_available[3]},
+		{&hourly_timeSlots[3], true, 18, &customer_users[2], &experts[0], &services_available[0]},
+		{&hourly_timeSlots[4], true, 18, &customer_users[7], &experts[0], &services_available[3]},
+		{&hourly_timeSlots[5], true, 18, &customer_users[8], &experts[0], &services_available[3]},
 		{&hourly_timeSlots[2], true, 18, &customer_users[6], &experts[0], &services_available[3]},
 		{&hourly_timeSlots[2], true, 5, &customer_users[3], &experts[2], &services_available[0]},
 		{&hourly_timeSlots[1], true, 29, &customer_users[1], &experts[2], &services_available[1]},
