@@ -103,16 +103,14 @@ int main() {
 		{2, "Bread Grooming", 3},
 		{3, "Facial Skin Care", 3},
 		{4, "Massage Therapy", 3}
-	};
-	services* P_services_available = services_available;
+	}; services* P_services_available = services_available;
 	users experts[] = {
 		{29, "Aina", 24, 'F', "aina2312@gmail.com", "passwordbruh102", expert, {&services_available[0], &services_available[2]}},
 		{3, "Hitler", 23, 'M', "sashimidelicious@gmail.com", "anitam4xw8n", expert, {&services_available[1], &services_available[3]}},
 		{41, "John", 34, 'M', "johnwaynecas@gmail.com", "apovusbg876trds9", expert, {&services_available[1], &services_available[2]}},
 		{42, "Beyonce", 34, 'F', "diddyparty@gmail.com", "nobabyoil", expert, {&services_available[2], &services_available[3]}},
 		{10, "Hela", 30, 'M', "helathor@gmail.com", "oyud6759iu41", expert, {&services_available[0], &services_available[1]}}
-	};
-	users* P_experts = experts;
+	}; users* P_experts = experts;
 	users customer_users[] = {
 		{4, "Blaze", 16, 'M', "expertschaoheweui@gmail.com", "apopejakicetruck-89632", customer},
 		{5, "Thomas", 16, 'M', "thomaswayne@gmail.com", "utc4kt6d8vcuj", customer},
@@ -123,8 +121,7 @@ int main() {
 		{12, "Harley", 16, 'F', "harleyquinnsucktbh@gmail.com", "ub78i6312ic6gh78k", customer},
 		{7, "Ashton Hall", 16, 'M', "ashtonhallunclosetoishowmeeat@gmail.com", "45pgyuijbk73po5ui", customer},
 		{5, "iShoeSpeed", 20, 'M', "ishowmeatfrfr@gmail.com", "uncsucks666", customer}
-	};
-	users* P_customers = customer_users;
+	}; users* P_customers = customer_users;
 	timeSlots hourly_timeSlots[] = {
 		{1, 12.00, 15.00},
 		{2, 14.00, 17.00},
@@ -132,8 +129,7 @@ int main() {
 		{4, 18.00, 21.00},
 		{5, 21.00, 0.00},
 		{6, 22.00, 1.00}
-	};
-	timeSlots* P_hourlyTimeSlots = hourly_timeSlots;
+	}; timeSlots* P_hourlyTimeSlots = hourly_timeSlots;
 	bookings appointments_schedule[] = {
 		{&hourly_timeSlots[0], true, 18, &customer_users[2], &experts[0], &services_available[0]},
 		{&hourly_timeSlots[1], true, 18, &customer_users[4], &experts[0], &services_available[0]},
@@ -207,23 +203,13 @@ int main() {
 		{&hourly_timeSlots[2], true, 9, &customer_users[5], &experts[0], &services_available[1]},
 		{&hourly_timeSlots[4], true, 14, &customer_users[6], &experts[0], &services_available[2]},
 		{&hourly_timeSlots[1], true, 28, &customer_users[7], &experts[0], &services_available[3]}
-	};
-	bookings* P_appointments_schedule = appointments_schedule;
+	}; bookings* P_appointments_schedule = appointments_schedule;
 	int totalBookings = sizeof(appointments_schedule) / sizeof(appointments_schedule)[0];
 			//get the size of appointments_schedule, get the size of the whole array
 			//get the size of one element only in appointments_scehdule, get the size of one element only in our array
 			//dividing 'em gets the number of elements we have in our appointments_schedule()
 			//putting into context means the number of bookings we have
 			//this integer we later need to pass to void viewAvailable_days() for processings
-	//for (int i = 0; i < 2; ++i) {
-	//	bookings& appointments = appointments_schedule[i];
-
-	//	cout << fixed << setprecision(2) << showpoint << appointments.timeslot->timeslotID << endl 
-	//		<< appointments.timeslot->hours_start << ' ' << appointments.timeslot->hours_end << endl
-	//		<< appointments.booking_status << endl << "Dec " << appointments.booking_date << " 2025" << endl
-	//		<< appointments.book_byCustomer->username << ' ' << appointments.expert_booked->username << ' '
-	//		<< appointments.service_booked->service_name << endl << endl << endl;
-	//}
 	cout << "Pick one serivces : \n" << "------------------------------\n";
 	for (int i = 0; i < 4; ++i) {
 		cout << numberedlist << ". " << P_services_available[i].service_name << endl;
@@ -231,18 +217,19 @@ int main() {
 	}
 	*ptr_numberliste = 1;
 	cout << endl;
-	cin >> choice_service;
-	// use structure, array, pointers to filter out expert w\ relevant services only
+	cin >> choice_service; // input validation pending
 	cout << "\nOur experts that provides " << P_services_available[choice_service - 1].service_name << ": \n";
-	//for (int i = 0; i < sizeof(experts) ; ++i) {
-	//	users& expert = experts[i];
-	//	services* spec0 = expert.specialization[0];
-	//	services* spec1 = expert.specialization[1];
-	//	if ((spec0 && spec0->serviceID == choice_service) || (spec1 && spec1->serviceID == choice_service)) {//the services ID starts from 1, so it matches the choice_service
-	//		cout << numberedlist << ". " << expert.username << endl;
-	//		++numberedlist;
-	//	}
-	//}
+	for (int i = 0; i < sizeof(experts) / sizeof(experts)[0] ; ++i) {
+	// display of experts accordingly in a numbered list based-on matching specialization w\ the services customer chose
+		users& expert = experts[i];
+		services* spec0 = expert.specialization[0];
+		services* spec1 = expert.specialization[1];
+		if ((spec0 && spec0->serviceID == choice_service) || (spec1 && spec1->serviceID == choice_service)) 
+		{								//the services ID starts from 1, so it matches the choice_service
+			cout << numberedlist << ". " << expert.username << endl;
+			++numberedlist;
+		}
+	}
 	cout << "\nWhat experts would you like to book an appointment with ? (enter the corresponding number)\n";
 	cin >> choice_expert;
 	viewAvailable_days(choice_expert, services_available, experts, customer_users, appointments_schedule, totalBookings);
