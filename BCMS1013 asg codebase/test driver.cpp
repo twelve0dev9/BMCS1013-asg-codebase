@@ -1,6 +1,7 @@
 #include<iostream>
 #include<string>
 #include<iomanip>
+#include<sstream>
 using namespace std;
 
 enum UserType { admin, expert, customer };
@@ -70,15 +71,18 @@ void viewAvailable_days(int choice_expert, services services_available[],
 		for (j = 0; j < col; ++j) 
 		{
 			int date = time_slotsDay[i][j];
+			std::ostringstream oss;
+			oss << setw(3) << date;
 			if (date == 0) continue;
 
 			if (bookingsPerDay[date] < totalSlotsperDay) // condition for days whr there are available time 
-				cout << setw(4) << date << " ";
+				cout << " " << oss.str() << " ";
 			else
-				cout << "\033[101;30m" << setw(4) << date << "\033[0m ";
+				cout << " " << "\033[101;30m" << oss.str() << "\033[0m ";
 		}
 		cout << endl;
 	}
+	cout << "LEGEND | \033[101;30mUnavailable\033[0m, Available";
 }
 void bookAppointment() {
 	//processing for the constraints of booking appointments
@@ -146,66 +150,66 @@ int main() {
 		{&hourly_timeSlots[1], true, 12, &customer_users[1], &experts[2], &services_available[2]}, 
 		// Fully booked days (9 days × 6 slots each = 54 bookings total)
 		{&hourly_timeSlots[0], true, 2, &customer_users[0], &experts[0], &services_available[0]},
-		{&hourly_timeSlots[1], true, 2, &customer_users[1], &experts[1], &services_available[1]},
-		{&hourly_timeSlots[2], true, 2, &customer_users[2], &experts[2], &services_available[2]},
-		{&hourly_timeSlots[3], true, 2, &customer_users[3], &experts[3], &services_available[3]},
-		{&hourly_timeSlots[4], true, 2, &customer_users[4], &experts[4], &services_available[0]},
+		{&hourly_timeSlots[1], true, 2, &customer_users[1], &experts[0], &services_available[1]},
+		{&hourly_timeSlots[2], true, 2, &customer_users[2], &experts[0], &services_available[2]},
+		{&hourly_timeSlots[3], true, 2, &customer_users[3], &experts[0], &services_available[3]},
+		{&hourly_timeSlots[4], true, 2, &customer_users[4], &experts[0], &services_available[0]},
 		{&hourly_timeSlots[5], true, 2, &customer_users[5], &experts[0], &services_available[1]},
 
-		{&hourly_timeSlots[0], true, 5, &customer_users[6], &experts[1], &services_available[2]},
-		{&hourly_timeSlots[1], true, 5, &customer_users[7], &experts[2], &services_available[3]},
-		{&hourly_timeSlots[2], true, 5, &customer_users[8], &experts[3], &services_available[0]},
-		{&hourly_timeSlots[3], true, 5, &customer_users[0], &experts[4], &services_available[1]},
+		{&hourly_timeSlots[0], true, 5, &customer_users[6], &experts[0], &services_available[2]},
+		{&hourly_timeSlots[1], true, 5, &customer_users[7], &experts[0], &services_available[3]},
+		{&hourly_timeSlots[2], true, 5, &customer_users[8], &experts[0], &services_available[0]},
+		{&hourly_timeSlots[3], true, 5, &customer_users[0], &experts[0], &services_available[1]},
 		{&hourly_timeSlots[4], true, 5, &customer_users[1], &experts[0], &services_available[2]},
-		{&hourly_timeSlots[5], true, 5, &customer_users[2], &experts[1], &services_available[3]},
+		{&hourly_timeSlots[5], true, 5, &customer_users[2], &experts[0], &services_available[3]},
 
-		{&hourly_timeSlots[0], true, 8, &customer_users[3], &experts[2], &services_available[0]},
-		{&hourly_timeSlots[1], true, 8, &customer_users[4], &experts[3], &services_available[1]},
-		{&hourly_timeSlots[2], true, 8, &customer_users[5], &experts[4], &services_available[2]},
-		{&hourly_timeSlots[3], true, 8, &customer_users[6], &experts[0], &services_available[3]},
-		{&hourly_timeSlots[4], true, 8, &customer_users[7], &experts[1], &services_available[0]},
-		{&hourly_timeSlots[5], true, 8, &customer_users[8], &experts[2], &services_available[1]},
+		{&hourly_timeSlots[0], true, 29, &customer_users[3], &experts[0], &services_available[0]},
+		{&hourly_timeSlots[1], true, 29, &customer_users[4], &experts[0], &services_available[1]},
+		{&hourly_timeSlots[2], true, 29, &customer_users[5], &experts[0], &services_available[2]},
+		{&hourly_timeSlots[3], true, 29, &customer_users[6], &experts[0], &services_available[3]},
+		{&hourly_timeSlots[4], true, 29, &customer_users[7], &experts[0], &services_available[0]},
+		{&hourly_timeSlots[5], true, 29, &customer_users[8], &experts[0], &services_available[1]},
 
-		{&hourly_timeSlots[0], true, 12, &customer_users[0], &experts[3], &services_available[2]},
-		{&hourly_timeSlots[1], true, 12, &customer_users[1], &experts[4], &services_available[3]},
-		{&hourly_timeSlots[2], true, 12, &customer_users[2], &experts[0], &services_available[0]},
-		{&hourly_timeSlots[3], true, 12, &customer_users[3], &experts[1], &services_available[1]},
-		{&hourly_timeSlots[4], true, 12, &customer_users[4], &experts[2], &services_available[2]},
-		{&hourly_timeSlots[5], true, 12, &customer_users[5], &experts[3], &services_available[3]},
+		{&hourly_timeSlots[0], true, 14, &customer_users[0], &experts[0], &services_available[2]},
+		{&hourly_timeSlots[1], true, 14, &customer_users[1], &experts[0], &services_available[3]},
+		{&hourly_timeSlots[2], true, 14, &customer_users[2], &experts[0], &services_available[0]},
+		{&hourly_timeSlots[3], true, 14, &customer_users[3], &experts[0], &services_available[1]},
+		{&hourly_timeSlots[4], true, 14, &customer_users[4], &experts[0], &services_available[2]},
+		{&hourly_timeSlots[5], true, 14, &customer_users[5], &experts[0], &services_available[3]},
 
-		{&hourly_timeSlots[0], true, 15, &customer_users[6], &experts[4], &services_available[0]},
+		{&hourly_timeSlots[0], true, 15, &customer_users[6], &experts[0], &services_available[0]},
 		{&hourly_timeSlots[1], true, 15, &customer_users[7], &experts[0], &services_available[1]},
-		{&hourly_timeSlots[2], true, 15, &customer_users[8], &experts[1], &services_available[2]},
-		{&hourly_timeSlots[3], true, 15, &customer_users[0], &experts[2], &services_available[3]},
-		{&hourly_timeSlots[4], true, 15, &customer_users[1], &experts[3], &services_available[0]},
-		{&hourly_timeSlots[5], true, 15, &customer_users[2], &experts[4], &services_available[1]},
+		{&hourly_timeSlots[2], true, 15, &customer_users[8], &experts[0], &services_available[2]},
+		{&hourly_timeSlots[3], true, 15, &customer_users[0], &experts[0], &services_available[3]},
+		{&hourly_timeSlots[4], true, 15, &customer_users[1], &experts[0], &services_available[0]},
+		{&hourly_timeSlots[5], true, 15, &customer_users[2], &experts[0], &services_available[1]},
 
 		{&hourly_timeSlots[0], true, 18, &customer_users[3], &experts[0], &services_available[2]},
-		{&hourly_timeSlots[1], true, 18, &customer_users[4], &experts[1], &services_available[3]},
-		{&hourly_timeSlots[2], true, 18, &customer_users[5], &experts[2], &services_available[0]},
-		{&hourly_timeSlots[3], true, 18, &customer_users[6], &experts[3], &services_available[1]},
-		{&hourly_timeSlots[4], true, 18, &customer_users[7], &experts[4], &services_available[2]},
+		{&hourly_timeSlots[1], true, 18, &customer_users[4], &experts[0], &services_available[3]},
+		{&hourly_timeSlots[2], true, 18, &customer_users[5], &experts[0], &services_available[0]},
+		{&hourly_timeSlots[3], true, 18, &customer_users[6], &experts[0], &services_available[1]},
+		{&hourly_timeSlots[4], true, 18, &customer_users[7], &experts[0], &services_available[2]},
 		{&hourly_timeSlots[5], true, 18, &customer_users[8], &experts[0], &services_available[3]},
 
-		{&hourly_timeSlots[0], true, 22, &customer_users[1], &experts[1], &services_available[0]},
-		{&hourly_timeSlots[1], true, 22, &customer_users[2], &experts[2], &services_available[1]},
-		{&hourly_timeSlots[2], true, 22, &customer_users[3], &experts[3], &services_available[2]},
-		{&hourly_timeSlots[3], true, 22, &customer_users[4], &experts[4], &services_available[3]},
-		{&hourly_timeSlots[4], true, 22, &customer_users[5], &experts[0], &services_available[0]},
-		{&hourly_timeSlots[5], true, 22, &customer_users[6], &experts[1], &services_available[1]},
+		{&hourly_timeSlots[0], true, 26, &customer_users[1], &experts[0], &services_available[0]},
+		{&hourly_timeSlots[1], true, 26, &customer_users[2], &experts[0], &services_available[1]},
+		{&hourly_timeSlots[2], true, 26, &customer_users[3], &experts[0], &services_available[2]},
+		{&hourly_timeSlots[3], true, 26, &customer_users[4], &experts[0], &services_available[3]},
+		{&hourly_timeSlots[4], true, 26, &customer_users[5], &experts[0], &services_available[0]},
+		{&hourly_timeSlots[5], true, 26, &customer_users[6], &experts[0], &services_available[1]},
 
-		{&hourly_timeSlots[0], true, 25, &customer_users[7], &experts[2], &services_available[2]},
-		{&hourly_timeSlots[1], true, 25, &customer_users[8], &experts[3], &services_available[3]},
-		{&hourly_timeSlots[2], true, 25, &customer_users[0], &experts[4], &services_available[0]},
-		{&hourly_timeSlots[3], true, 25, &customer_users[1], &experts[0], &services_available[1]},
-		{&hourly_timeSlots[4], true, 25, &customer_users[2], &experts[1], &services_available[2]},
-		{&hourly_timeSlots[5], true, 25, &customer_users[3], &experts[2], &services_available[3]},
+		{&hourly_timeSlots[0], true, 30, &customer_users[7], &experts[0], &services_available[2]},
+		{&hourly_timeSlots[1], true, 30, &customer_users[8], &experts[0], &services_available[3]},
+		{&hourly_timeSlots[2], true, 30, &customer_users[0], &experts[0], &services_available[0]},
+		{&hourly_timeSlots[3], true, 30, &customer_users[1], &experts[0], &services_available[1]},
+		{&hourly_timeSlots[4], true, 30, &customer_users[2], &experts[0], &services_available[2]},
+		{&hourly_timeSlots[5], true, 30, &customer_users[3], &experts[0], &services_available[3]},
 
 		// Partial bookings for the rest of the month (just a few slots booked)
-		{&hourly_timeSlots[0], true, 6, &customer_users[4], &experts[4], &services_available[0]},
-		{&hourly_timeSlots[2], true, 9, &customer_users[5], &experts[1], &services_available[1]},
-		{&hourly_timeSlots[4], true, 14, &customer_users[6], &experts[3], &services_available[2]},
-		{&hourly_timeSlots[1], true, 28, &customer_users[7], &experts[2], &services_available[3]}
+		{&hourly_timeSlots[0], true, 6, &customer_users[4], &experts[0], &services_available[0]},
+		{&hourly_timeSlots[2], true, 9, &customer_users[5], &experts[0], &services_available[1]},
+		{&hourly_timeSlots[4], true, 14, &customer_users[6], &experts[0], &services_available[2]},
+		{&hourly_timeSlots[1], true, 28, &customer_users[7], &experts[0], &services_available[3]}
 	};
 	bookings* P_appointments_schedule = appointments_schedule;
 	int totalBookings = sizeof(appointments_schedule) / sizeof(appointments_schedule)[0];
