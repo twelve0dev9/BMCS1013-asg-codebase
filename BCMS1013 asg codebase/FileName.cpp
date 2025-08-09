@@ -220,12 +220,13 @@ void customerFunctionalities(int* choice_menu, int* choice_service, int* choice_
 		for (int i = 0; i < sizeof(*experts) / sizeof(experts)[0]; ++i)
 		{
 			// display of experts accordingly in a numbered list based-on matching specialization w\ the services customer chose
-			users& expert = experts[i];
-			services* spec0 = expert.specialization[0];
-			services* spec1 = expert.specialization[1];
-			if ((spec0 && spec0->serviceID == *choice_service) || (spec1 && spec1->serviceID == *choice_service))
+			//users& expert = experts[i];
+			//services* spec0 = expert.specialization[0];
+			//services* spec1 = expert.specialization[1];
+			if ((experts[i].specialization[0]&& experts[i].specialization[0]->serviceID == *choice_service) || 
+				(experts[i].specialization[1] && experts[i].specialization[1]->serviceID == *choice_service))
 			{								//the services ID starts from 1, so it matches the choice_service
-				cout << *numberedlist << ". " << expert.username << endl;
+				cout << *numberedlist << ". " << experts[i].username << endl;
 				++*numberedlist;
 			}
 		}
