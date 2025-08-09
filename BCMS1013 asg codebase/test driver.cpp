@@ -78,7 +78,7 @@ void viewAvailable_days(int choice_expert, services services_available[],
 				cout << " " << "\033[101;30m" << oss.str() << "\033[0m ";
 		}
 		cout << endl;
-	}
+	} 
 	cout << "LEGEND | \033[101;30mUnavailable\033[0m, Available\n\n";
 }
 void bookAppointment() {
