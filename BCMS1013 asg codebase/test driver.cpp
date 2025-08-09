@@ -48,7 +48,6 @@ void viewAvailable_days(int choice_expert, services services_available[],
 		{29, 30, 31, 0, 0, 0, 0, 0}
 	};
 	cout << endl << endl;
-	cout << "total bookings : " << 62 << endl;
 	for (int k = 0; k < totalBookings; ++k) //goes over the bookings list iteratively
 	{							//dis compares if the appointments' booked expert is the same as what user choosed
  			//in dis case is our choice_expert, but becuz of 0-based indices, i tolak satu to account for 0-based indices
