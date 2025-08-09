@@ -50,17 +50,15 @@ void viewAvailable_days(int choice_expert, services services_available[],
 	cout << "total bookings : " << 62 << endl;
 	for (int k = 0; k < totalBookings; ++k) //goes over the bookings list iteratively
 	{							//dis compares if the appointments' booked expert is the same as what user choosed
-																				//what the user has chosen depends on choice_expert var - 1
-		cout << "\nProcessing appointment " << k + 1 << "th\n";
-		cout << "Date of " << k + 1 << "th appointment : " << appointments_schedule[k].booking_date << endl;
+																				//what the user has chosen depends on choice_expert - 1
+		//cout << "\nProcessing appointment " << k + 1 << "th\n";
+		//cout << "Date of " << k + 1 << "th appointment : " << appointments_schedule[k].booking_date << endl;
 		int date = appointments_schedule[k].booking_date;
 		if (appointments_schedule[k].expert_booked->userID == experts[choice_expert - 1].userID && appointments_schedule[k].booking_status == true)
-		{ // it only goes thru the list if i place bookingsPerDay outside, that mean my if statement condition isn't met
-			// the nested if statement & the body isn't performed, some of em is skipped, a few array element (i.e. our appointments met the condition
+		{										// display the availability of chosen expert's schedule in December
 			if (date >= 1 && date <= 31)
 			{
 				bookingsPerDay[date]++;
-				cout << "\033[48;2;255;165;0m\033[38;2;0;0;0mis in if statement\033[0m\n";
 			}
 		}
 	}
