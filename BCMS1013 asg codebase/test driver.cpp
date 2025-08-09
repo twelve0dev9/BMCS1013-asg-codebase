@@ -47,7 +47,13 @@ void viewAvailable_days(int choice_expert, services services_available[],
 		{29, 30, 31, 0, 0, 0, 0, 0}
 	};
 	cout << endl << endl;
-	for (int k = 0; k < sizeof(appointments_schedule); ++k)
+	for (int k = 0; k < sizeof(appointments_schedule); ++k) 
+		//sizeof(appointments_schedule) is wrong, 
+		//passing the array appointments_schedule to here is actually the appointments_schedule's pointer, not the entire array var
+		//hence what u're doing here is w\ sizeof(appointments_schedule) is actually referring to the pointer's size, not the array's size
+		//that's why ur for loop at here isn't going through the array list as u intended
+		//cuz the sizeof(appointmentes_schedule) is the size of pointer that points to appointment_schedule, which is around 4 to 8 Bytes
+		//ur system is 64-bit, therefore sizeof(appointments_schedule) is 8 bits, ur for loop only runs 8 times
 	{
 		//goes over the bookings list iteratively
 		if (appointments_schedule[k].expert_booked->userID == experts[choice_expert].userID && appointments_schedule[k].booking_status == true)
