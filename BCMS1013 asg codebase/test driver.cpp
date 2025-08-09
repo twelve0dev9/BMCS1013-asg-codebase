@@ -35,10 +35,10 @@ struct bookings {
 	services* service_booked;
 };
 void viewAvailable_days(int choice_expert, services services_available[], 
-	users experts[], users customers[], bookings appointments_schedule[]) {
+	users experts[], users customers[], bookings appointments_schedule[], int totalBookings) {
 	//display the calendar & highlights days that our experts have slots for customer to view
 	const int row = 5, col = 8, totalSlotsperDay = 6;
-	int i = 0, j = 0, bookingsPerDay[31];
+	int i = 0, j = 0, bookingsPerDay[32] = { 0 };
 	int time_slotsDay[5][8] = {
 		{1, 2, 3, 4, 5, 6, 7},
 		{8, 9, 10, 11, 12, 13, 14},
@@ -47,24 +47,26 @@ void viewAvailable_days(int choice_expert, services services_available[],
 		{29, 30, 31, 0, 0, 0, 0, 0}
 	};
 	cout << endl << endl;
-	for (int k = 0; k < sizeof(appointments_schedule); ++k) 
-		//sizeof(appointments_schedule) is wrong, 
-		//passing the array appointments_schedule to here is actually the appointments_schedule's pointer, not the entire array var
-		//hence what u're doing here is w\ sizeof(appointments_schedule) is actually referring to the pointer's size, not the array's size
-		//that's why ur for loop at here isn't going through the array list as u intended
-		//cuz the sizeof(appointmentes_schedule) is the size of pointer that points to appointment_schedule, which is around 4 to 8 Bytes
-		//ur system is 64-bit, therefore sizeof(appointments_schedule) is 8 bits, ur for loop only runs 8 times
-	{
-		//goes over the bookings list iteratively
-		if (appointments_schedule[k].expert_booked->userID == experts[choice_expert].userID && appointments_schedule[k].booking_status == true)
-		{
-			int date = appointments_schedule[k].booking_date;
-			if (date >= 1 && date <= 31)
-			{
-				bookingsPerDay[date]++;
-				cout << bookingsPerDay[date] << endl;
-			}
-		}
+	cout << "total bookings : " << 62 << endl;
+	for (int k = 0; k < totalBookings; ++k) //goes over the bookings list iteratively
+	{  
+		cout << "Processing bookings #" << k << endl;
+		cout << "Date of " << k+1 << "th appointment : " << appointments_schedule[k].booking_date << endl;
+		int date = appointments_schedule[k].booking_date;
+		cout << "bookingsPerDay accumulator value at " << date << "th array before increment : " << bookingsPerDay[date] << endl;
+		bookingsPerDay[date]++;
+		cout << "bookingsPerDay accumulator value at " << date << "th array after increment : " << bookingsPerDay[date] << endl;
+		cout << "\n_\n_\n_" /*<< bookingsPerDay[date] */<< "\n_\n_\n";
+		//if (appointments_schedule[k].expert_booked->userID == experts[choice_expert].userID && appointments_schedule[k].booking_status == true)
+		//{
+		//	int date = appointments_schedule[k].booking_date;
+		//	if (date >= 1 && date <= 31)
+		//	{
+		//		bookingsPerDay[date]++;
+		//		cout << appointments_schedule[k].booking_date;
+		//		cout << "\n_\n_\n_" << bookingsPerDay[date] << "\n_\n_\n";
+		//	}
+		//}
 	}
 	cout << setw(23) << "December" << endl
 		<< "-------------------------------------\n";
@@ -211,6 +213,12 @@ int main() {
 		{&hourly_timeSlots[4], true, 14, &customer_users[6], &experts[3], &services_available[2]},
 		{&hourly_timeSlots[1], true, 28, &customer_users[7], &experts[2], &services_available[3]}
 	};
+	int totalBookings = sizeof(appointments_schedule) / sizeof(appointments_schedule)[0];
+			//get the size of appointments_schedule, get the size of the whole array
+			//get the size of one element only in appointments_scehdule, get the size of one element only in our array
+			//dividing 'em gets the number of elements we have in our appointments_schedule()
+			//putting into context means the number of bookings we have
+			//this integer we later need to pass to void viewAvailable_days() for processings
 	bookings* P_appointments_schedule = appointments_schedule;
 	//for (int i = 0; i < 2; ++i) {
 	//	bookings& appointments = appointments_schedule[i];
@@ -242,7 +250,7 @@ int main() {
 	//}
 	cout << "\nWhat experts would you like to book an appointment with ? (enter the corresponding number)\n";
 	cin >> choice_expert;
-	viewAvailable_days(choice_expert, services_available, experts, customer_users, appointments_schedule);
+	viewAvailable_days(choice_expert, services_available, experts, customer_users, appointments_schedule, totalBookings);
 	
 	return 0;
 }
