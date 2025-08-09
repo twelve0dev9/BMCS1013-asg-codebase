@@ -4,10 +4,6 @@
 #include<sstream>
 using namespace std;
 
-int main() {
-
-	return 0;
-}
 enum UserType { admin, expert, customer };
 
 struct services {
@@ -117,12 +113,67 @@ void bookAppointment() {
 }
 void viewbookedSchedule() {
 }
-void customerFunctionalities()
+void customerFunctionalities(int choice_menu, int choice_service, int choice_expert, int choice_timeSlot, 
+	int numberedlist, int * ptr_numberliste, services services_available[], services* P_services_available,
+	users experts[], users* P_experts, users customers[], users * P_customers, timeSlots hourly_timeSlots[], 
+	timeSlots * P_hourlyTimeSlots, bookings appointments_schedule[], bookings * P_appointments_schedule)
 {
+	int totalBookings = sizeof(*appointments_schedule) / sizeof(appointments_schedule)[0];
+					//get the size of appointments_schedule (the entire array)
+					//get the size of one element only in appointments_scehdule
+					//dividing 'em gets the number of elements we have in our appointments_schedule()
+					//putting into context means the number of bookings we have
+					//this integer we later need to pass to void viewAvailable_days() for processings
+	cin >> choice_menu;
+	switch (choice_menu)
+	{
+	case 1:
+		cout << "Our available services : \n" << "--------------------------------";
+		for (int i = 0; i < 4; ++i)
+		{
+			cout << *ptr_numberliste<< ". " << services_available[i].service_name << endl;
+			++*ptr_numberliste;
+		}
+		*ptr_numberliste = 1;
+		break;
+	case 2:
+		cout << "Pick one serivces : \n" << "------------------------------\n";
+		for (int i = 0; i < 4; ++i) 
+		{ 
+			// list the number of services available
+			cout << numberedlist << ". " << P_services_available[i].service_name << endl;
+			++numberedlist;
+		}
+		cout << endl;
+		cin >> choice_service; // input validation pending
+		cout << "\nOur experts that provides " << P_services_available[choice_service - 1].service_name << ": \n";
+		for (int i = 0; i < sizeof(*experts) / sizeof(experts)[0]; ++i) 
+		{
+			// display of experts accordingly in a numbered list based-on matching specialization w\ the services customer chose
+			users& expert = experts[i];
+			services* spec0 = expert.specialization[0];
+			services* spec1 = expert.specialization[1];
+			if ((spec0 && spec0->serviceID == choice_service) || (spec1 && spec1->serviceID == choice_service))
+			{								//the services ID starts from 1, so it matches the choice_service
+				cout << *ptr_numberliste << ". " << expert.username << endl;
+				++*ptr_numberliste;
+			}
+		}
+		*ptr_numberliste = 1;
+		cout << "\nWhat experts would you like to book an appointment with ? (enter the corresponding number)\n";
+		cin >> choice_expert;
+		viewAvailable_days(choice_expert, services_available, experts, customers, appointments_schedule, totalBookings);
+	case 3:
+		viewbookedSchedule();
+		break;
+	case 4:
+		cout << "Exitting ...";
+	}
+}
+
+int main() {
 	int choice_menu = 0, choice_service = 0, choice_expert = 0, choice_timeSlot = 0, numberedlist = 1;
 	int* ptr_numberliste = &numberedlist;
-	//const int arrySize_experts = 10, arrySize_bookings = 10;
-
 	services services_available[4] = {
 		{1, "Haircuts & Trims", 3},
 		{2, "Bread Grooming", 3},
@@ -229,65 +280,23 @@ void customerFunctionalities()
 		{&hourly_timeSlots[4], true, 14, &customer_users[6], &experts[0], &services_available[2]},
 		{&hourly_timeSlots[1], true, 28, &customer_users[7], &experts[0], &services_available[3]}
 	}; bookings* P_appointments_schedule = appointments_schedule;
-	int totalBookings = sizeof(appointments_schedule) / sizeof(appointments_schedule)[0];
-					//get the size of appointments_schedule (the entire array)
-					//get the size of one element only in appointments_scehdule
-					//dividing 'em gets the number of elements we have in our appointments_schedule()
-					//putting into context means the number of bookings we have
-					//this integer we later need to pass to void viewAvailable_days() for processings
-	cout << setw(8) << "Men's LOOKMAXXIN Spa"
+	login();
+	cout << setw(35) << "Men's LOOKMAXXIN Spa\n"
 		<< "-------------------------------------------------"
 		<< endl;
 	cout << "\033[1mWhere Style Meets Self-Care.\033[0m\n"
-		<< "Welcome to Men’s LOOKMAXXIN Spa, as our name suggests, We WILL make you LOOKMAXXING.\n"
+		<< "Welcome to Men's LOOKMAXXIN Spa, as our name suggests, We WILL make you LOOKMAXXING.\n"
 		<< "A premium grooming spa designed exclusively for men who value sharp style, total relaxation, and modern self-care.\n"
-		<< "We offer a full range of services—from precision haircuts and classic straight-razor shaves to revitalizing facials, deep tissue massages, and expert beard grooming.\n"
-		<< "Our space blends the sophistication of a gentleman’s club with the tranquility of a day spa, providing a relaxing environment where you can unwind, refresh, and leave feeling your absolute best.\n"
-		<< "Whether you're preparing for a big event, need routine maintenance, or just deserve a break—our skilled barbers, aestheticians, and therapists are here to elevate your grooming experience.\n"
-		<< "\n\nOperating hours : \nMonday--Saturday  | 12PM - 1AM"
-		<< "Contact email : lookmaxxin2day@gmail.com\nContact phone : 03-3788 46567";
+		<< "We offer a full range of services from precision haircuts and classic straight-razor shaves to revitalizing facials, deep tissue massages, and expert beard grooming.\n"
+		<< "Our space blends the sophistication of a gentlemen's club with the tranquility of a day spa, providing a relaxing environment where you can unwind, refresh, and leave feeling your absolute best.\n"
+		<< "Whether you're preparing for a big event, need routine maintenance, or just deserve a break. Our skilled barbers, aestheticians, and therapists are here to elevate your grooming experience.\n"
+		<< "\n\nOperating hours : | 12PM - 1AM\n" << setw(37) << "| Monday--Saturday\n"
+		<< "Contact email : lookmaxxin2day@gmail.com\nContact phone : 03-3788 46567\n\n";
 	cout << "Welcome " << experts->username << "!\n";
-	cout << "1. View our serivces\n2. Book an appointment\n3. View booked schedule\n4. Exit";
-
-	cin >> choice_menu;
-
-	switch (choice_menu)
-	{
-	case 1:
-		cout << "Our available services : \n" << "--------------------------------";
-		for (int i = 0; i < 4; ++i) {
-			cout << numberedlist << ". " << services_available[i].service_name << endl;
-			++numberedlist;
-		}
-		break;
-	case 2:
-		cout << "Pick one serivces : \n" << "------------------------------\n";
-		for (int i = 0; i < 4; ++i) {
-			cout << numberedlist << ". " << P_services_available[i].service_name << endl;
-			++numberedlist;
-		}
-		*ptr_numberliste = 1;
-		cout << endl;
-		cin >> choice_service; // input validation pending
-		cout << "\nOur experts that provides " << P_services_available[choice_service - 1].service_name << ": \n";
-		for (int i = 0; i < sizeof(experts) / sizeof(experts)[0]; ++i) {
-			// display of experts accordingly in a numbered list based-on matching specialization w\ the services customer chose
-			users& expert = experts[i];
-			services* spec0 = expert.specialization[0];
-			services* spec1 = expert.specialization[1];
-			if ((spec0 && spec0->serviceID == choice_service) || (spec1 && spec1->serviceID == choice_service))
-			{								//the services ID starts from 1, so it matches the choice_service
-				cout << numberedlist << ". " << expert.username << endl;
-				++numberedlist;
-			}
-		}
-		cout << "\nWhat experts would you like to book an appointment with ? (enter the corresponding number)\n";
-		cin >> choice_expert;
-		viewAvailable_days(choice_expert, services_available, experts, customer_users, appointments_schedule, totalBookings);
-	case 3:
-		viewbookedSchedule();
-		break;
-	case 4:
-		cout << "Exitting ...";
-	}
+	cout << "1. View our serivces\n2. Book an appointment\n3. View booked schedule\n4. Exit\n\n";
+	customerFunctionalities(choice_menu, choice_service, choice_expert, choice_timeSlot,
+		numberedlist, ptr_numberliste, services_available, P_services_available,
+		experts, P_experts, customer_users, P_customers, hourly_timeSlots,
+		P_hourlyTimeSlots, appointments_schedule, P_appointments_schedule);
+	return 0;
 }
