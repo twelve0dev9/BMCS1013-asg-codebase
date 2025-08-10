@@ -11,7 +11,8 @@ struct services {
 	string service_name = " ";
 	float serviceTime = 0.00; //unit is Hours
 };
-struct users {//the users records might put under sum kind of function 
+struct users {
+	//the users records might put under sum kind of function 
 	//no point in importing the user records from the file globally when not in use
 	int userID = 0;
 	string username = " ";
@@ -35,28 +36,15 @@ struct bookings {
 	users* expert_booked;
 	services* service_booked;
 };
-void login() {
-	//read all from "User records.txt" file`
-		//if possible find ways to read from user records w\ username entered by user only, instead of reading all of the records
-
-	//compare the credentials with the read records
-}
-void alphanumInputs_validation(string x) {
-	// validates if the input provided is alphenumeric or not similar to that of Python
-
-	//this part use C-string functions	
-}
-void payment() {
-	//payment module
-	//display & input prompts, fake(:verb) the credentials
-	//returns a true bool
-}
+void login();
+void alphanumInputs_validation(string x);
+bool payment();
 void viewAvailable_days(int* choice_expert, services services_available[],
 	users experts[], users customers[], bookings appointments_schedule[], int* totalBookings);
-void bookAppointment();
-void viewbookedSchedule() {}
+void bookAppointment(timeSlots hourly_timeSlots[], int* numberofTimeSlots, int* numberedlist, int* choice_timeSlot);
+void viewbookedSchedule();
 void customerFunctionalities(int* choice_menu, int* choice_service, int* choice_expert, int* choice_timeSlot, int* numberedlist,
-	int* numberofAppointments, int* numberofExperts, int* numberofServices,
+	int* numberofAppointments, int* numberofExperts, int* numberofServices, int* numberofTimeSlots, 
 	services services_available[], users experts[], users customers[], timeSlots hourly_timeSlots[], bookings appointments_schedule[]);
 int main() {
 	int choice_menu = 0, choice_service = 0, choice_expert = 0, choice_timeSlot = 0, numberedlist = 1;
@@ -168,7 +156,8 @@ int main() {
 	}; bookings* P_appointments_schedule = appointments_schedule;
 	int numberofAppointments = sizeof(appointments_schedule) / sizeof(appointments_schedule)[0],
 		numberofExperts = sizeof(experts) / sizeof(experts)[0],
-		numberofServices = sizeof(services_available) / sizeof(services_available)[0];
+		numberofServices = sizeof(services_available) / sizeof(services_available)[0],
+		numberofTimeSlots = sizeof(hourly_timeSlots) / sizeof(hourly_timeSlots)[0];
 	login();
 	cout << setw(35) << "Men's LOOKMAXXIN Spa\n"
 		<< "-------------------------------------------------"
@@ -184,12 +173,12 @@ int main() {
 	cout << "Welcome " << experts->username << "!\n";
 	cout << "1. View our serivces\n2. Book an appointment\n3. View booked schedule\n4. Exit\n\n";
 	customerFunctionalities(&choice_menu, &choice_service, &choice_expert, &choice_timeSlot, &numberedlist, 
-		&numberofAppointments, &numberofExperts, &numberofServices, 
+		&numberofAppointments, &numberofExperts, &numberofServices, &numberofTimeSlots, 
 		services_available, experts, customer_users, hourly_timeSlots, appointments_schedule);
 	return 0;
 }
 void customerFunctionalities(int* choice_menu, int* choice_service, int* choice_expert, int* choice_timeSlot, int* numberedlist, 
-	int* numberofAppointments, int* numberofExperts, int* numberofServices, 
+	int* numberofAppointments, int* numberofExperts, int* numberofServices, int* numberofTimeSlots, 
 	services services_available[], users experts[], users customers[], timeSlots hourly_timeSlots[], bookings appointments_schedule[])
 {
 	cin >> *choice_menu;
@@ -218,11 +207,10 @@ void customerFunctionalities(int* choice_menu, int* choice_service, int* choice_
 		cout << "\nOur experts that provides " << services_available[*choice_service - 1].service_name << ": \n";
 		for (int i = 0; i < *numberofExperts; ++i)
 		{
-			// display of experts accordingly in a numbered list based-on matching specialization w\ the services customer chose
+			// display of experts accordingly in a numbered list based-on matching specialization w\ the services customer has chosen
 			if ((experts[i].specialization[0]&& experts[i].specialization[0]->serviceID == *choice_service) || 
-				(experts[i].specialization[1] && experts[i].specialization[1]->serviceID == *choice_service))
-			{								//the services ID starts from 1, so it matches the choice_service
-// since our the experts' specialization member is an array of pointers, we check the 1st & the 2nd pointer points to corresponding services or not
+				(experts[i].specialization[1] && experts[i].specialization[1]->serviceID == *choice_service)) // since our the experts' specialization member is an array of pointers, we check the 1st & the 2nd pointer points to corresponding services or not
+			{
 				cout << *numberedlist << ". " << experts[i].username << endl;
 				++*numberedlist;
 			}
@@ -231,6 +219,8 @@ void customerFunctionalities(int* choice_menu, int* choice_service, int* choice_
 		cout << "\nWhat experts would you like to book an appointment with ? (enter the corresponding number)\n";
 		cin >> *choice_expert;
 		viewAvailable_days(choice_expert, services_available, experts, customers, appointments_schedule, numberofAppointments);
+		bookAppointment(hourly_timeSlots, numberofTimeSlots, numberedlist, choice_timeSlot);
+		break;
 	case 3:
 		viewbookedSchedule();
 		break;
@@ -284,15 +274,44 @@ void viewAvailable_days(int *choice_expert, services services_available[],
 	}
 	cout << "\nLEGEND | \033[101;30mUnavailable\033[0m, Available\n\n";
 }
-void bookAppointment() {
-	//processing for the constraints of booking appointments
-	int hourlyTimeSlots_booked = 0;
-	/*switch (hourlyTimeSlots_booked) {
-	case 1:
-	case 2:
-	case 3:
-	case 4:
-	case 5:
-	case 6:
-	}*/
+void bookAppointment(timeSlots hourly_timeSlots[], int* numberofTimeSlots, int* numberedlist, int* choice_timeSlot) {
+	int book_Date = 0;
+	cout << "Pick the day you'd like to book : ";
+	cin >> book_Date;
+	cout << "Pick your time slots for the day : ";
+	for (int i = 0; i < *numberofTimeSlots; ++i) {
+		cout << *numberedlist << hourly_timeSlots[i].hours_start << endl;
+		++*numberedlist;
+	}
+	cout << endl;
+	*numberedlist = 1;
+	cin >> *choice_timeSlot;
+	payment();
+	if (payment == 1) {
+		cout << "Payment unsuccessful\n";
+	}
+	else {
+		cout << "Payment successful !\nBooking an appointment right away !!\n";
+		for loops that writes into Appointments.txt
+	}
+}
+void login() {
+	//read all from "User records.txt" file`
+		//if possible find ways to read from user records w\ username entered by user only, instead of reading all of the records
+
+	//compare the credentials with the read records
+}
+void alphanumInputs_validation(string x) {
+	// validates if the input provided is alphenumeric or not similar to that of Python
+
+	//this part use C-string functions	
+}
+bool payment() {
+	//payment module
+	//display & input prompts, fake(:verb) the credentials
+	//returns a true bool
+	return true;
+}
+void viewbookedSchedule() {
+
 }
