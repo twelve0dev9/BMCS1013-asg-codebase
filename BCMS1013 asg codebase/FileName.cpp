@@ -52,12 +52,12 @@ void payment() {
 	//returns a true bool
 }
 void viewAvailable_days(int* choice_expert, services services_available[],
-	users experts[], users customers[], bookings appointments_schedule[], int totalBookings);
+	users experts[], users customers[], bookings appointments_schedule[], int* totalBookings);
 void bookAppointment();
 void viewbookedSchedule() {}
 void customerFunctionalities(int* choice_menu, int* choice_service, int* choice_expert, int* choice_timeSlot, int* numberedlist,
+	int* numberofAppointments, int* numberofExperts,
 	services services_available[], users experts[], users customers[], timeSlots hourly_timeSlots[], bookings appointments_schedule[]);
-
 int main() {
 	int choice_menu = 0, choice_service = 0, choice_expert = 0, choice_timeSlot = 0, numberedlist = 1;
 	services services_available[4] = {
@@ -166,6 +166,8 @@ int main() {
 		{&hourly_timeSlots[4], true, 14, &customer_users[6], &experts[0], &services_available[2]},
 		{&hourly_timeSlots[1], true, 28, &customer_users[7], &experts[0], &services_available[3]}
 	}; bookings* P_appointments_schedule = appointments_schedule;
+	int numberofAppointments = sizeof(appointments_schedule) / sizeof(appointments_schedule)[0],
+		numberofExperts = sizeof(experts) / sizeof(experts)[0];
 	login();
 	cout << setw(35) << "Men's LOOKMAXXIN Spa\n"
 		<< "-------------------------------------------------"
@@ -181,13 +183,14 @@ int main() {
 	cout << "Welcome " << experts->username << "!\n";
 	cout << "1. View our serivces\n2. Book an appointment\n3. View booked schedule\n4. Exit\n\n";
 	customerFunctionalities(&choice_menu, &choice_service, &choice_expert, &choice_timeSlot, &numberedlist, 
+		&numberofAppointments, &numberofExperts, 
 		services_available, experts, customer_users, hourly_timeSlots, appointments_schedule);
 	return 0;
 }
-void customerFunctionalities(int* choice_menu, int* choice_service, int* choice_expert, int* choice_timeSlot, int* numberedlist,
+void customerFunctionalities(int* choice_menu, int* choice_service, int* choice_expert, int* choice_timeSlot, int* numberedlist, 
+	int* numberofAppointments, int* numberofExperts, 
 	services services_available[], users experts[], users customers[], timeSlots hourly_timeSlots[], bookings appointments_schedule[])
 {
-	int totalBookings = sizeof(*appointments_schedule) / sizeof(appointments_schedule)[0];
 	//get the size of appointments_schedule (the entire array)
 	//get the size of one element only in appointments_scehdule
 	//dividing 'em gets the number of elements we have in our appointments_schedule()
@@ -217,7 +220,7 @@ void customerFunctionalities(int* choice_menu, int* choice_service, int* choice_
 		cout << endl;
 		cin >> *choice_service; // input validation pending
 		cout << "\nOur experts that provides " << services_available[*choice_service - 1].service_name << ": \n";
-		for (int i = 0; i < sizeof(*experts) / sizeof(experts)[0]; ++i)
+		for (int i = 0; i < *numberofExperts; ++i)
 		{
 			// display of experts accordingly in a numbered list based-on matching specialization w\ the services customer chose
 			//users& expert = experts[i];
@@ -233,7 +236,7 @@ void customerFunctionalities(int* choice_menu, int* choice_service, int* choice_
 		*numberedlist = 1;
 		cout << "\nWhat experts would you like to book an appointment with ? (enter the corresponding number)\n";
 		cin >> *choice_expert;
-		viewAvailable_days(choice_expert, services_available, experts, customers, appointments_schedule, totalBookings);
+		viewAvailable_days(choice_expert, services_available, experts, customers, appointments_schedule, numberofAppointments);
 	case 3:
 		viewbookedSchedule();
 		break;
@@ -242,7 +245,7 @@ void customerFunctionalities(int* choice_menu, int* choice_service, int* choice_
 	}
 }
 void viewAvailable_days(int *choice_expert, services services_available[],
-	users experts[], users customers[], bookings appointments_schedule[], int totalBookings) {
+	users experts[], users customers[], bookings appointments_schedule[], int* totalBookings) {
 	//display the calendar & highlights days that our experts have slots for customer to view
 	const int row = 5, col = 8, totalSlotsperDay = 6;
 	int i = 0, j = 0, bookingsPerDay[32] = { 0 };
@@ -254,7 +257,7 @@ void viewAvailable_days(int *choice_expert, services services_available[],
 		{29, 30, 31, 0, 0, 0, 0, 0}
 	};
 	cout << endl << endl;
-	for (int k = 0; k < totalBookings; ++k) //goes over the bookings list iteratively
+	for (int k = 0; k < *totalBookings; ++k) //goes over the bookings list iteratively
 	{							//dis compares if the appointments' booked expert is the same as what user choosed
 			//in dis case is our choice_expert, but becuz of 0-based indices, i tolak satu to account for 0-based indices
 		int date = appointments_schedule[k].booking_date;
