@@ -56,7 +56,7 @@ void viewAvailable_days(int* choice_expert, services services_available[],
 void bookAppointment();
 void viewbookedSchedule() {}
 void customerFunctionalities(int* choice_menu, int* choice_service, int* choice_expert, int* choice_timeSlot, int* numberedlist,
-	int* numberofAppointments, int* numberofExperts,
+	int* numberofAppointments, int* numberofExperts, int* numberofServices,
 	services services_available[], users experts[], users customers[], timeSlots hourly_timeSlots[], bookings appointments_schedule[]);
 int main() {
 	int choice_menu = 0, choice_service = 0, choice_expert = 0, choice_timeSlot = 0, numberedlist = 1;
@@ -167,7 +167,8 @@ int main() {
 		{&hourly_timeSlots[1], true, 28, &customer_users[7], &experts[0], &services_available[3]}
 	}; bookings* P_appointments_schedule = appointments_schedule;
 	int numberofAppointments = sizeof(appointments_schedule) / sizeof(appointments_schedule)[0],
-		numberofExperts = sizeof(experts) / sizeof(experts)[0];
+		numberofExperts = sizeof(experts) / sizeof(experts)[0],
+		numberofServices = sizeof(services_available) / sizeof(services_available)[0];
 	login();
 	cout << setw(35) << "Men's LOOKMAXXIN Spa\n"
 		<< "-------------------------------------------------"
@@ -183,25 +184,20 @@ int main() {
 	cout << "Welcome " << experts->username << "!\n";
 	cout << "1. View our serivces\n2. Book an appointment\n3. View booked schedule\n4. Exit\n\n";
 	customerFunctionalities(&choice_menu, &choice_service, &choice_expert, &choice_timeSlot, &numberedlist, 
-		&numberofAppointments, &numberofExperts, 
+		&numberofAppointments, &numberofExperts, &numberofServices, 
 		services_available, experts, customer_users, hourly_timeSlots, appointments_schedule);
 	return 0;
 }
 void customerFunctionalities(int* choice_menu, int* choice_service, int* choice_expert, int* choice_timeSlot, int* numberedlist, 
-	int* numberofAppointments, int* numberofExperts, 
+	int* numberofAppointments, int* numberofExperts, int* numberofServices, 
 	services services_available[], users experts[], users customers[], timeSlots hourly_timeSlots[], bookings appointments_schedule[])
 {
-	//get the size of appointments_schedule (the entire array)
-	//get the size of one element only in appointments_scehdule
-	//dividing 'em gets the number of elements we have in our appointments_schedule()
-	//putting into context means the number of bookings we have
-	//this integer we later need to pass to void viewAvailable_days() for processings
 	cin >> *choice_menu;
 	switch (*choice_menu)
 	{
 	case 1:
 		cout << "Our available services : \n" << "--------------------------------";
-		for (int i = 0; i < 4; ++i)
+		for (int i = 0; i < *numberofServices; ++i)
 		{
 			cout << *numberedlist << ". " << services_available[i].service_name << endl;
 			++*numberedlist;
@@ -210,7 +206,7 @@ void customerFunctionalities(int* choice_menu, int* choice_service, int* choice_
 		break;
 	case 2:
 		cout << "Pick one serivces : \n" << "------------------------------\n";
-		for (int i = 0; i < 4; ++i)
+		for (int i = 0; i < *numberofServices; ++i)
 		{
 			// list the number of services available
 			cout << *numberedlist << ". " << services_available[i].service_name << endl;
@@ -223,12 +219,10 @@ void customerFunctionalities(int* choice_menu, int* choice_service, int* choice_
 		for (int i = 0; i < *numberofExperts; ++i)
 		{
 			// display of experts accordingly in a numbered list based-on matching specialization w\ the services customer chose
-			//users& expert = experts[i];
-			//services* spec0 = expert.specialization[0];
-			//services* spec1 = expert.specialization[1];
 			if ((experts[i].specialization[0]&& experts[i].specialization[0]->serviceID == *choice_service) || 
 				(experts[i].specialization[1] && experts[i].specialization[1]->serviceID == *choice_service))
 			{								//the services ID starts from 1, so it matches the choice_service
+// since our the experts' specialization member is an array of pointers, we check the 1st & the 2nd pointer points to corresponding services or not
 				cout << *numberedlist << ". " << experts[i].username << endl;
 				++*numberedlist;
 			}
@@ -246,7 +240,7 @@ void customerFunctionalities(int* choice_menu, int* choice_service, int* choice_
 }
 void viewAvailable_days(int *choice_expert, services services_available[],
 	users experts[], users customers[], bookings appointments_schedule[], int* totalBookings) {
-	//display the calendar & highlights days that our experts have slots for customer to view
+	// display available days of chosen expert
 	const int row = 5, col = 8, totalSlotsperDay = 6;
 	int i = 0, j = 0, bookingsPerDay[32] = { 0 };
 	int time_slotsDay[5][8] = {
@@ -260,16 +254,16 @@ void viewAvailable_days(int *choice_expert, services services_available[],
 	for (int k = 0; k < *totalBookings; ++k) //goes over the bookings list iteratively
 	{							//dis compares if the appointments' booked expert is the same as what user choosed
 			//in dis case is our choice_expert, but becuz of 0-based indices, i tolak satu to account for 0-based indices
-		int date = appointments_schedule[k].booking_date;
 		if (appointments_schedule[k].expert_booked->userID == experts[*choice_expert - 1].userID && appointments_schedule[k].booking_status == true)
 		{										// display the availability of chosen expert's schedule in December
-			if (date >= 1 && date <= 31)
+			if (appointments_schedule[k].booking_date >= 1 && 
+				appointments_schedule[k].booking_date <= 31)
 			{
-				bookingsPerDay[date]++;
+				bookingsPerDay[appointments_schedule[k].booking_date]++;
 			}
 		}
 	}
-	cout << setw(23) << "December" << endl
+	cout << experts[*choice_expert - 1].username << " is available for the following days : \n" << setw(23) << "December" << endl
 		<< "-------------------------------------\n";
 	for (i = 0; i < row; ++i)
 	{
@@ -288,7 +282,7 @@ void viewAvailable_days(int *choice_expert, services services_available[],
 		}
 		cout << endl;
 	}
-	cout << "LEGEND | \033[101;30mUnavailable\033[0m, Available\n\n";
+	cout << "\nLEGEND | \033[101;30mUnavailable\033[0m, Available\n\n";
 }
 void bookAppointment() {
 	//processing for the constraints of booking appointments
