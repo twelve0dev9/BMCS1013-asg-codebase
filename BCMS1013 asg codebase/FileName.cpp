@@ -173,7 +173,18 @@ void customerFunctionalities(int* numberofAppointments, int* numberofExperts, in
 	services services_available[], users experts[], users customers[], timeSlots hourly_timeSlots[], bookings appointments_schedule[])
 {
 	int choice_menu = 0, choice_service = 0, choice_expert = 0, choice_timeSlot = 0, numberedlist = 1;
-	cout << setw(35) << "Men's LOOKMAXXIN Spa\n"
+	cout << setw(35) << 
+		"$$\      $$\                     $$\                 $$\        $$$$$$\   $$$$$$\  $$\   $$\ $$\      $$\  $$$$$$\  $$\   $$\ $$\   $$\ $$$$$$\ $$\   $$\        $$$$$$\ " << 
+		"$$$\    $$$ |                    $  |                $$ |      $$  __$$\ $$  __$$\ $$ | $$  |$$$\    $$$ |$$  __$$\ $$ |  $$ |$$ |  $$ |\_$$  _|$$$\  $$ |      $$  __$$\                     " << 
+		"$$$$\  $$$$ | $$$$$$\  $$$$$$$\  \_/  $$$$$$$\       $$ |      $$ /  $$ |$$ /  $$ |$$ |$$  / $$$$\  $$$$ |$$ /  $$ |\$$\ $$  |\$$\ $$  |  $$ |  $$$$\ $$ |      $$ /  \__| $$$$$$\   $$$$$$\  " << 
+		"$$\$$\$$ $$ |$$  __$$\ $$  __$$\     $$  _____|      $$ |      $$ |  $$ |$$ |  $$ |$$$$$  /  $$\$$\$$ $$ |$$$$$$$$ | \$$$$  /  \$$$$  /   $$ |  $$ $$\$$ |      \$$$$$$\  $$  __$$\  \____$$\ " << 
+		"$$ \$$$  $$ |$$$$$$$$ |$$ |  $$ |    \$$$$$$\        $$ |      $$ |  $$ |$$ |  $$ |$$  $$<   $$ \$$$  $$ |$$  __$$ | $$  $$<   $$  $$<    $$ |  $$ \$$$$ |       \____$$\ $$ /  $$ | $$$$$$$ |" << 
+		"$$ |\$  /$$ |$$   ____|$$ |  $$ |     \____$$\       $$ |      $$ |  $$ |$$ |  $$ |$$ |\$$\  $$ |\$  /$$ |$$ |  $$ |$$  /\$$\ $$  /\$$\   $$ |  $$ |\$$$ |      $$\   $$ |$$ |  $$ |$$  __$$ |" << 
+		"$$ | \_/ $$ |\$$$$$$$\ $$ |  $$ |    $$$$$$$  |      $$$$$$$$\  $$$$$$  | $$$$$$  |$$ | \$$\ $$ | \_/ $$ |$$ |  $$ |$$ /  $$ |$$ /  $$ |$$$$$$\ $$ | \$$ |      \$$$$$$  |$$$$$$$  |\$$$$$$$ |" << 
+		"\__|     \__| \_______|\__|  \__|    \_______/       \________| \______/  \______/ \__|  \__|\__|     \__|\__|  \__|\__|  \__|\__|  \__|\______|\__|  \__|       \______/ $$  ____/  \_______|" << 
+		"                                                                                                                                                                          $$ |                " << 
+		"                                                                                                                                                                          $$ |                " << 
+		"                                                                                                                                                                          \__|                " 
 		<< "-------------------------------------------------"
 		<< endl;
 	cout << "\033[1mWhere Style Meets Self-Care.\033[0m\n"
@@ -286,6 +297,7 @@ void bookAppointment(int* numberofTimeSlots, int* numberedlist, int* choice_time
 	services services_available[], users experts[], users customers[], timeSlots hourly_timeSlots[])
 {
 	int book_Date = 0;
+	char makepayment = ' ';
 	cout << "Pick the day you'd like to book : ";
 	cin >> book_Date;
 	cout << "Pick your time slots for the day : ";
@@ -298,17 +310,18 @@ void bookAppointment(int* numberofTimeSlots, int* numberedlist, int* choice_time
 	*numberedlist = 1;
 	cin >> *choice_timeSlot;
 	payment(choice_services, choice_expert, services_available, experts, customers, numberedlist);
-	if (payment(choice_services, choice_expert, services_available, experts, customers) == true)
+	if (payment(choice_services, choice_expert, services_available, experts, customers, numberedlist) == true)
 	{
 		cout << "\nBooking an appointment right away !!\n";
 		//for loops that writes into Appointments.txt
 	}
 	else
 	{
-		while (payment == 0 && makepayment == Y)
+		while (payment(choice_services, choice_expert, services_available, experts, customers, numberedlist) == true)
 		{
-			cout << "Try to make payment again? (y = Yes | n = No)\n";
-			cin >> makepayment;
+			cout << "Try to make payment again? (Y = Yes | n = No)\n";
+			
+
 		}
 	}
 }
@@ -343,7 +356,7 @@ bool isAlphaNum(const char* stringVar) // to check if the input has *&%(*& symbo
 bool payment(int* choice_services, int* choice_expert, services services_available[], users experts[], users customers[], int* numberedlist) {
 	//payment module
 	//display & input prompts, fake(:verb) the credentials
-	string choice_payment, name = " ", cardnumber = " ", cardExpiryDate = " ", 
+	string choice_payment, multiusestring, 
 		Banks[] = { "Ambank", "HongLeong Bank", "Public Bank", "Maybank", "Alliance Bank" };
 	int choice_bank = 0;
 	cout << "------------------ Payment ------------------ \n"
@@ -365,18 +378,18 @@ bool payment(int* choice_services, int* choice_expert, services services_availab
 	switch (choice_payment1) {
 	case 1 : 
 		cout << "Enter Cardholder Name : ";
-		cin >> name;
+		cin >> multiusestring;
 		cout << "\nEnter Card Number (16 digits) : ";
-		cin >> cardnumber;
-		while (cardnumber.length() < 17) {
+		cin >> multiusestring;
+		while (multiusestring.length() < 17) {
 			cout << numberedlist << "Enter valid format !!!\nEnter Card Number (16 digits) : ";
-			cin >> cardnumber;
+			cin >> multiusestring;
 		}
 		cout << "\nEnter Expiry Date (MM/YY) : ";
-		cin >> cardExpiryDate;
-		while (cardExpiryDatevalidformat(cardExpiryDate) == false) {
-			cout << "Invalid format. Please enter card Expiry Date in valid format (MM/YY) : ";
-			cin >> cardExpiryDate;
+		cin >> multiusestring;
+		while (cardExpiryDatevalidformat(multiusestring) == false) {
+			cout << "\nInvalid format. Please enter card Expiry Date in valid format (MM/YY) : ";
+			cin >> multiusestring;
 		}
 		cout << "\n\nProcessing payment...\n\n";
 		cout << "\nPayment successful!";
@@ -391,15 +404,27 @@ bool payment(int* choice_services, int* choice_expert, services services_availab
 		}
 		cin >> choice_bank;
 		cout << "\nEnter your username : ";
-		cin >> name;
+		cin >> multiusestring;
 		cout << "\nEnter your password : ";
-		cin >> password;
+		cin >> multiusestring;
 		cout << "Authorization request sent to the bank app, approve the authorization...";
-		cout << "\napproved?...";
-		cin >> approved;
-		cout << "\nProcessing payment...\n";
-		cout << "Payment successful!";
-		return true;
+		cout << "\napproved?... (Y = Yes | N = No) : ";
+		cin >> multiusestring;
+		while (multiusestring.length() > 1 || isAlphabet(multiusestring.c_str()) == false || isAlphaNum(multiusestring.c_str()) == false) 
+		{
+			cout << "Invalid input.\n" << "\napproved?... (Y = Yes | N = No) : ";
+			cin >> multiusestring;
+		}
+		if (multiusestring == "Y") {
+			cout << "\n\nProcessing payment...\n\n";
+			cout << "Payment successful!";
+			return true;
+		}
+		else
+		{
+			cout << "Authorization failed !! Please try again.";
+			return false;
+		}
 		break;
 	case 3 : 
 		cout << "Scan the QR below : ";
