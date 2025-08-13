@@ -4,19 +4,6 @@
 #include<cstdlib>
 using namespace std;
 
-bool checkAlpha(string stringVar)
-{ // validates if the input provided is alphenumeric or not similar to that of Python
-	cout << "Function called .... \n";
-	bool yesAlpha = 0;
-	for (char ch : stringVar) {
-		if (isalpha((ch)))
-		{
-			yesAlpha = 1;
-			cout << yesAlpha;
-		}
-	}
-	return yesAlpha;
-}
 bool isAlphabet(const char* str) // to check if the input is Alphabet or not
 {
 	for (int i = 0; str[i] != '\0'; ++i) 
