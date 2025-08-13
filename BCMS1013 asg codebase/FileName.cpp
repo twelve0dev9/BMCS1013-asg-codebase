@@ -343,7 +343,7 @@ bool isAlphaNum(const char* stringVar) // to check if the input has *&%(*& symbo
 bool payment(int* choice_services, int* choice_expert, services services_available[], users experts[], users customers[], int* numberedlist) {
 	//payment module
 	//display & input prompts, fake(:verb) the credentials
-	string choice_payment, Name = " ", cardnumber = " ", cardExpiryDate = " ", 
+	string choice_payment, name = " ", cardnumber = " ", cardExpiryDate = " ", 
 		Banks[] = { "Ambank", "HongLeong Bank", "Public Bank", "Maybank", "Alliance Bank" };
 	int choice_bank = 0;
 	cout << "------------------ Payment ------------------ \n"
@@ -365,7 +365,7 @@ bool payment(int* choice_services, int* choice_expert, services services_availab
 	switch (choice_payment1) {
 	case 1 : 
 		cout << "Enter Cardholder Name : ";
-		cin >> cardholderName;
+		cin >> name;
 		cout << "\nEnter Card Number (16 digits) : ";
 		cin >> cardnumber;
 		while (cardnumber.length() < 17) {
@@ -383,16 +383,16 @@ bool payment(int* choice_services, int* choice_expert, services services_availab
 		return true;
 		break;
 	case 2 : 
-		cout << "Enter your bank : \n";
+		cout << "Select your bank\n-----------------------\n";
 		for (int i = 0; i < sizeof(Banks) / sizeof(Banks)[0]; ++i)
 		{
-			cout << Banks[i] << endl;
+			cout << numberedlist << ". " << Banks[i] << endl;
 			++numberedlist;
 		}
 		cin >> choice_bank;
-		cout << "Enter your username : ";
+		cout << "\nEnter your username : ";
 		cin >> name;
-		cout << "Enter your password : ";
+		cout << "\nEnter your password : ";
 		cin >> password;
 		cout << "Authorization request sent to the bank app, approve the authorization...";
 		cout << "\napproved?...";
