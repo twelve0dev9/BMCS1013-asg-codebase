@@ -50,11 +50,9 @@ void viewAvailable_days(int* choice_expert, services services_available[],
 void bookAppointment(int* numberofTimeSlots, int* numberedlist, int* choice_timeSlot, int* choice_services,
 	services services_available[], users experts[], timeSlots hourly_timeSlots[]);
 void viewbookedSchedule();
-void customerFunctionalities(int* choice_menu, int* choice_service, int* choice_expert, int* choice_timeSlot, int* numberedlist,
-	int* numberofAppointments, int* numberofExperts, int* numberofServices, int* numberofTimeSlots,
+void customerFunctionalities(int* numberofAppointments, int* numberofExperts, int* numberofServices, int* numberofTimeSlots,
 	services services_available[], users experts[], users customers[], timeSlots hourly_timeSlots[], bookings appointments_schedule[]);
 int main() {
-	int choice_menu = 0, choice_service = 0, choice_expert = 0, choice_timeSlot = 0, numberedlist = 1;
 	services services_available[4] = {
 		{1, "Haircuts & Trims", 3, 70.00},
 		{2, "Bread Grooming", 3, 100.00},
@@ -166,6 +164,14 @@ int main() {
 		numberofServices = sizeof(services_available) / sizeof(services_available)[0],
 		numberofTimeSlots = sizeof(hourly_timeSlots) / sizeof(hourly_timeSlots)[0];
 	login();
+	customerFunctionalities(&numberofAppointments, &numberofExperts, &numberofServices, &numberofTimeSlots,
+		services_available, experts, customer_users, hourly_timeSlots, appointments_schedule);
+	return 0;
+}
+void customerFunctionalities(int* numberofAppointments, int* numberofExperts, int* numberofServices, int* numberofTimeSlots,
+	services services_available[], users experts[], users customers[], timeSlots hourly_timeSlots[], bookings appointments_schedule[])
+{
+	int choice_menu = 0, choice_service = 0, choice_expert = 0, choice_timeSlot = 0, numberedlist = 1;
 	cout << setw(35) << "Men's LOOKMAXXIN Spa\n"
 		<< "-------------------------------------------------"
 		<< endl;
@@ -179,56 +185,47 @@ int main() {
 		<< "Contact email : lookmaxxin2day@gmail.com\nContact phone : 03-3788 46567\n\n";
 	cout << "Welcome " << experts->username << "!\n";
 	cout << "1. View our serivces\n2. Book an appointment\n3. View booked schedule\n4. Exit\n\n";
-	customerFunctionalities(&choice_menu, &choice_service, &choice_expert, &choice_timeSlot, &numberedlist,
-		&numberofAppointments, &numberofExperts, &numberofServices, &numberofTimeSlots,
-		services_available, experts, customer_users, hourly_timeSlots, appointments_schedule);
-	return 0;
-}
-void customerFunctionalities(int* choice_menu, int* choice_service, int* choice_expert, int* choice_timeSlot, int* numberedlist,
-	int* numberofAppointments, int* numberofExperts, int* numberofServices, int* numberofTimeSlots,
-	services services_available[], users experts[], users customers[], timeSlots hourly_timeSlots[], bookings appointments_schedule[])
-{
-	cin >> *choice_menu;
-	while (*choice_menu < 1 || *choice_menu > 4 || isalnum(*choice_menu) == true)
-		cin >> *choice_menu;
-	switch (*choice_menu)
+	cin >> choice_menu;
+	while (choice_menu < 1 || choice_menu > 4 || isalnum(choice_menu) == true)
+		cin >> choice_menu;
+	switch (choice_menu)
 	{
 	case 1:
 		cout << "Our available services : \n" << "--------------------------------";
 		for (int i = 0; i < *numberofServices; ++i)
 		{
-			cout << *numberedlist << ". " << services_available[i].service_name << endl;
-			++*numberedlist;
+			cout << numberedlist << ". " << services_available[i].service_name << endl;
+			++numberedlist;
 		}
-		*numberedlist = 1;
+		numberedlist = 1;
 		break;
 	case 2:
 		cout << "Pick one serivces : \n" << "------------------------------\n";
 		for (int i = 0; i < *numberofServices; ++i)
 		{
 			// list the number of services available
-			cout << *numberedlist << ". " << services_available[i].service_name << endl;
-			++*numberedlist;
+			cout << numberedlist << ". " << services_available[i].service_name << endl;
+			++numberedlist;
 		}
-		*numberedlist = 1;
+		numberedlist = 1;
 		cout << endl;
-		cin >> *choice_service; // input validation pending
-		cout << "\nOur experts that provides " << services_available[*choice_service - 1].service_name << ": \n";
+		cin >> choice_service; // input validation pending
+		cout << "\nOur experts that provides " << services_available[choice_service - 1].service_name << ": \n";
 		for (int i = 0; i < *numberofExperts; ++i)
 		{
 			// display of experts accordingly in a numbered list based-on matching specialization w\ the services customer has chosen
-			if ((experts[i].specialization[0] && experts[i].specialization[0]->serviceID == *choice_service) ||
-				(experts[i].specialization[1] && experts[i].specialization[1]->serviceID == *choice_service)) // since our the experts' specialization member is an array of pointers, we check the 1st & the 2nd pointer points to corresponding services or not
+			if ((experts[i].specialization[0] && experts[i].specialization[0]->serviceID == choice_service) ||
+				(experts[i].specialization[1] && experts[i].specialization[1]->serviceID == choice_service)) // since our the experts' specialization member is an array of pointers, we check the 1st & the 2nd pointer points to corresponding services or not
 			{
-				cout << *numberedlist << ". " << experts[i].username << endl;
-				++*numberedlist;
+				cout << numberedlist << ". " << experts[i].username << endl;
+				++numberedlist;
 			}
 		}
-		*numberedlist = 1;
+		numberedlist = 1;
 		cout << "\nWhat experts would you like to book an appointment with ? (enter the corresponding number)\n";
-		cin >> *choice_expert;
-		viewAvailable_days(choice_expert, services_available, experts, customers, appointments_schedule, numberofAppointments);
-		bookAppointment(numberofTimeSlots, numberedlist, choice_timeSlot, choice_service, services_available, experts, hourly_timeSlots);
+		cin >> choice_expert;
+		viewAvailable_days(&choice_expert, services_available, experts, customers, appointments_schedule, numberofAppointments);
+		bookAppointment(numberofTimeSlots, &numberedlist, &choice_timeSlot, &choice_service, services_available, experts, hourly_timeSlots);
 		break;
 	case 3:
 		viewbookedSchedule();
@@ -293,26 +290,26 @@ void bookAppointment(int* numberofTimeSlots, int* numberedlist, int* choice_time
 	cout << "Pick your time slots for the day : ";
 	for (int i = 0; i < *numberofTimeSlots; ++i)
 	{
-		cout << *numberedlist << hourly_timeSlots[i].hours_start << "-" << hourly_timeSlots[i].hours_end << endl;
-		++*numberedlist;
+		cout << numberedlist << hourly_timeSlots[i].hours_start << "-" << hourly_timeSlots[i].hours_end << endl;
+		++numberedlist;
 	}
 	cout << endl;
-	*numberedlist = 1;
-	//cin >> *choice_timeSlot;
-	//payment(choice_services, services_available, experts);
-	//if (payment == 1)
-	//{
-	//	cout << "\nBooking an appointment right away !!\n";
-	//	//for loops that writes into Appointments.txt
-	//}
-	//else
-	//{
-	//	while (payment == 0 && makepayment == Y)
-	//	{
-	//		cout << "Try to make payment again? (y = Yes | n = No)\n";
-	//		cin >> makepayment;
-	//	}
-	//}
+	numberedlist = 1;
+	cin >> choice_timeSlot;
+	payment(choice_services, services_available, experts);
+	if (payment == 1)
+	{
+		cout << "\nBooking an appointment right away !!\n";
+		//for loops that writes into Appointments.txt
+	}
+	else
+	{
+		while (payment == 0 && makepayment == Y)
+		{
+			cout << "Try to make payment again? (y = Yes | n = No)\n";
+			cin >> makepayment;
+		}
+	}
 }
 void login() {
 	//read all from "User records.txt" file`
@@ -342,61 +339,61 @@ bool isAlphaNum(const char* stringVar) // to check if the input has *&%(*& symbo
 	}
 	return true;
 }
-//bool payment(int* choice_services, services services_available[], users experts[]) {
-//	//payment module
-//	//display & input prompts, fake(:verb) the credentials
-//	int choice_payment;
-//	bool paid = true;
-//	cout << "------------------ Payment ------------------ \n"
-//		<< customername << endl
-//		<< "Selected package : " << services_available[*choice_services].serviceName << endl
-//		<< "Service Charge : RM" << experts[*choice_expert - 1].serviceCharge << endl
-//		<< "Base Price : RM" << services_available[*choice_service - 1].servicePrice << endl
-//		<< "----------------------------------------------- ";
-//	cout << "Select payment method : \n" << "[1] Credit Card\n[2] Online Banking\n[3] E-Wallet\n[4] Cancel Payment"
-//		<< "Enter your choice : ";
-//	cin >> choice_payment;
-//	if (choice_payment == 1)
-//	{
-//		cout << "Enter Cardholder Name : ";
-//		cin >> name;
-//		cout << "\nEnter Card Number (16 digits) : ";
-//		cin >> cardnumber;
-//		cout << "\nEnter Expiry Date (MM/YY) : ";
-//		cin >> cardExpiryDate;
-//		cout << "\nProcessing payment...\n";
-//		cout << "Payment successful!"
-//	}
-//	else if (choice_payment == 2)
-//	{
-//		cout << "Enter your bank : ";
-//		// maybe a list of bank enums, typedef, of array to choose from, list it out for user to choose
-//		// and just an int for user to choose like in the customer menus
-//		cin >> bankname;
-//		cout << "Enter your username : ";
-//		cin >> name;
-//		cout << "Enter your password : ";
-//		cin >> password;
-//		cout << "Authorization request sent to the bank app, approve the authorization...";
-//		cout << "\napproved?...";
-//		cin >> approved;
-//		cout << "\nProcessing payment...\n";
-//		cout << "Payment successful!"
-//	}
-//	else if (choice_payment == 3)
-//	{
-//		cout << "Scan the QR below : ";
-//		cout << "QR Code";
-//		cout << "\nProcessing payment...\n";
-//		cout << "Payment successful!"
-//	}
-//	else
-//	{
-//		cout << "Payment cancelled";
-//		paid = false;
-//	}
-//	return paid;
-//}
+bool payment(int* choice_services, services services_available[], users experts[]) {
+	//payment module
+	//display & input prompts, fake(:verb) the credentials
+	int choice_payment;
+	bool paid = true;
+	cout << "------------------ Payment ------------------ \n"
+		<< customername << endl
+		<< "Selected package : " << services_available[choice_services].serviceName << endl
+		<< "Service Charge : RM" << experts[choice_expert - 1].serviceCharge << endl
+		<< "Base Price : RM" << services_available[choice_service - 1].servicePrice << endl
+		<< "----------------------------------------------- ";
+	cout << "Select payment method : \n" << "[1] Credit Card\n[2] Online Banking\n[3] E-Wallet\n[4] Cancel Payment"
+		<< "Enter your choice : ";
+	cin >> choice_payment;
+	if (choice_payment == 1)
+	{
+		cout << "Enter Cardholder Name : ";
+		cin >> name;
+		cout << "\nEnter Card Number (16 digits) : ";
+		cin >> cardnumber;
+		cout << "\nEnter Expiry Date (MM/YY) : ";
+		cin >> cardExpiryDate;
+		cout << "\nProcessing payment...\n";
+		cout << "Payment successful!"
+	}
+	else if (choice_payment == 2)
+	{
+		cout << "Enter your bank : ";
+		// maybe a list of bank enums, typedef, of array to choose from, list it out for user to choose
+		// and just an int for user to choose like in the customer menus
+		cin >> bankname;
+		cout << "Enter your username : ";
+		cin >> name;
+		cout << "Enter your password : ";
+		cin >> password;
+		cout << "Authorization request sent to the bank app, approve the authorization...";
+		cout << "\napproved?...";
+		cin >> approved;
+		cout << "\nProcessing payment...\n";
+		cout << "Payment successful!"
+	}
+	else if (choice_payment == 3)
+	{
+		cout << "Scan the QR below : ";
+		cout << "QR Code";
+		cout << "\nProcessing payment...\n";
+		cout << "Payment successful!"
+	}
+	else
+	{
+		cout << "Payment cancelled";
+		paid = false;
+	}
+	return paid;
+}
 void viewbookedSchedule() {
 
 }
