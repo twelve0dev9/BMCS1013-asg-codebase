@@ -24,5 +24,8 @@
     <ClCompile Include="ansel%27s.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="expert.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
