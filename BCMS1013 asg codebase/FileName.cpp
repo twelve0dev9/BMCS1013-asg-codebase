@@ -44,11 +44,12 @@ struct bookings {
 void login();
 bool isAlphabet(const char* stringVar);
 bool isAlphaNum(const char* stringVar);
-//bool payment(int* choice_services, services services_available[], users experts[]);
+bool payment(int* choice_services, int* choice_expert, services services_available[], users experts[], users customers[], int* numberedlist);
+bool cardExpiryDatevalidformat(const string& cardExpiryDate);
 void viewAvailable_days(int* choice_expert, services services_available[],
 	users experts[], users customers[], bookings appointments_schedule[], int* totalBookings);
-void bookAppointment(int* numberofTimeSlots, int* numberedlist, int* choice_timeSlot, int* choice_services,
-	services services_available[], users experts[], timeSlots hourly_timeSlots[]);
+void bookAppointment(int* numberofTimeSlots, int* numberedlist, int* choice_timeSlot, int* choice_services, int* choice_expert, 
+	services services_available[], users experts[], users customers[], timeSlots hourly_timeSlots[]);
 void viewbookedSchedule();
 void customerFunctionalities(int* numberofAppointments, int* numberofExperts, int* numberofServices, int* numberofTimeSlots,
 	services services_available[], users experts[], users customers[], timeSlots hourly_timeSlots[], bookings appointments_schedule[]);
@@ -225,7 +226,7 @@ void customerFunctionalities(int* numberofAppointments, int* numberofExperts, in
 		cout << "\nWhat experts would you like to book an appointment with ? (enter the corresponding number)\n";
 		cin >> choice_expert;
 		viewAvailable_days(&choice_expert, services_available, experts, customers, appointments_schedule, numberofAppointments);
-		bookAppointment(numberofTimeSlots, &numberedlist, &choice_timeSlot, &choice_service, services_available, experts, hourly_timeSlots);
+		bookAppointment(numberofTimeSlots, &numberedlist, &choice_timeSlot, &choice_service, &choice_expert, services_available, experts, customers, hourly_timeSlots);
 		break;
 	case 3:
 		viewbookedSchedule();
@@ -281,8 +282,8 @@ void viewAvailable_days(int* choice_expert, services services_available[],
 	}
 	cout << "\nLEGEND | \033[101;30mUnavailable\033[0m, Available\n\n";
 }
-void bookAppointment(int* numberofTimeSlots, int* numberedlist, int* choice_timeSlot, int* choice_services,
-	services services_available[], users experts[], timeSlots hourly_timeSlots[])
+void bookAppointment(int* numberofTimeSlots, int* numberedlist, int* choice_timeSlot, int* choice_services, int* choice_expert, 
+	services services_available[], users experts[], users customers[], timeSlots hourly_timeSlots[])
 {
 	int book_Date = 0;
 	cout << "Pick the day you'd like to book : ";
@@ -296,20 +297,20 @@ void bookAppointment(int* numberofTimeSlots, int* numberedlist, int* choice_time
 	cout << endl;
 	*numberedlist = 1;
 	cin >> *choice_timeSlot;
-	//payment(choice_services, services_available, experts);
-	//if (payment == 1)
-	//{
-	//	cout << "\nBooking an appointment right away !!\n";
-	//	//for loops that writes into Appointments.txt
-	//}
-	//else
-	//{
-	//	while (payment == 0 && makepayment == Y)
-	//	{
-	//		cout << "Try to make payment again? (y = Yes | n = No)\n";
-	//		cin >> makepayment;
-	//	}
-	//}
+	payment(choice_services, choice_expert, services_available, experts, customers, numberedlist);
+	if (payment(choice_services, choice_expert, services_available, experts, customers) == true)
+	{
+		cout << "\nBooking an appointment right away !!\n";
+		//for loops that writes into Appointments.txt
+	}
+	else
+	{
+		while (payment == 0 && makepayment == Y)
+		{
+			cout << "Try to make payment again? (y = Yes | n = No)\n";
+			cin >> makepayment;
+		}
+	}
 }
 void login() {
 	//read all from "User records.txt" file`
@@ -339,61 +340,93 @@ bool isAlphaNum(const char* stringVar) // to check if the input has *&%(*& symbo
 	}
 	return true;
 }
-//bool payment(int* choice_services, services services_available[], users experts[]) {
-//	//payment module
-//	//display & input prompts, fake(:verb) the credentials
-//	int choice_payment;
-//	bool paid = true;
-//	cout << "------------------ Payment ------------------ \n"
-//		<< customername << endl
-//		<< "Selected package : " << services_available[choice_services].serviceName << endl
-//		<< "Service Charge : RM" << experts[choice_expert - 1].serviceCharge << endl
-//		<< "Base Price : RM" << services_available[choice_service - 1].servicePrice << endl
-//		<< "----------------------------------------------- ";
-//	cout << "Select payment method : \n" << "[1] Credit Card\n[2] Online Banking\n[3] E-Wallet\n[4] Cancel Payment"
-//		<< "Enter your choice : ";
-//	cin >> choice_payment;
-//	if (choice_payment == 1)
-//	{
-//		cout << "Enter Cardholder Name : ";
-//		cin >> name;
-//		cout << "\nEnter Card Number (16 digits) : ";
-//		cin >> cardnumber;
-//		cout << "\nEnter Expiry Date (MM/YY) : ";
-//		cin >> cardExpiryDate;
-//		cout << "\nProcessing payment...\n";
-//		cout << "Payment successful!"
-//	}
-//	else if (choice_payment == 2)
-//	{
-//		cout << "Enter your bank : ";
-//		// maybe a list of bank enums, typedef, of array to choose from, list it out for user to choose
-//		// and just an int for user to choose like in the customer menus
-//		cin >> bankname;
-//		cout << "Enter your username : ";
-//		cin >> name;
-//		cout << "Enter your password : ";
-//		cin >> password;
-//		cout << "Authorization request sent to the bank app, approve the authorization...";
-//		cout << "\napproved?...";
-//		cin >> approved;
-//		cout << "\nProcessing payment...\n";
-//		cout << "Payment successful!"
-//	}
-//	else if (choice_payment == 3)
-//	{
-//		cout << "Scan the QR below : ";
-//		cout << "QR Code";
-//		cout << "\nProcessing payment...\n";
-//		cout << "Payment successful!"
-//	}
-//	else
-//	{
-//		cout << "Payment cancelled";
-//		paid = false;
-//	}
-//	return paid;
-//}
+bool payment(int* choice_services, int* choice_expert, services services_available[], users experts[], users customers[], int* numberedlist) {
+	//payment module
+	//display & input prompts, fake(:verb) the credentials
+	string choice_payment, Name = " ", cardnumber = " ", cardExpiryDate = " ", 
+		Banks[] = { "Ambank", "HongLeong Bank", "Public Bank", "Maybank", "Alliance Bank" };
+	int choice_bank = 0;
+	cout << "------------------ Payment ------------------ \n"
+		<< "Customer name : " << setw(20) << customers[1].username << endl
+		<< "Selected package : " << services_available[*choice_services].service_name << endl
+		<< "Service Charge : RM" << experts[*choice_expert - 1].serviceCharge << endl
+		<< "Base Price : RM" << services_available[*choice_services - 1].servicePrice << endl
+		<< "----------------------------------------------- ";
+	cout << "Select payment method : \n" << "[1] Credit Card\n[2] Online Banking\n[3] E-Wallet\n[4] Cancel Payment"
+		<< "Enter your choice : ";
+	cin >> choice_payment;
+	while (isAlphabet(choice_payment.c_str()) == true || isAlphaNum(choice_payment.c_str())
+		|| stoi(choice_payment) < 1 || stoi(choice_payment) > 4) 
+	{
+		cout << "Invalid input. Please enter again : \n\n";
+		cin >> choice_payment;
+	}
+	int choice_payment1 = (choice_payment[0] - '0');
+	switch (choice_payment1) {
+	case 1 : 
+		cout << "Enter Cardholder Name : ";
+		cin >> cardholderName;
+		cout << "\nEnter Card Number (16 digits) : ";
+		cin >> cardnumber;
+		while (cardnumber.length() < 17) {
+			cout << numberedlist << "Enter valid format !!!\nEnter Card Number (16 digits) : ";
+			cin >> cardnumber;
+		}
+		cout << "\nEnter Expiry Date (MM/YY) : ";
+		cin >> cardExpiryDate;
+		while (cardExpiryDatevalidformat(cardExpiryDate) == false) {
+			cout << "Invalid format. Please enter card Expiry Date in valid format (MM/YY) : ";
+			cin >> cardExpiryDate;
+		}
+		cout << "\n\nProcessing payment...\n\n";
+		cout << "\nPayment successful!";
+		return true;
+		break;
+	case 2 : 
+		cout << "Enter your bank : \n";
+		for (int i = 0; i < sizeof(Banks) / sizeof(Banks)[0]; ++i)
+		{
+			cout << Banks[i] << endl;
+			++numberedlist;
+		}
+		cin >> choice_bank;
+		cout << "Enter your username : ";
+		cin >> name;
+		cout << "Enter your password : ";
+		cin >> password;
+		cout << "Authorization request sent to the bank app, approve the authorization...";
+		cout << "\napproved?...";
+		cin >> approved;
+		cout << "\nProcessing payment...\n";
+		cout << "Payment successful!";
+		return true;
+		break;
+	case 3 : 
+		cout << "Scan the QR below : ";
+		cout << "QR Code";
+		cout << "\nProcessing payment...\n";
+		cout << "Payment successful!";
+		return true;
+		break;
+	case 4:
+		cout << "Payment cancelled";
+		return false;
+	}
+}
+bool cardExpiryDatevalidformat(const string& cardExpiryDate)
+{
+	if (cardExpiryDate.length() != 5) return false;
+	else if (cardExpiryDate[2] != '/') return false;
+	else for (int i = 0; i < cardExpiryDate.length(); ++i) {
+		if (i == 2) continue;
+		if (!isdigit(cardExpiryDate[i]))
+			return false;
+	}
+	int month = (cardExpiryDate[0] - '0') * 10 + (cardExpiryDate[1] - '0');
+	if (month < 1 || month > 12) return false;
+
+	return true;
+}
 void viewbookedSchedule() {
 
 }
