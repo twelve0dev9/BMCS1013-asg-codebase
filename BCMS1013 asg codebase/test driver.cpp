@@ -22,6 +22,29 @@ int convertNumeric(const char* stringVar) {
 	int choice = stoi(stringVar);
 	return choice;
 }
+int getInput() {
+	string input; 
+	while (true) {
+		cout << "Enter an integer between 1 & 4 : ";
+		getline(cin, input);
+		// check contains alphabet or not
+		if (isAlphabet(input.c_str()) == false) {
+			cout << "\nInvalid input. Input contains letters, please enter option 1-4 only : ";
+			continue;
+		}
+		// check for invalid symbols
+		if (isAlphaNum(input.c_str()) == false) {
+			cout << "\nInvalid input. Input contains symbols, please enter option 1-4 only : ";
+			continue;
+		}
+		// check if input is empty 
+		if (input.empty()) {
+			cout << "\nInput is empty, please provide option 1-4 : ";
+			continue;
+		}
+
+	}
+}
 int main()
 {
 	string choice = " ";
