@@ -49,7 +49,7 @@ bool payment(int* choice_services, int* choice_expert, services services_availab
 int getInput(int* P_numberedlist);
 bool cardExpiryDatevalidformat(const string& cardExpiryDate);
 void viewServices(int* numberofServices, int* P_numberedlist, services services_available[]);
-void viewAvailable_days(int* choice_expert, services services_available[],
+void viewAvailable_days(int* choice_expert, int* P_numberedlist, services services_available[],
 	users experts[], users customers[], bookings appointments_schedule[], int* totalBookings);
 void bookAppointment(int* numberofTimeSlots, int* P_numberedlist, int* choice, 
 	services services_available[], users experts[], users customers[], timeSlots hourly_timeSlots[]);
@@ -178,7 +178,7 @@ $$ | \_/ $$ |\$$$$$$$\ $$ |  $$ |    $$$$$$$  |      $$$$$$$$\  $$$$$$  | $$$$$$
 		cout << "\nWhat experts would you like to book an appointment with ? (1 - " << *P_numberedlist - 1 << ") : ";
 		choice = getInput(P_numberedlist);
 		*P_numberedlist = 1;
-		viewAvailable_days(&choice, services_available, experts, customers, appointments_schedule, numberofAppointments);
+		viewAvailable_days(&choice, P_numberedlist, services_available, experts, customers, appointments_schedule, numberofAppointments);
 		bookAppointment(numberofTimeSlots, P_numberedlist, &choice, services_available, experts, customers, hourly_timeSlots);
 		break;
 	case 3:
@@ -187,7 +187,7 @@ $$ | \_/ $$ |\$$$$$$$\ $$ |  $$ |    $$$$$$$  |      $$$$$$$$\  $$$$$$  | $$$$$$
 	case 4: 
 		cout << "\nWhat experts would you like check for their availability ?\n\n";
 		cin >> *P_choiceExpert;
-		viewAvailable_days(&choice_expert, services_available, experts, customers, appointments_schedule, numberofAppointments);
+		viewAvailable_days(&choice_expert, P_numberedlist, services_available, experts, customers, appointments_schedule, numberofAppointments);
 		break;
 	case 5:
 		cout << "=== PROGRAM END ===";
@@ -201,7 +201,7 @@ void viewServices(int* numberofServices, int* P_numberedlist, services services_
 		++*P_numberedlist;
 	}
 }
-void viewAvailable_days(int* choice_expert, services services_available[],
+void viewAvailable_days(int* choice_expert, int* P_numberedlist, services services_available[],
 	users experts[], users customers[], bookings appointments_schedule[], int* totalBookings)
 {
 	// display available days of chosen expert
@@ -227,6 +227,7 @@ void viewAvailable_days(int* choice_expert, services services_available[],
 			}
 		}
 	}
+	experts[0].userID = *P_numberedlist;
 	cout << experts[*choice_expert - 1].username << " is available for the following days : \n" << setw(23) << "December" << endl
 		<< "-------------------------------------\n";
 	for (i = 0; i < row; ++i)
