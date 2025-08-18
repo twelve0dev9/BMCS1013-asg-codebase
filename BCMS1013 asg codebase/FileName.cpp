@@ -207,7 +207,7 @@ void viewAvailable_days(int* choice_expert, int* numberofExperts, int* P_numbere
 {
 	// display available days of chosen expert
 	const int row = 5, col = 8, totalSlotsperDay = 6;
-	int i = 0, j = 0, bookingsPerDay[32] = { 0 };	
+	int i = 0, j = 0, bookingsPerDay[32] = { 0 };
 	for (i = 0; i < *numberofExperts; ++i) {
 		array<int, 7> filteredIndices;
 	}
