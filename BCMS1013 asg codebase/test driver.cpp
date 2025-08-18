@@ -52,6 +52,8 @@ bool isNumeric(const char* stringVar) // to check if the input has *&%(*& symbol
 	return true;
 }
 int getInput(int* P_numberedlist);
+bool payment(int* choice, services services_available[], users experts[], users customers[], int* numberedlist);
+bool cardExpiryDatevalidformat(const string& cardExpiryDate);
 int main()
 {
 	services services_available[4] = {
@@ -89,33 +91,25 @@ int main()
 	int numberofServices = sizeof(services_available) / sizeof(services_available)[0],
 		numberofExperts = sizeof(experts) / sizeof(experts)[0],
 		numberofTimeSlots = sizeof(hourly_timeSlots) / sizeof(hourly_timeSlots)[0], 
-		numberedlist = 1, * P_numberedlist = &numberedlist, 
-		choice = 0;
-
-	cout << "\nOur available services\n------------------------------\n";
-	for (int i = 0; i < numberofServices; ++i)
-	{
-		// list the number of services available
-		cout << *P_numberedlist << ". " << services_available[i].service_name << endl;
-		++*P_numberedlist;
+		numberedlist = 1, * P_numberedlist = &numberedlist, choice = 0;
+	char yesno = ' ';
+	if ( payment(&choice, services_available, experts, customer_users, &numberedlist) == true) {
+		cout << "Appointment booked !";
 	}
-	cout << "\nPick one services (1 - " << *P_numberedlist - 1<< ") : ";
-	choice = getInput(P_numberedlist);
-	*P_numberedlist = 1;
-	cout << "\nOur experts that provides " << services_available[choice - 1].service_name << ": \n";
-	for (int i = 0; i < numberofExperts; ++i)
-	{
-		// display of experts accordingly in a *P_numbered list based-on matching specialization w\ the services customer has chosen
-		if ((experts[i].specialization[0] && experts[i].specialization[0]->serviceID == choice) ||
-			(experts[i].specialization[1] && experts[i].specialization[1]->serviceID == choice)) // since our the experts' specialization member is an array of pointers, we check the 1st & the 2nd pointer points to corresponding services or not
-		{
-			cout << *P_numberedlist << ". " << experts[i].username << endl;
-			++*P_numberedlist;
+	else {
+		while(true) {
+			cout << "Payment failed, try again? (Y = Yes | N = No) : ";
+			cin >> yesno;
+			if (cin.fail()) 
+			{
+				cin.clear();
+				cin.ignore(numeric_limits<streamsize>::max, '\n');
+				cout << "Invalid input. Please enter Y or N only : ";
+			} else
+				break;
+
 		}
 	}
-	cout << "\nWhat experts would you like to book an appointment with ? (1 - " << *P_numberedlist - 1 << ") : ";
-	choice = getInput(P_numberedlist);
-	*P_numberedlist = 1;
 	cout << endl << choice << endl << endl;
 
 	return 0;
@@ -155,4 +149,101 @@ int getInput(int* P_numberedlist)
 		}
 		return static_cast<int>(value);
 	}
+}
+bool payment(int* choice, services services_available[], users experts[], users customers[], int* numberedlist) 
+{
+	//payment module
+	//display & input prompts, fake(:verb) the credentials
+	string multiusestring, Banks[] = { "Ambank", "HongLeong Bank", "Public Bank", "Maybank", "Alliance Bank" };
+	int choice;
+	cout << "------------------ Payment ------------------ \n"
+		<< "Customer name : " << setw(20) << customers[1].username << endl
+		<< "Selected package : " << services_available[*choice - 1].service_name << endl
+		<< "Service Charge : RM" << experts[*choice - 1].serviceCharge << endl
+		<< "Base Price : RM" << services_available[*choice - 1].servicePrice << endl
+		<< "----------------------------------------------- ";
+	cout << "Select payment method : \n" << "[1] Credit Card\n[2] Online Banking\n[3] E-Wallet\n[4] Cancel Payment"
+		<< "Enter your choice : ";
+	*numberedlist = 4;
+	*choice = getInput(numberedlist);
+	*numberedlist = 1;
+	switch (*choice) {
+	case 1:
+		cout << "Enter Cardholder Name : ";
+		cin >> multiusestring;
+		cout << "\nEnter Card Number (16 digits) : ";
+		cin >> multiusestring;
+		while (multiusestring.length() < 17) {
+			cout << numberedlist << "Enter valid format !!!\nEnter Card Number (16 digits) : ";
+			cin >> multiusestring;
+		}
+		cout << "\nEnter Expiry Date (MM/YY) : ";
+		cin >> multiusestring;
+		while (cardExpiryDatevalidformat(multiusestring) == false) {
+			cout << "\nInvalid format. Please enter card Expiry Date in valid format (MM/YY) : ";
+			cin >> multiusestring;
+		}
+		cout << "\n\nProcessing payment...\n\n";
+		cout << "\nPayment successful!";
+		return true;
+		break;
+	case 2:
+		cout << "Select your bank\n-----------------------\n";
+		for (int i = 0; i < sizeof(Banks) / sizeof(Banks)[0]; ++i)
+		{
+			cout << numberedlist << ". " << Banks[i] << endl;
+			++numberedlist;
+		}
+		cin >> choice_bank;
+		cout << "\nEnter your username : ";
+		cin >> multiusestring;
+		cout << "\nEnter your password : ";
+		cin >> multiusestring;
+		cout << "Authorization request sent to the bank app, approve the authorization...";
+		cout << "\napproved?... (Y = Yes | N = No) : ";
+		cin >> multiusestring;
+		while (multiusestring.length() > 1 || isAlphabet(multiusestring.c_str()) == false || isNumeric(multiusestring.c_str()) == false)
+		{
+			cout << "Invalid input.\n" << "\napproved?... (Y = Yes | N = No) : ";
+			cin >> multiusestring;
+		}
+		while (toupper(multiusestring[0]) == 'N') {
+			cout << "\nResent authorization? (Y = Yes | N = No) : ";
+		}
+		if (toupper(multiusestring[0]) == 'Y') {
+			cout << "\n\nProcessing payment...\n\n";
+			cout << "Payment successful!";
+			return true;
+		}
+		else
+		{
+			cout << "Authorization failed !! Please try again.";
+			return false;
+		}
+		break;
+	case 3:
+		cout << "Scan the QR below : ";
+		cout << "QR Code";
+		cout << "\nProcessing payment...\n";
+		cout << "Payment successful!";
+		return true;
+		break;
+	case 4:
+		cout << "Payment cancelled";
+		return false;
+	}
+}
+bool cardExpiryDatevalidformat(const string& cardExpiryDate)
+{
+	if (cardExpiryDate.length() != 5) return false;
+	else if (cardExpiryDate[2] != '/') return false;
+	else for (int i = 0; i < cardExpiryDate.length(); ++i) {
+		if (i == 2) continue;
+		if (!isdigit(cardExpiryDate[i]))
+			return false;
+	}
+	int month = (cardExpiryDate[0] - '0') * 10 + (cardExpiryDate[1] - '0');
+	if (month < 1 || month > 12) return false;
+
+	return true;
 }
