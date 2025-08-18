@@ -200,8 +200,8 @@ void viewExperts(int* choice, int* numberofExperts, int* P_numberedlist, int* fi
 	cout << "\nOur experts that provides " << services_available[*choice - 1].service_name << ": \n";
 	for (int i = 0; i < *numberofExperts; ++i)
 	{
-		if ((experts[i].specialization[0] && experts[i].specialization[0]->serviceID == choice) ||
-			(experts[i].specialization[1] && experts[i].specialization[1]->serviceID == choice))
+		if ((experts[i].specialization[0] && experts[i].specialization[0]->serviceID == *choice) ||
+			(experts[i].specialization[1] && experts[i].specialization[1]->serviceID == *choice))
 		{
 			cout << *P_numberedlist << ". " << experts[i].username << endl;
 			filteredIndices[*filternumlist] = i;
