@@ -50,7 +50,8 @@ bool payment(int* choice_services, int* choice_expert, services services_availab
 int getInput(int* P_numberedlist);
 bool cardExpiryDatevalidformat(const string& cardExpiryDate);
 void viewServices(int* numberofServices, int* P_numberedlist, services services_available[]);
-void viewAvailable_days(int* choice_expert, int* numberofExperts, int* P_numberedlist, services services_available[],
+void viewExperts(int* choice, int* numberofExperts, int* P_numberedlist, int* filternumlist, int filteredIndices[], users experts[], services services_available[]);
+void viewAvailable_days(int* choice_expert, int filteredIndices[], services services_available[],
 	users experts[], users customers[], bookings appointments_schedule[], int* totalBookings);
 void bookAppointment(int* numberofTimeSlots, int* P_numberedlist, int* choice, 
 	services services_available[], users experts[], users customers[], timeSlots hourly_timeSlots[]);
@@ -67,9 +68,9 @@ int main() {
 		{4, "Massage Therapy", 3, 200.00}
 	}; services* P_services_available = services_available;
 	users experts[] = {
-		{29, "Aina", 24, 'F', "aina2312@gmail.com", "passwordbruh102", expert, {&services_available[0], &services_available[2]}, 100.00},
 		{3, "Hitler", 23, 'M', "sashimidelicious@gmail.com", "anitam4xw8n", expert, {&services_available[1], &services_available[3]}, 200.00},
 		{41, "John", 34, 'M', "johnwaynecas@gmail.com", "apovusbg876trds9", expert, {&services_available[1], &services_available[2]}, 250.00},
+		{29, "Aina", 24, 'F', "aina2312@gmail.com", "passwordbruh102", expert, {&services_available[0], &services_available[2]}, 100.00},
 		{42, "Beyonce", 34, 'F', "diddyparty@gmail.com", "nobabyoil", expert, {&services_available[2], &services_available[3]}, 70.00},
 		{10, "Hela", 30, 'M', "helathor@gmail.com", "oyud6759iu41", expert, {&services_available[0], &services_available[1]}, 200.00}
 	}; users* P_experts = experts;
@@ -93,13 +94,13 @@ int main() {
 		{6, 22.00, 1.00}
 	}; timeSlots* P_hourlyTimeSlots = hourly_timeSlots;
 	bookings appointments_schedule[] = {
-		{&hourly_timeSlots[0], true, 18, &customer_users[2], &experts[0], &services_available[0]},
-		{&hourly_timeSlots[1], true, 18, &customer_users[4], &experts[0], &services_available[0]},
-		{&hourly_timeSlots[2], true, 18, &customer_users[0], &experts[0], &services_available[3]},
-		{&hourly_timeSlots[3], true, 18, &customer_users[2], &experts[0], &services_available[0]},
-		{&hourly_timeSlots[4], true, 18, &customer_users[7], &experts[0], &services_available[3]},
-		{&hourly_timeSlots[5], true, 18, &customer_users[8], &experts[0], &services_available[3]},
-		{&hourly_timeSlots[2], true, 18, &customer_users[6], &experts[0], &services_available[3]},
+		{&hourly_timeSlots[0], true, 18, &customer_users[2], &experts[2], &services_available[0]},
+		{&hourly_timeSlots[1], true, 18, &customer_users[4], &experts[2], &services_available[0]},
+		{&hourly_timeSlots[2], true, 18, &customer_users[0], &experts[2], &services_available[3]},
+		{&hourly_timeSlots[3], true, 18, &customer_users[2], &experts[2], &services_available[0]},
+		{&hourly_timeSlots[4], true, 18, &customer_users[7], &experts[2], &services_available[3]},
+		{&hourly_timeSlots[5], true, 18, &customer_users[8], &experts[2], &services_available[3]},
+		{&hourly_timeSlots[2], true, 18, &customer_users[6], &experts[2], &services_available[3]},
 		{&hourly_timeSlots[2], true, 5, &customer_users[3], &experts[2], &services_available[0]},
 		{&hourly_timeSlots[1], true, 29, &customer_users[1], &experts[2], &services_available[1]},
 		{&hourly_timeSlots[1], true, 12, &customer_users[1], &experts[2], &services_available[2]}
@@ -116,8 +117,8 @@ int main() {
 void customerFunctionalities(int* numberofAppointments, int* numberofExperts, int* numberofServices, int* numberofTimeSlots,
 	services services_available[], users experts[], users customers[], timeSlots hourly_timeSlots[], bookings appointments_schedule[])
 {
-	int choice, choice_menu = 0, choice_service = 0, choice_expert = 0, choice_timeSlot = 0, numberedlist = 1, 
-		* P_numberedlist = &numberedlist, * P_choiceExpert = &choice_expert;
+	int choice, choice_menu = 0, choice_service = 0, choice_expert = 0, choice_timeSlot = 0, numberedlist = 1,
+		* P_numberedlist = &numberedlist, * P_choiceExpert = &choice_expert, filternumlist = 0, filteredIndices[100];
 	cout << setw(35) << 
 		R"(
 $$\      $$\                     $$\                 $$\        $$$$$$\   $$$$$$\  $$\   $$\ $$\      $$\  $$$$$$\  $$\   $$\ $$\   $$\ $$$$$$\ $$\   $$\        $$$$$$\                      
@@ -161,34 +162,27 @@ $$ | \_/ $$ |\$$$$$$$\ $$ |  $$ |    $$$$$$$  |      $$$$$$$$\  $$$$$$  | $$$$$$
 		
 		viewServices(numberofServices, P_numberedlist, services_available);
 		cout << "\nPick one services (1 - " << *P_numberedlist - 1 << ") : ";
-		// -------------------------------------------------------------------------------------------------------
+		
 		choice = getInput(P_numberedlist);
 		*P_numberedlist = 1;
-		// -------------------------------------------------------------------------------------------------------
-		cout << "\nOur experts that provides " << services_available[choice - 1].service_name << ": \n";
-		for (int i = 0; i < *numberofExperts; ++i)
-		{
-			if ((experts[i].specialization[0] && experts[i].specialization[0]->serviceID == choice) ||
-				(experts[i].specialization[1] && experts[i].specialization[1]->serviceID == choice))
-			{
-				cout << *P_numberedlist << ". " << experts[i].username << endl;
-				experts[i].userID = *P_numberedlist;
-				++*P_numberedlist;
-			}
-		}
+
+		viewExperts(&choice, numberofExperts, P_numberedlist, &filternumlist, filteredIndices, experts, services_available);	
 		cout << "\nWhat experts would you like to book an appointment with ? (1 - " << *P_numberedlist - 1 << ") : ";
 		choice = getInput(P_numberedlist);
 		*P_numberedlist = 1;
-		viewAvailable_days(&choice, numberofExperts, P_numberedlist, services_available, experts, customers, appointments_schedule, numberofAppointments);
+		
+		viewAvailable_days(&choice, filteredIndices, services_available, experts, customers, appointments_schedule, numberofAppointments);
+		
 		bookAppointment(numberofTimeSlots, P_numberedlist, &choice, services_available, experts, customers, hourly_timeSlots);
+
 		break;
 	case 3:
 		viewbookedSchedule();
 		break;
 	case 4: 
 		cout << "\nWhat experts would you like check for their availability ?\n\n";
-		cin >> *P_choiceExpert;
-		viewAvailable_days(&choice, numberofExperts, P_numberedlist, services_available, experts, customers, appointments_schedule, numberofAppointments);
+		choice = getInput(P_numberedlist);
+		viewAvailable_days(&choice, filteredIndices, services_available, experts, customers, appointments_schedule, numberofAppointments);
 		break;
 	case 5:
 		cout << "=== PROGRAM END ===";
@@ -202,52 +196,62 @@ void viewServices(int* numberofServices, int* P_numberedlist, services services_
 		++*P_numberedlist;
 	}
 }
-void viewAvailable_days(int* choice_expert, int* numberofExperts, int* P_numberedlist, services services_available[],
+void viewExperts(int* choice, int* numberofExperts, int* P_numberedlist, int* filternumlist, int filteredIndices[], users experts[], services services_available[]) {
+	cout << "\nOur experts that provides " << services_available[*choice - 1].service_name << ": \n";
+	for (int i = 0; i < *numberofExperts; ++i)
+	{
+		if ((experts[i].specialization[0] && experts[i].specialization[0]->serviceID == choice) ||
+			(experts[i].specialization[1] && experts[i].specialization[1]->serviceID == choice))
+		{
+			cout << *P_numberedlist << ". " << experts[i].username << endl;
+			filteredIndices[*filternumlist] = i;
+			++*filternumlist; ++*P_numberedlist;
+		}
+	}
+}
+void viewAvailable_days(int* choice_expert, int filteredIndices[], services services_available[],
 	users experts[], users customers[], bookings appointments_schedule[], int* totalBookings)
 {
 	// display available days of chosen expert
 	const int row = 5, col = 8, totalSlotsperDay = 6;
-	int i = 0, j = 0, bookingsPerDay[32] = { 0 };
-	for (i = 0; i < *numberofExperts; ++i) {
-		array<int, 7> filteredIndices;
-	}
-	int time_slotsDay[5][8] = {
-		{1, 2, 3, 4, 5, 6, 7},
-		{8, 9, 10, 11, 12, 13, 14},
-		{15, 16, 17, 18, 19, 20, 21},
-		{22, 23, 24, 25, 26, 27, 28},
-		{29, 30, 31, 0, 0, 0, 0, 0}
-	};
+	int bookingsPerDay[32] = { 0 },
+		time_slotsDay[5][8] = {
+			{1, 2, 3, 4, 5, 6, 7},
+			{8, 9, 10, 11, 12, 13, 14},
+			{15, 16, 17, 18, 19, 20, 21},
+			{22, 23, 24, 25, 26, 27, 28},
+			{29, 30, 31, 0, 0, 0, 0, 0}
+		};
 	cout << endl << endl;
 	for (int k = 0; k < *totalBookings; ++k)
-	{
-		if (appointments_schedule[k].expert_booked->userID == experts[*choice_expert - 1].userID
-		 && appointments_schedule[k].booking_status == true)
-		{
-			if (appointments_schedule[k].booking_date >= 1 &&
-				appointments_schedule[k].booking_date <= 31)
-			{
-				bookingsPerDay[appointments_schedule[k].booking_date]++;
-			}
-		}
+	{ // goes through the booking list iteratively
+						// check if the userID of expert booked in bookings arry is the same as the one in expert array
+		if (appointments_schedule[k].expert_booked->userID == experts[*choice_expert - 1].userID && 
+			appointments_schedule[k].booking_status == true)
+		{					// range check for the bookings' date, shud be between 1 & 31
+			if (appointments_schedule[k].booking_date >= 1 && appointments_schedule[k].booking_date <= 31)
+			// if booking date is valid, then post-increment the kth element in bookingsPerDay arry
+				bookingsPerDay[appointments_schedule[k].booking_date]++; 
+			// for each kth element in appointments_schedule, refer to its booking date, 
+			// use the booking date as the nth element in bookingsPerDay array to update the nth accumulator
+		} 
 	}
-	experts[0].userID = *P_numberedlist;
-	cout << experts[*choice_expert - 1].username << " is available for the following days : \n" << setw(23) << "December" << endl
+	cout << experts[filteredIndices[*choice_expert - 1]].username << " is available for the following days : \n" 
+		<< setw(23) << "December" << endl
 		<< "-------------------------------------\n";
-	for (i = 0; i < row; ++i)
-	{
-		// calendar display
-		for (j = 0; j < col; ++j)
+	for (int i = 0; i < row; ++i)
+	{ // calendar display
+		for (int j = 0; j < col; ++j)
 		{
 			int date = time_slotsDay[i][j];
-			std::ostringstream oss;
+			std::ostringstream oss; // put the printables dates into buffer to prevent uneven spaces, setw() is insufficient
 			oss << setw(3) << date;
 			if (date == 0) continue;
 
 			if (bookingsPerDay[date] < totalSlotsperDay) // condition for days whr there are available time 
-				cout << " " << oss.str() << " ";
+				cout << " " << oss.str() << " "; // print the days date like usual
 			else
-				cout << " " << "\033[101;30m" << oss.str() << "\033[0m ";
+				cout << " " << "\033[101;30m" << oss.str() << "\033[0m "; // print the unavaibale days w\ specified formatting
 		}
 		cout << endl;
 	}
@@ -260,8 +264,8 @@ void bookAppointment(int* numberofTimeSlots, int* P_numberedlist, int* choice,
 	*P_numberedlist = 32;
 	cout << "\nPick the day you'd like to book (1 - " << *P_numberedlist - 1 << ") : ";
 	book_Date = getInput(P_numberedlist);
-	cout << "\nTimeslots available at " << book_Date << "th : \n----------------------------------------\n";
 	*P_numberedlist = 1;
+	cout << "\nTimeslots available at " << book_Date << "th : \n----------------------------------------\n";
 	for (int i = 0; i < *numberofTimeSlots; ++i)
 	{
 		cout << *P_numberedlist << ". " << fixed << setprecision(2) 
