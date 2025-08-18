@@ -46,18 +46,18 @@ void main_menu();
 bool isAlphabet(const char* stringVar);
 bool isAlphaNum(const char* stringVar);
 bool isNumeric(const char* stringVar);
-bool payment(int* choice_services, int* choice_expert, services services_available[], users experts[], users customers[], int* numberedlist);
 int getInput(int* P_numberedlist);
-bool cardExpiryDatevalidformat(const string& cardExpiryDate);
-void viewServices(int* numberofServices, int* P_numberedlist, services services_available[]);
-void viewExperts(int* choice, int* numberofExperts, int* P_numberedlist, int* filternumlist, int filteredIndices[], users experts[], services services_available[]);
-void viewAvailable_days(int* choice_expert, int filteredIndices[], services services_available[],
-	users experts[], users customers[], bookings appointments_schedule[], int* totalBookings);
-void bookAppointment(int* numberofTimeSlots, int* P_numberedlist, int* choice, 
-	services services_available[], users experts[], users customers[], timeSlots hourly_timeSlots[]);
-void viewbookedSchedule();
 void customerFunctionalities(int* numberofAppointments, int* numberofExperts, int* numberofServices, int* numberofTimeSlots,
 	services services_available[], users experts[], users customers[], timeSlots hourly_timeSlots[], bookings appointments_schedule[]);
+	void viewServices(int* numberofServices, int* P_numberedlist, services services_available[]);
+	void viewExperts(int* choice, int* numberofExperts, int* P_numberedlist, int* filternumlist, int filteredIndices[], users experts[], services services_available[]);
+	void viewAvailable_days(int* choice_expert, int filteredIndices[], services services_available[],
+		users experts[], users customers[], bookings appointments_schedule[], int* totalBookings);
+	void bookAppointment(int* numberofTimeSlots, int* P_numberedlist, int* choice, 
+		services services_available[], users experts[], users customers[], timeSlots hourly_timeSlots[]);
+		bool payment(int* choice_services, int* choice_expert, services services_available[], users experts[], users customers[], int* numberedlist);
+			bool cardExpiryDatevalidformat(const string& cardExpiryDate);
+	void viewbookedSchedule();
 
 
 int main() {
