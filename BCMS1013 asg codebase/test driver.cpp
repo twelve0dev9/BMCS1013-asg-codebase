@@ -2,6 +2,8 @@
 #include<iomanip>
 #include<string>
 #include<cstdlib>
+#define NOMINMAX
+#include<windows.h>
 using namespace std;
 
 enum UserType { admin, expert, customer };
@@ -165,6 +167,7 @@ bool payment(int* choice, int* numberedlist, services services_available[], user
 	//payment module
 	//display & input prompts, fake the credentials
 	string multiusestring, Banks[] = { "Ambank", "HongLeong Bank", "Public Bank", "Maybank", "Alliance Bank" };
+	LPCWSTR url = L"https://i.pinimg.com/736x/b7/c7/10/b7c71079775659e3f1413213706e6b0b.jpg";
 
 	//cout << "------------------ Payment ------------------ \n"
 	//	<< "Customer name : " << setw(20) << customers[1].username << endl
@@ -192,20 +195,52 @@ bool payment(int* choice, int* numberedlist, services services_available[], user
 			cin >> multiusestring;
 		}
 
-		cout << "\nEnter Expiry Date (MM/YY) : ";
-		getline(cin, multiusestring);
-		while (cardExpiryDatevalidformat(multiusestring) == false) {
-			cout << "\nInvalid format. Please enter card Expiry Date in valid format (MM/YY) : ";
-			cin >> multiusestring;
+		//cout << "\nEnter Expiry Date (MM/YY) : ";
+		//getline(cin, multiusestring);
+		//while (cardExpiryDatevalidformat(multiusestring) == false) {
+		//	cout << "\nInvalid format. Please enter card Expiry Date in valid format (MM/YY) : ";
+		//	cin >> multiusestring;
+		//}
+		while (true) 
+		{
+			bool gotAlphabet = 0;
+			cout << "\nEnter Expiry Date (MM/YY) : ";
+			getline(cin, multiusestring);
+			if (multiusestring.empty())
+			{
+				cout << "\nInput empty, please provide input.";
+				continue;
+			}
+			if (multiusestring.length() != 5 || multiusestring[2] != '/') {
+				cout << "\nInvalid format! More than 5 characters & no frontslash to separate the month & year. ";
+				continue;
+			}
+			else for (int i = 0; i < multiusestring.length(); ++i) {
+				if (i == 2) continue;
+				if (!isdigit(multiusestring[i]))
+					gotAlphabet = 1;
+			}
+			if (gotAlphabet)
+			{
+				cout << "\nInvalid format! Contains alphabets, please try again. ";
+				continue;
+			}
+			int month = (multiusestring[0] - '0') * 10 + (multiusestring[1] - '0');
+			if (month < 1 || month > 12)
+			{
+				cout << "\nMonth out of range! Please try again.";
+				continue;
+			}
+			break;
 		}
 
-		cout << "\n\nProcessing payment...\n\n";
+		cout << "\n\nProcessing payment...";
 		cout << "\nPayment successful!";
 
 		return true;
 		break;
 	case 2:
-		cout << "\n\Select a bank\n-----------------------\n";
+		cout << "\nSelect a bank\n-----------------------\n";
 		for (int i = 0; i < sizeof(Banks) / sizeof(Banks)[0]; ++i)
 		{
 			cout << *numberedlist << ". " << Banks[i] << endl;
@@ -235,8 +270,8 @@ bool payment(int* choice, int* numberedlist, services services_available[], user
 			}
 			if ( toupper(multiusestring[0]) == 'Y' )
 			{
-				cout << "\n\nProcessing payment...\n\n";
-				cout << "Payment successful!";
+				cout << "\nProcessing payment...";
+				cout << "\nPayment successful!";
 				break;
 			} 
 			else if ( toupper(multiusestring[0]) == 'N' ) 
@@ -252,12 +287,16 @@ bool payment(int* choice, int* numberedlist, services services_available[], user
 					break;
 				}
 			}
+			else {
+				cout << "\nInvalid, y or n for yes or no only.";
+				continue;
+			}
 		}
 		return true;
 		break;
 	case 3:
 		cout << "Scan the QR below : ";
-		cout << "QR Code";
+		ShellExecute(0, L"open", url, 0, 0, SW_SHOWNORMAL);
 		cout << "\nProcessing payment...\n";
 		cout << "Payment successful!";
 		return true;
