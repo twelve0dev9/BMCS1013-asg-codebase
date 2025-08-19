@@ -55,7 +55,6 @@ bool isNumeric(const char* stringVar) // to check if the input has *&%(*& symbol
 }
 int getInput(int* P_numberedlist);
 bool payment(int* choice, int* numberedlist, services services_available[], users experts[], users customers[]);
-bool cardExpiryDatevalidformat(const string& cardExpiryDate);
 
 int main()
 {
@@ -97,29 +96,40 @@ int main()
 		numberedlist = 1, * P_numberedlist = &numberedlist, choice = 0;
 	char yesno = ' ';
 	
-	if ( payment(&choice, &numberedlist, services_available, experts, customer_users) ) {
-		cout << "\nAppointment booked !";
-	}
-	else {
-		cout << "Payment failed, try again? (Y = Yes | N = No) : ";
-		cin >> yesno;
-		while (true) {
-			cout << "Enter choice (Y = Yes | N = No): ";
-			cin >> yesno;
-			//system("CLS"); // system cls clear the whole terminal tho, later it clears ur entire cust menus
-		
-			if (cin.peek() != '\n') { // Peek next character to check if user typed more
-				cout << "Invalid input. Only one character allowed.\n";
+	while (true)
+	{
+		if (payment(&choice, &numberedlist, services_available, experts, customer_users)) 
+		{
+			cout << "\n\nAppointment booked !";
+			break;
+		}
+		else {
+			cout << "\n\nPayment failed.";
+			while (true) 
+			{
+				cout << "\nTry again? (Y = Yes | N = No) : ";
+				cin >> yesno;
+				//system("CLS"); // system cls clear the whole terminal tho, later it clears ur entire cust menus
+
+				if (cin.peek() != '\n') // Peek next character to check if user typed more
+				{ 
+					cout << "Invalid input. Only one character allowed.\n";
+					cin.ignore(numeric_limits<streamsize>::max(), '\n');
+					continue;
+				}
+				if (toupper(yesno) == 'Y' || toupper(yesno) == 'N')   // type check 
+				{													//& char value check
+					cout << endl << endl;		
+					break;
+				}
+				cout << "Invalid input. Please enter 'Y' or 'N'.\n";
+				cin.clear();
 				cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			}
+			if (toupper(yesno) == 'Y')
 				continue;
-			}
-			if (toupper(yesno) == 'Y' || toupper(yesno) == 'N') { // type check 
-				cout << "You entered: " << yesno << "\n";		//& char value check
+			else if (toupper(yesno) == 'N')
 				break;
-			}
-			cout << "Invalid input. Please enter 'Y' or 'N'.\n";
-			cin.clear();
-			cin.ignore(numeric_limits<streamsize>::max(), '\n');
 		}
 	}
 
@@ -177,7 +187,7 @@ bool payment(int* choice, int* numberedlist, services services_available[], user
 	cout << "Available payment method\n----------------------------------\n"
 		<< "[1] Credit Card\n[2] Online Banking\n[3] E-Wallet\n[4] Cancel Payment\n"
 		<< "\nEnter your choice : ";
-	*numberedlist = 4;
+	*numberedlist = 5;
 	*choice = getInput(numberedlist);
 	*numberedlist = 1;
 
@@ -311,27 +321,13 @@ bool payment(int* choice, int* numberedlist, services services_available[], user
 	case 3:
 		cout << "Scan the QR below : ";
 		ShellExecute(0, L"open", url, 0, 0, SW_SHOWNORMAL);
-		cout << "\nProcessing payment...\n";
-		cout << "Payment successful!";
+		cout << "\n\nProcessing payment...";
+		cout << "\nPayment successful!";
 		return true;
 		break;
 	case 4:
 		cout << "Payment cancelled";
 		return false;
 	}
-	return true;
-}
-bool cardExpiryDatevalidformat(const string& cardExpiryDate)
-{
-	if (cardExpiryDate.length() != 5) return false;
-	else if (cardExpiryDate[2] != '/') return false;
-	else for (int i = 0; i < cardExpiryDate.length(); ++i) {
-		if (i == 2) continue;
-		if (!isdigit(cardExpiryDate[i]))
-			return false;
-	}
-	int month = (cardExpiryDate[0] - '0') * 10 + (cardExpiryDate[1] - '0');
-	if (month < 1 || month > 12) return false;
-
 	return true;
 }
