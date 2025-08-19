@@ -96,33 +96,32 @@ int main()
 		numberofTimeSlots = sizeof(hourly_timeSlots) / sizeof(hourly_timeSlots)[0], 
 		numberedlist = 1, * P_numberedlist = &numberedlist, choice = 0;
 	char yesno = ' ';
-	if (payment(&choice, &numberedlist, services_available, experts, customer_users) == false)
-		cout << "False";
-	//if ( payment(&choice, &numberedlist, services_available, experts, customer_users) ) {
-	//	cout << "Appointment booked !";
-	//}
-	//else {
-	//	cout << "Payment failed, try again? (Y = Yes | N = No) : ";
-	//	cin >> yesno;
-	//	while (true) {
-	//		cout << "Enter choice (Y = Yes | N = No): ";
-	//		cin >> yesno;
-	//		//system("CLS"); // system cls clear the whole terminal tho, later it clears ur entire cust menus
-	//	
-	//		if (cin.peek() != '\n') { // Peek next character to check if user typed more
-	//			cout << "Invalid input. Only one character allowed.\n";
-	//			cin.ignore(numeric_limits<streamsize>::max(), '\n');
-	//			continue;
-	//		}
-	//		if (toupper(yesno) == 'Y' || toupper(yesno) == 'N') { // type check 
-	//			cout << "You entered: " << yesno << "\n";		//& char value check
-	//			break;
-	//		}
-	//		cout << "Invalid input. Please enter 'Y' or 'N'.\n";
-	//		cin.clear();
-	//		cin.ignore(numeric_limits<streamsize>::max(), '\n');
-	//	}
-	//}
+	
+	if ( payment(&choice, &numberedlist, services_available, experts, customer_users) ) {
+		cout << "\nAppointment booked !";
+	}
+	else {
+		cout << "Payment failed, try again? (Y = Yes | N = No) : ";
+		cin >> yesno;
+		while (true) {
+			cout << "Enter choice (Y = Yes | N = No): ";
+			cin >> yesno;
+			//system("CLS"); // system cls clear the whole terminal tho, later it clears ur entire cust menus
+		
+			if (cin.peek() != '\n') { // Peek next character to check if user typed more
+				cout << "Invalid input. Only one character allowed.\n";
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');
+				continue;
+			}
+			if (toupper(yesno) == 'Y' || toupper(yesno) == 'N') { // type check 
+				cout << "You entered: " << yesno << "\n";		//& char value check
+				break;
+			}
+			cout << "Invalid input. Please enter 'Y' or 'N'.\n";
+			cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		}
+	}
 
 	return 0;
 }
@@ -195,12 +194,6 @@ bool payment(int* choice, int* numberedlist, services services_available[], user
 			cin >> multiusestring;
 		}
 
-		//cout << "\nEnter Expiry Date (MM/YY) : ";
-		//getline(cin, multiusestring);
-		//while (cardExpiryDatevalidformat(multiusestring) == false) {
-		//	cout << "\nInvalid format. Please enter card Expiry Date in valid format (MM/YY) : ";
-		//	cin >> multiusestring;
-		//}
 		while (true) 
 		{
 			bool gotAlphabet = 0;
@@ -250,18 +243,39 @@ bool payment(int* choice, int* numberedlist, services services_available[], user
 		*choice = getInput(numberedlist);
 		*numberedlist = 1;
 		
-		cout << "\nEnter your username : ";
-		getline(cin, multiusestring);
-
-		cout << "\nEnter your password : ";
-		getline(cin, multiusestring);
-
+		while (true)
+		{
+			cout << "\nEnter your username : ";
+			getline(cin, multiusestring);
+			if (multiusestring.empty()) 
+			{
+				cout << "\nInput is empty, please provide input.";
+				continue;
+			}
+			break;
+		}
+		while (true)
+		{
+			cout << "\nEnter your password : ";
+			getline(cin, multiusestring);
+			if (multiusestring.empty()) 
+			{
+				cout << "\nInput is empty, please provide input.";
+				continue;
+			}
+			break;
+		}
 		cout << "\nAuthorization request sent to the bank app, approve the authorization...";
 		while (true) 
 		{
 			cout << "\napproved?... (Y = Yes | N = No) : ";
 			getline(cin, multiusestring);
 			
+			if (multiusestring.empty()) 
+			{
+				cout << "\nInput is empty, please provide input.";
+				continue;
+			}
 			if (multiusestring.length() > 1 || isAlphabet(multiusestring.c_str()) == false
 				/*|| isNumeric(multiusestring.c_str()) == true*/) 
 			{
