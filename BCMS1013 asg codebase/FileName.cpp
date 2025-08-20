@@ -200,11 +200,11 @@ void viewServices(int* numberofServices, int* P_numberedlist, services services_
 	}
 }
 void viewExperts(int choice1[], int* numberofExperts, int* P_numberedlist, int* filternumlist, int filteredIndices[], users experts[], services services_available[]) {
-	cout << "\nOur experts that provides " << services_available[choice1[2] - 1].service_name << ": \n";
+	cout << "\nOur experts that provides " << services_available[choice1[1] - 1].service_name << ": \n";
 	for (int i = 0; i < *numberofExperts; ++i)
 	{
-		if ((experts[i].specialization[0] && experts[i].specialization[0]->serviceID == choice1[2]) ||
-			(experts[i].specialization[1] && experts[i].specialization[1]->serviceID == choice1[2]))
+		if ((experts[i].specialization[0] && experts[i].specialization[0]->serviceID == choice1[1]) ||
+			(experts[i].specialization[1] && experts[i].specialization[1]->serviceID == choice1[1]))
 		{
 			cout << *P_numberedlist << ". " << experts[i].username << endl;
 			filteredIndices[*filternumlist] = i;
@@ -275,7 +275,7 @@ void bookAppointment(int* numberofTimeSlots, int* P_numberedlist, int choice1[],
 	{
 		cout << *P_numberedlist << ". " << fixed << setprecision(2) 
 			<< setw(5) << setfill('0') << hourly_timeSlots[i].hours_start 
-			<< "--" << setw(5) << setfill('0') << hourly_timeSlots[i].hours_end << endl;
+			<< "--" << setw(5) << setfill('0') << hourly_timeSlots[i].hours_end << setfill(' ') << endl;
 		++*P_numberedlist;
 	}
 	cout << "\nPick your time slots for the day (1 - " << *P_numberedlist - 1 << ") : ";
@@ -402,11 +402,11 @@ bool payment(int choice1[], int* numberedlist, services services_available[], us
 	LPCWSTR url = L"https://i.pinimg.com/736x/b7/c7/10/b7c71079775659e3f1413213706e6b0b.jpg";
 
 	cout << "------------------ Payment ------------------ \n"
-		<< "Customer name : " << setw(20) << customers[1].username << endl
-		<< "Selected package : " << services_available[choice1[1] - 1].service_name << endl
-		<< "Service Charge : RM" << experts[choice1[2] - 1].serviceCharge << endl
-		<< "Base Price : RM" << services_available[choice1[1] - 1].servicePrice << endl
-		<< "----------------------------------------------- ";
+		<< "Customer name : " << setw(10) << customers[1].username << endl
+		<< "Selected package : " << setw(10) << services_available[choice1[1] - 1].service_name << endl
+		<< "Service Charge : " << setw(10) << "RM" << experts[choice1[2] - 1].serviceCharge << endl
+		<< "Base Price : " << setw(10) << "RM" << services_available[choice1[1] - 1].servicePrice << endl
+		<< "----------------------------------------------- \n";
 	cout << "Available payment method\n----------------------------------\n"
 		<< "[1] Credit Card\n[2] Online Banking\n[3] E-Wallet\n[4] Cancel Payment\n"
 		<< "\nEnter your choice : ";
