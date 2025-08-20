@@ -52,12 +52,12 @@ int getInput(int* P_numberedlist);
 void customerFunctionalities(int* numberofAppointments, int* numberofExperts, int* numberofServices, int* numberofTimeSlots,
 	services services_available[], users experts[], users customers[], timeSlots hourly_timeSlots[], bookings appointments_schedule[]);
 	void viewServices(int* numberofServices, int* P_numberedlist, services services_available[]);
-	void viewExperts(int* choice, int* numberofExperts, int* P_numberedlist, int* filternumlist, int filteredIndices[], users experts[], services services_available[]);
-	void viewAvailable_days(int* choice_expert, int filteredIndices[], services services_available[],
+	void viewExperts(int choice1[], int* numberofExperts, int* P_numberedlist, int* filternumlist, int filteredIndices[], users experts[], services services_available[]);
+	void viewAvailable_days(int choice1[], int filteredIndices[], services services_available[],
 		users experts[], users customers[], bookings appointments_schedule[], int* totalBookings);
-	void bookAppointment(int* numberofTimeSlots, int* P_numberedlist, int* choice, 
+	void bookAppointment(int* numberofTimeSlots, int* P_numberedlist, int choice1[], 
 		services services_available[], users experts[], users customers[], timeSlots hourly_timeSlots[]);
-		bool payment(int* choice, int* numberedlist, services services_available[], users experts[], users customers[]);
+		bool payment(int choice1[], int* numberedlist, services services_available[], users experts[], users customers[]);
 	void viewbookedSchedule();
 
 
@@ -118,10 +118,10 @@ int main() {
 void customerFunctionalities(int* numberofAppointments, int* numberofExperts, int* numberofServices, int* numberofTimeSlots,
 	services services_available[], users experts[], users customers[], timeSlots hourly_timeSlots[], bookings appointments_schedule[])
 {
-	int choice, choice_menu = 0, choice_service = 0, choice_expert = 0, choice_timeSlot = 0, numberedlist = 1,
-		* P_numberedlist = &numberedlist, * P_choiceExpert = &choice_expert, filternumlist = 0, filteredIndices[100];
-	int choice1[] = { 0, 0, 0, 0 };
-			// index 0 for general menu, index 1 for service chosen, index 2 for expert chosen, index 3 for timeSlots chosen
+	int choice, choice1[] = { 0, 0, 0, 0 }, 
+// index 0 for general menu | index 1 for service chosen | index 2 for expert chosen | index 3 for timeSlots chosen
+		numberedlist = 1, * P_numberedlist = &numberedlist, 
+		filternumlist = 0, filteredIndices[100];
 	cout << setw(35) << 
 		R"(
 $$\      $$\                     $$\                 $$\        $$$$$$\   $$$$$$\  $$\   $$\ $$\      $$\  $$$$$$\  $$\   $$\ $$\   $$\ $$$$$$\ $$\   $$\        $$$$$$\                      
@@ -148,14 +148,14 @@ $$ | \_/ $$ |\$$$$$$$\ $$ |  $$ |    $$$$$$$  |      $$$$$$$$\  $$$$$$  | $$$$$$
 		<< "\n\nOperating hours : | 12PM - 1AM\n" << setw(37) << "| Monday--Saturday\n"
 		<< "Contact email : lookmaxxin2day@gmail.com\nContact phone : 03-3788 46567\n\n";
 	cout << "\n\nWelcome " << experts->username << "!\n--------------------------------------\n";
-	cout << "1. View our serivces\n2. Book an appointment\n3. View booked appointment\n4. View appointment availability\n5. Exit\n";
+	cout << "1. View our services\n2. Book an appointment\n3. View booked appointment\n4. View appointment availability\n5. Exit\n";
 	
 	*P_numberedlist = 6;
 	cout << "\nEnter your choice (1 - " << *P_numberedlist - 1 << ") : ";
-	choice = getInput(P_numberedlist);
+	choice1[0] = getInput(P_numberedlist);
 	*P_numberedlist = 1;
 
-	switch (choice)
+	switch (choice1[0])
 	{
 	case 1:
 		viewServices(numberofServices, P_numberedlist, services_available);
@@ -166,17 +166,17 @@ $$ | \_/ $$ |\$$$$$$$\ $$ |  $$ |    $$$$$$$  |      $$$$$$$$\  $$$$$$  | $$$$$$
 		viewServices(numberofServices, P_numberedlist, services_available);
 		cout << "\nPick one services (1 - " << *P_numberedlist - 1 << ") : ";
 		
-		choice = getInput(P_numberedlist);
+		choice1[1] = getInput(P_numberedlist);
 		*P_numberedlist = 1;
 
-		viewExperts(&choice, numberofExperts, P_numberedlist, &filternumlist, filteredIndices, experts, services_available);	
+		viewExperts(choice1, numberofExperts, P_numberedlist, &filternumlist, filteredIndices, experts, services_available);	
 		cout << "\nWhat experts would you like to book an appointment with ? (1 - " << *P_numberedlist - 1 << ") : ";
-		choice = getInput(P_numberedlist);
+		choice1[2] = getInput(P_numberedlist);
 		*P_numberedlist = 1;
 		
-		viewAvailable_days(&choice, filteredIndices, services_available, experts, customers, appointments_schedule, numberofAppointments);
+		viewAvailable_days(choice1, filteredIndices, services_available, experts, customers, appointments_schedule, numberofAppointments);
 		
-		bookAppointment(numberofTimeSlots, P_numberedlist, &choice, services_available, experts, customers, hourly_timeSlots);
+		bookAppointment(numberofTimeSlots, P_numberedlist, choice1, services_available, experts, customers, hourly_timeSlots);
 
 		break;
 	case 3:
@@ -184,11 +184,11 @@ $$ | \_/ $$ |\$$$$$$$\ $$ |  $$ |    $$$$$$$  |      $$$$$$$$\  $$$$$$  | $$$$$$
 		break;
 	case 4: 
 		cout << "\nWhat experts would you like check for their availability ?\n\n";
-		choice = getInput(P_numberedlist);
-		viewAvailable_days(&choice, filteredIndices, services_available, experts, customers, appointments_schedule, numberofAppointments);
+		choice1[0] = getInput(P_numberedlist);
+		viewAvailable_days(choice1, filteredIndices, services_available, experts, customers, appointments_schedule, numberofAppointments);
 		break;
 	case 5:
-		cout << "=== PROGRAM END ===";
+		cout << "\n\n=== PROGRAM END ===\n\n";
 	}
 }
 void viewServices(int* numberofServices, int* P_numberedlist, services services_available[]) 
@@ -199,12 +199,12 @@ void viewServices(int* numberofServices, int* P_numberedlist, services services_
 		++*P_numberedlist;
 	}
 }
-void viewExperts(int* choice, int* numberofExperts, int* P_numberedlist, int* filternumlist, int filteredIndices[], users experts[], services services_available[]) {
-	cout << "\nOur experts that provides " << services_available[*choice - 1].service_name << ": \n";
+void viewExperts(int choice1[], int* numberofExperts, int* P_numberedlist, int* filternumlist, int filteredIndices[], users experts[], services services_available[]) {
+	cout << "\nOur experts that provides " << services_available[choice1[2] - 1].service_name << ": \n";
 	for (int i = 0; i < *numberofExperts; ++i)
 	{
-		if ((experts[i].specialization[0] && experts[i].specialization[0]->serviceID == *choice) ||
-			(experts[i].specialization[1] && experts[i].specialization[1]->serviceID == *choice))
+		if ((experts[i].specialization[0] && experts[i].specialization[0]->serviceID == choice1[2]) ||
+			(experts[i].specialization[1] && experts[i].specialization[1]->serviceID == choice1[2]))
 		{
 			cout << *P_numberedlist << ". " << experts[i].username << endl;
 			filteredIndices[*filternumlist] = i;
@@ -212,7 +212,7 @@ void viewExperts(int* choice, int* numberofExperts, int* P_numberedlist, int* fi
 		}
 	}
 }
-void viewAvailable_days(int* choice_expert, int filteredIndices[], services services_available[],
+void viewAvailable_days(int choice1[], int filteredIndices[], services services_available[],
 	users experts[], users customers[], bookings appointments_schedule[], int* totalBookings)
 {
 	// display available days of chosen expert
@@ -229,7 +229,7 @@ void viewAvailable_days(int* choice_expert, int filteredIndices[], services serv
 	for (int k = 0; k < *totalBookings; ++k)
 	{ // goes through the booking list iteratively
 						// check if the userID of expert booked in bookings arry is the same as the one in expert array
-		if (appointments_schedule[k].expert_booked->userID == experts[*choice_expert - 1].userID && 
+		if (appointments_schedule[k].expert_booked->userID == experts[choice1[2] - 1].userID &&
 			appointments_schedule[k].booking_status == true)
 		{					// range check for the bookings' date, shud be between 1 & 31
 			if (appointments_schedule[k].booking_date >= 1 && appointments_schedule[k].booking_date <= 31)
@@ -239,7 +239,7 @@ void viewAvailable_days(int* choice_expert, int filteredIndices[], services serv
 			// use the booking date as the nth element in bookingsPerDay array to update the nth accumulator
 		} 
 	}
-	cout << experts[filteredIndices[*choice_expert - 1]].username << " is available for the following days : \n" 
+	cout << experts[filteredIndices[choice1[2] - 1]].username << " is available for the following days : \n"
 		<< setw(23) << "December" << endl
 		<< "-------------------------------------\n";
 	for (int i = 0; i < row; ++i)
@@ -260,7 +260,7 @@ void viewAvailable_days(int* choice_expert, int filteredIndices[], services serv
 	}
 	cout << "\nLEGEND | \033[101;30mUnavailable\033[0m, Available\n\n";
 }
-void bookAppointment(int* numberofTimeSlots, int* P_numberedlist, int* choice, 
+void bookAppointment(int* numberofTimeSlots, int* P_numberedlist, int choice1[], 
 	services services_available[], users experts[], users customers[], timeSlots hourly_timeSlots[])
 {
 	int book_Date = 0; char yesno = ' ';
@@ -279,12 +279,12 @@ void bookAppointment(int* numberofTimeSlots, int* P_numberedlist, int* choice,
 		++*P_numberedlist;
 	}
 	cout << "\nPick your time slots for the day (1 - " << *P_numberedlist - 1 << ") : ";
-	*choice = getInput(P_numberedlist);
+	choice1[3] = getInput(P_numberedlist);
 	*P_numberedlist = 1;
 
 	while (true)
 	{
-		if (payment(choice, P_numberedlist, services_available, experts, customers))
+		if (payment(choice1, P_numberedlist, services_available, experts, customers))
 		{
 			cout << "\n\nAppointment booked !";
 			break;
@@ -394,7 +394,7 @@ int getInput(int* P_numberedlist)
 		return static_cast<int>(value);
 	}
 }
-bool payment(int* choice, int* numberedlist, services services_available[], users experts[], users customers[])
+bool payment(int choice1[], int* numberedlist, services services_available[], users experts[], users customers[])
 {
 	//payment module
 	//display & input prompts, fake the credentials
@@ -403,18 +403,18 @@ bool payment(int* choice, int* numberedlist, services services_available[], user
 
 	cout << "------------------ Payment ------------------ \n"
 		<< "Customer name : " << setw(20) << customers[1].username << endl
-		<< "Selected package : " << services_available[*choice - 1].service_name << endl
-		<< "Service Charge : RM" << experts[*choice - 1].serviceCharge << endl
-		<< "Base Price : RM" << services_available[*choice - 1].servicePrice << endl
+		<< "Selected package : " << services_available[choice1[1] - 1].service_name << endl
+		<< "Service Charge : RM" << experts[choice1[2] - 1].serviceCharge << endl
+		<< "Base Price : RM" << services_available[choice1[1] - 1].servicePrice << endl
 		<< "----------------------------------------------- ";
 	cout << "Available payment method\n----------------------------------\n"
 		<< "[1] Credit Card\n[2] Online Banking\n[3] E-Wallet\n[4] Cancel Payment\n"
 		<< "\nEnter your choice : ";
 	*numberedlist = 5;
-	*choice = getInput(numberedlist);
+	choice1[0] = getInput(numberedlist);
 	*numberedlist = 1;
 
-	switch (*choice) {
+	switch (choice1[0]) {
 	case 1:
 		cout << "Enter Cardholder Name : ";
 		getline(cin, multiusestring);
@@ -473,7 +473,7 @@ bool payment(int* choice, int* numberedlist, services services_available[], user
 			++*numberedlist;
 		}
 		cout << ": ";
-		*choice = getInput(numberedlist);
+		choice1[0] = getInput(numberedlist);
 		*numberedlist = 1;
 
 		while (true)
