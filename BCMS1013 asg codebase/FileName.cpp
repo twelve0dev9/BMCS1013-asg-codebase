@@ -120,6 +120,8 @@ void customerFunctionalities(int* numberofAppointments, int* numberofExperts, in
 {
 	int choice, choice_menu = 0, choice_service = 0, choice_expert = 0, choice_timeSlot = 0, numberedlist = 1,
 		* P_numberedlist = &numberedlist, * P_choiceExpert = &choice_expert, filternumlist = 0, filteredIndices[100];
+	int choice1[] = { 0, 0, 0, 0 };
+			// index 0 for general menu, index 1 for service chosen, index 2 for expert chosen, index 3 for timeSlots chosen
 	cout << setw(35) << 
 		R"(
 $$\      $$\                     $$\                 $$\        $$$$$$\   $$$$$$\  $$\   $$\ $$\      $$\  $$$$$$\  $$\   $$\ $$\   $$\ $$$$$$\ $$\   $$\        $$$$$$\                      
