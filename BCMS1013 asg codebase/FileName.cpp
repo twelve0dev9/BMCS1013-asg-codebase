@@ -56,8 +56,8 @@ bool customerFunctionalities(int choice[], int* P_numberedlist, bool* exitStatus
 	void viewExperts(int choice[], int* numberofExperts, int* P_numberedlist, int* filternumlist, int filteredIndices[], users experts[], services services_available[]);
 	void viewAvailable_days(int choice[], int filteredIndices[], services services_available[],
 		users experts[], users customers[], bookings appointments_schedule[], int* totalBookings);
-	void bookAppointment(int* numberofTimeSlots, int* P_numberedlist, int choice[], 
-		services services_available[], users experts[], users customers[], timeSlots hourly_timeSlots[]);
+	void bookAppointment(int* numberofTimeSlots, int* numberofAppointments, int* P_numberedlist, int choice[], 
+		services services_available[], users experts[], users customers[], timeSlots hourly_timeSlots[], bookings appointments_schedule[]);
 		bool payment(int choice[], int* numberedlist, services services_available[], users experts[], users customers[]);
 	void viewbookedSchedule();
 
@@ -185,49 +185,88 @@ $$ | \_/ $$ |\$$$$$$$\ $$ |  $$ |    $$$$$$$  |      $$$$$$$$\  $$$$$$  | $$$$$$
 		<< "\n\nOperating hours : | 12PM - 1AM\n" << setw(37) << "| Monday--Saturday\n"
 		<< "Contact email : lookmaxxin2day@gmail.com\nContact phone : 03-3788 46567";
 	
-	do {
-		cout << "\n\n\n\nWelcome " << experts->username << "!\n--------------------------------------\n";
-		cout << "1. View our services\n2. Book an appointment\n3. View booked appointment\n4. View appointment availability\n5. Exit to main menu\n";
+	//read all from "User records.txt" file`
+		//if possible find ways to read from user records w\ username entered by user only, instead of reading all of the records
+	string username = " ", password = " ";
+	cout << "Already got an account?\n1. Login\n2. Guest\n\n";
+	*P_numberedlist = 3;
+	choice[0] = getInput();
+	*P_numberedlist = 1;
+	
+	if (choice[0] == 1) 
+	{
+		//compare the credentials with the read records
+		do {
+			cout << "\n\n\n\nWelcome " << experts->username << "!\n--------------------------------------\n";
+			cout << "1. View our services\n2. Book an appointment\n3. View booked appointment\n4. View appointment availability\n5. Exit to main menu\n";
 
-		*P_numberedlist = 6;
-		cout << "\nEnter your choice (1 - " << *P_numberedlist - 1 << ") : ";
-		choice[0] = getInput(P_numberedlist);
-		*P_numberedlist = 1;
-
-		switch (choice[0])
-		{
-		case 1:
-			viewServices(numberofServices, P_numberedlist, services_available);
-			*P_numberedlist = 1;
-			break;
-		case 2:
-
-			viewServices(numberofServices, P_numberedlist, services_available);
-			cout << "\nPick one services (1 - " << *P_numberedlist - 1 << ") : ";
-
-			choice[1] = getInput(P_numberedlist);
-			*P_numberedlist = 1;
-
-			viewExperts(choice, numberofExperts, P_numberedlist, &filternumlist, filteredIndices, experts, services_available);
-			cout << "\nWhat experts would you like to book an appointment with ? (1 - " << *P_numberedlist - 1 << ") : ";
-			choice[2] = getInput(P_numberedlist);
-			*P_numberedlist = 1;
-
-			viewAvailable_days(choice, filteredIndices, services_available, experts, customers, appointments_schedule, numberofAppointments);
-
-			bookAppointment(numberofTimeSlots, P_numberedlist, choice, services_available, experts, customers, hourly_timeSlots);
-
-			break;
-		case 3:
-			viewbookedSchedule();
-			break;
-		case 4:
-			cout << "\nWhat experts would you like check for their availability ?\n\n";
+			*P_numberedlist = 6;
+			cout << "\nEnter your choice (1 - " << *P_numberedlist - 1 << ") : ";
 			choice[0] = getInput(P_numberedlist);
-			viewAvailable_days(choice, filteredIndices, services_available, experts, customers, appointments_schedule, numberofAppointments);
-			break;
-		}
-	} while (choice[0] != 5);
+			*P_numberedlist = 1;
+
+			switch (choice[0])
+			{
+			case 1:
+				viewServices(numberofServices, P_numberedlist, services_available);
+				*P_numberedlist = 1;
+				break;
+			case 2:
+
+				viewServices(numberofServices, P_numberedlist, services_available);
+				cout << "\nPick one services (1 - " << *P_numberedlist - 1 << ") : ";
+
+				choice[1] = getInput(P_numberedlist);
+				*P_numberedlist = 1;
+
+				viewExperts(choice, numberofExperts, P_numberedlist, &filternumlist, filteredIndices, experts, services_available);
+				cout << "\nWhat experts would you like to book an appointment with ? (1 - " << *P_numberedlist - 1 << ") : ";
+				choice[2] = getInput(P_numberedlist);
+				*P_numberedlist = 1;
+
+				viewAvailable_days(choice, filteredIndices, services_available, experts, customers, appointments_schedule, numberofAppointments);
+
+				bookAppointment(numberofTimeSlots, numberofAppointments, P_numberedlist, choice, 
+					services_available, experts, customers, hourly_timeSlots, appointments_schedule);
+
+				break;
+			case 3:
+				viewbookedSchedule();
+				break;
+			case 4:
+				cout << "\nWhat experts would you like check for their availability ?\n\n";
+				choice[2] = getInput(P_numberedlist);
+				viewAvailable_days(choice, filteredIndices, services_available, experts, customers, appointments_schedule, numberofAppointments);
+				break;
+			}
+		} while (choice[0] != 5);
+	}
+	else if (choice[0] == 2) 
+	{
+		do {
+			cout << "\n\n\n\nWelcome " << experts->username << "!\n--------------------------------------\n";
+			cout << "1. View our services\n2. View appointment availability\n3. Exit to main menu\n";
+
+			*P_numberedlist = 4;
+			cout << "\nEnter your choice (1 - " << *P_numberedlist - 1 << ") : ";
+			choice[0] = getInput(P_numberedlist);
+			*P_numberedlist = 1;
+
+			switch (choice[0]) 
+			{
+			case 1:
+				viewServices(numberofServices, P_numberedlist, services_available);
+				*P_numberedlist = 1;
+				break;
+			case 2:
+				cout << "\nWhat experts would you like check for their availability ?\n\n";
+				choice[2] = getInput(P_numberedlist);
+				viewAvailable_days(choice, filteredIndices, services_available, experts, customers, appointments_schedule, numberofAppointments);
+				break;
+			}
+		} while (choice[0] != 3);
+	}
+	
 	return true;
 }
 void viewServices(int* numberofServices, int* P_numberedlist, services services_available[]) 
@@ -299,8 +338,8 @@ void viewAvailable_days(int choice[], int filteredIndices[], services services_a
 	}
 	cout << "\nLEGEND | \033[101;30mUnavailable\033[0m, Available\n\n";
 }
-void bookAppointment(int* numberofTimeSlots, int* P_numberedlist, int choice[], 
-	services services_available[], users experts[], users customers[], timeSlots hourly_timeSlots[])
+void bookAppointment(int* numberofTimeSlots, int* numberofAppointments, int* P_numberedlist, int choice[], 
+	services services_available[], users experts[], users customers[], timeSlots hourly_timeSlots[], bookings appointments_schedule[])
 {
 	int book_Date = 0; char yesno = ' ';
 	*P_numberedlist = 32;
@@ -326,6 +365,16 @@ void bookAppointment(int* numberofTimeSlots, int* P_numberedlist, int choice[],
 		if (payment(choice, P_numberedlist, services_available, experts, customers))
 		{
 			cout << "\n\nAppointment booked !";
+			for (int i = 0; i < *numberofAppointments; ++i) 
+			{
+			// { &hourly_timeSlots[1], true, 29, & customer_users[1], & experts[2], & services_available[1] },
+				appointments_schedule->timeslot = &hourly_timeSlots[choice[3]];
+				appointments_schedule->booking_status = true;
+				appointments_schedule->booking_date = book_Date;
+				appointments_schedule->book_byCustomer = ; // cust login pending
+				appointments_schedule->expert_booked = &experts[choice[2]];
+				appointments_schedule->service_booked = &services_available[choice[1]];
+			}
 			break;
 		}
 		else 
@@ -526,20 +575,6 @@ bool payment(int choice[], int* numberedlist, services services_available[], use
 void viewbookedSchedule() {
 
 }
-//void custlogin() {
-//	//read all from "User records.txt" file`
-//		//if possible find ways to read from user records w\ username entered by user only, instead of reading all of the records
-//	string username = " ", password = " ";
-//	int choice;
-//	cout << "Already got an account?\n1. Login\n2. Guest\n\n";
-//	choice = getInput();
-//	while (choice.empty() == true || isAlphabet(choice.c_str()) == true || isAlphaNum(choice.c_str()) == false
-//		|| stoi(choice) < 1 || stoi(choice) > 2)
-//	{
-//		cout << "Invalid input. Please enter again. \n" << "Already got an account?\n1. Login\n2. Guest";
-//	}
-//	//compare the credentials with the read records
-//}
 bool isAlphabet(const char* stringVar) // to check if the input is Alphabet or not
 {
 	for (int i = 0; stringVar[i] != '\0'; ++i) {
