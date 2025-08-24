@@ -57,7 +57,7 @@ bool customerFunctionalities(int choice[], int* P_numberedlist, bool* exitStatus
 	void viewAvailable_days(int choice[], int filteredIndices[], services services_available[],
 		users experts[], users customers[], bookings appointments_schedule[], int* totalBookings);
 	void bookAppointment(int* numberofTimeSlots, int* numberofAppointments, int* P_numberedlist, int choice[], 
-		services services_available[], users experts[], users customers[], timeSlots hourly_timeSlots[], bookings appointments_schedule[]);
+		int filteredIndices[], services services_available[], users experts[], users customers[], timeSlots hourly_timeSlots[], bookings appointments_schedule[]);
 		bool payment(int choice[], int* numberedlist, services services_available[], users experts[], users customers[]);
 	void viewbookedSchedule();
 
@@ -190,7 +190,7 @@ $$ | \_/ $$ |\$$$$$$$\ $$ |  $$ |    $$$$$$$  |      $$$$$$$$\  $$$$$$  | $$$$$$
 	string username = " ", password = " ";
 	cout << "Already got an account?\n1. Login\n2. Guest\n\n";
 	*P_numberedlist = 3;
-	choice[0] = getInput();
+	choice[0] = getInput(P_numberedlist);
 	*P_numberedlist = 1;
 	
 	if (choice[0] == 1) 
@@ -227,7 +227,7 @@ $$ | \_/ $$ |\$$$$$$$\ $$ |  $$ |    $$$$$$$  |      $$$$$$$$\  $$$$$$  | $$$$$$
 				viewAvailable_days(choice, filteredIndices, services_available, experts, customers, appointments_schedule, numberofAppointments);
 
 				bookAppointment(numberofTimeSlots, numberofAppointments, P_numberedlist, choice, 
-					services_available, experts, customers, hourly_timeSlots, appointments_schedule);
+					filteredIndices, services_available, experts, customers, hourly_timeSlots, appointments_schedule);
 
 				break;
 			case 3:
@@ -339,7 +339,7 @@ void viewAvailable_days(int choice[], int filteredIndices[], services services_a
 	cout << "\nLEGEND | \033[101;30mUnavailable\033[0m, Available\n\n";
 }
 void bookAppointment(int* numberofTimeSlots, int* numberofAppointments, int* P_numberedlist, int choice[], 
-	services services_available[], users experts[], users customers[], timeSlots hourly_timeSlots[], bookings appointments_schedule[])
+	int filteredIndices[], services services_available[], users experts[], users customers[], timeSlots hourly_timeSlots[], bookings appointments_schedule[])
 {
 	int book_Date = 0; char yesno = ' ';
 	*P_numberedlist = 32;
@@ -364,17 +364,15 @@ void bookAppointment(int* numberofTimeSlots, int* numberofAppointments, int* P_n
 	{
 		if (payment(choice, P_numberedlist, services_available, experts, customers))
 		{
-			cout << "\n\nAppointment booked !";
-			for (int i = 0; i < *numberofAppointments; ++i) 
-			{
+
 			// { &hourly_timeSlots[1], true, 29, & customer_users[1], & experts[2], & services_available[1] },
-				appointments_schedule->timeslot = &hourly_timeSlots[choice[3]];
-				appointments_schedule->booking_status = true;
-				appointments_schedule->booking_date = book_Date;
-				appointments_schedule->book_byCustomer = ; // cust login pending
-				appointments_schedule->expert_booked = &experts[choice[2]];
-				appointments_schedule->service_booked = &services_available[choice[1]];
-			}
+			appointments_schedule[-1].timeslot = &hourly_timeSlots[choice[3]];
+			appointments_schedule[-1].booking_status = true;
+			appointments_schedule[-1].booking_date = book_Date;
+			appointments_schedule[-1].book_byCustomer = ; // cust login pending
+			appointments_schedule[-1].expert_booked = &experts [filteredIndices[choice[2]]];
+			appointments_schedule[-1].service_booked = &services_available[choice[1]];
+			cout << "\n\nAppointment booked !";
 			break;
 		}
 		else 
