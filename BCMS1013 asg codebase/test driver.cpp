@@ -165,28 +165,44 @@ int main()
 	//case 3:
 	//	break;
 	//}
-	ifstream infromUsers("User records.txt");
-	int lineNumber;
-	users* p_customers = new users[n];
-	cout << "Line: ";
-	cin >> lineNumber;
-	if (lineNumber <= 0) 
-	{
-		cout << "Line number must be >= 1" << endl;
+	ifstream inFile("users.txt");
+	if (!inFile) {
+		cerr << "Error: Could not open file!" << endl;
 		return 1;
 	}
-	if (infromUsers.fail())
-	{
-		cout << "File not open!" << endl;
-		return 1;
+
+	string input;
+	cout << "Enter username or email: ";
+	getline(cin, input);
+
+	string line;
+	users u;
+	bool found = false;
+
+	while (getline(inFile, line)) {
+		if (line.find(input) != string::npos) {
+			if (parseUserRecord(line, u)) {
+				found = true;
+				break; // stop after first match
+			}
+		}
 	}
-	int currentLine = 0;
-	string lineContent;
-	while (!infromUsers.eof())
-	{
-		currentLine++;
-		getline(infromUsers, lineContent);
-		if (currentLine == lineNumber) break;
+
+	inFile.close();
+
+	if (found) {
+		cout << "Found user:\n";
+		cout << u.userID << " | "
+			<< u.username << " | "
+			<< u.age << " | "
+			<< u.gender << " | "
+			<< u.user_email << " | "
+			<< u.user_password << " | "
+			<< (u.user_Type == customer ? "Customer" : "Expert")
+			<< endl;
+	}
+	else {
+		cout << "No user found with input: " << input << endl;
 	}
 
 	return 0;
@@ -226,21 +242,7 @@ int getInput(int* P_numberedlist)
 		}
 		return static_cast<int>(value);
 	}
-
-using namespace std;
-
-enum UserType { customer, expert };
-
-struct users {
-    int userID = 0;
-    string username = " ";
-    int age = 0;
-    char gender = ' ';
-    string user_email = " ";
-    string user_password = " ";
-    UserType user_Type;
-};
-
+}
 bool parseUserRecord(const string& line, users& u) {
     size_t start = line.find('{');
     size_t end   = line.find('}');
@@ -283,95 +285,4 @@ bool parseUserRecord(const string& line, users& u) {
     u.user_Type = (temp.find("customer") != string::npos) ? customer : expert;
 
     return true;
-}
-
-
-
-
-bool parseUserRecord(const string& line, users& u) {
-	size_t start = line.find('{');
-	size_t end = line.find('}');
-	if (start == string::npos || end == string::npos) return false;
-
-	string inside = line.substr(start + 1, end - start - 1);
-	stringstream ss(inside);
-	string temp;
-
-	// userID
-	ss >> u.userID;
-	ss.ignore(2);
-
-	// username
-	getline(ss, u.username, ',');
-	if (!u.username.empty() && u.username.front() == '"')
-		u.username = u.username.substr(1, u.username.size() - 2);
-
-	// age
-	ss >> u.age;
-	ss.ignore(2);
-
-	// gender
-	ss >> u.gender;
-	ss.ignore(2);
-
-	// email
-	getline(ss, u.user_email, ',');
-	if (!u.user_email.empty() && u.user_email.front() == '"')
-		u.user_email = u.user_email.substr(1, u.user_email.size() - 2);
-
-	// password
-	ss.ignore();
-	getline(ss, u.user_password, ',');
-	if (!u.user_password.empty() && u.user_password.front() == '"')
-		u.user_password = u.user_password.substr(1, u.user_password.size() - 2);
-
-	// user type
-	ss >> temp;
-	u.user_Type = (temp.find("customer") != string::npos) ? customer : expert;
-
-	return true;
-}
-
-int main() {
-	ifstream inFile("users.txt");
-	if (!inFile) {
-		cerr << "Error: Could not open file!" << endl;
-		return 1;
-	}
-
-	string input;
-	cout << "Enter username or email to search: ";
-	getline(cin, input);
-
-	string line;
-	users u;
-	bool found = false;
-
-	while (getline(inFile, line)) {
-		if (line.find(input) != string::npos) {
-			if (parseUserRecord(line, u)) {
-				found = true;
-				break; // stop after first match
-			}
-		}
-	}
-
-	inFile.close();
-
-	if (found) {
-		cout << "Found user:\n";
-		cout << u.userID << " | "
-			<< u.username << " | "
-			<< u.age << " | "
-			<< u.gender << " | "
-			<< u.user_email << " | "
-			<< u.user_password << " | "
-			<< (u.user_Type == customer ? "Customer" : "Expert")
-			<< endl;
-	}
-	else {
-		cout << "No user found with input: " << input << endl;
-	}
-
-	return 0;
 }
