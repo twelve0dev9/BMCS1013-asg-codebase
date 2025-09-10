@@ -37,8 +37,8 @@ struct bookings {
 	timeSlots* timeslot;
 	bool booking_status = 0;
 	int booking_date; //have sum control structures for telling customer user to input valid date of booking this
-	users* book_byCustomer;
-	users* expert_booked;
+	int customerID;
+	int expertID;
 	services* service_booked;
 };
 
@@ -64,7 +64,7 @@ bool isNumeric(const char* stringVar) // to check if the input has *&%(*& symbol
 	return true;
 }
 int getInput(int* P_numberedlist);
-bool parseUserRecord(const string& line, users& u);
+bool parseUserRecord(const string& line, users& loggedin_customerUser, users customer_users[]);
 
 int main()
 {
@@ -74,24 +74,6 @@ int main()
 		{3, "Facial Skin Care", 3, 120.00},
 		{4, "Massage Therapy", 3, 200.00}
 	}; services* P_services_available = services_available;
-	users experts[] = {
-		{29, "Aina", 24, 'F', "aina2312@gmail.com", "passwordbruh102", expert, {&services_available[0], &services_available[2]}, 100.00},
-		{3, "Hitler", 23, 'M', "sashimidelicious@gmail.com", "anitam4xw8n", expert, {&services_available[1], &services_available[3]}, 200.00},
-		{41, "John", 34, 'M', "johnwaynecas@gmail.com", "apovusbg876trds9", expert, {&services_available[1], &services_available[2]}, 250.00},
-		{42, "Beyonce", 34, 'F', "diddyparty@gmail.com", "nobabyoil", expert, {&services_available[2], &services_available[3]}, 70.00},
-		{10, "Hela", 30, 'M', "helathor@gmail.com", "oyud6759iu41", expert, {&services_available[0], &services_available[1]}, 200.00}
-	}; users* P_experts = experts;
-	users customer_users[] = {
-		{4, "Blaze", 16, 'M', "expertschaoheweui@gmail.com", "apopejakicetruck-89632", customer},
-		{5, "Thomas", 16, 'M', "thomaswayne@gmail.com", "utc4kt6d8vcuj", customer},
-		{6, "Bruce Wayne", 16, 'M', "brucewayne@gmail.com", "kyu6fv485k7f8tyu6+", customer},
-		{8, "Tommy", 16, 'M', "peakblinders4peak@gmail.com", "68kdcty786yuf", customer},
-		{9, "Jeremy", 16, 'M', "whostheboss@gmail.com", "yuf1h23vjk78y9i", customer},
-		{56, "Jeremiah", 16, 'M', "justanothercopy@gmail.com", "qwet786xfgh534", customer},
-		{12, "Harley", 16, 'F', "harleyquinnsucktbh@gmail.com", "ub78i6312ic6gh78k", customer},
-		{7, "Ashton Hall", 16, 'M', "ashtonhallunclosetoishowmeeat@gmail.com", "45pgyuijbk73po5ui", customer},
-		{5, "iShoeSpeed", 20, 'M', "ishowmeatfrfr@gmail.com", "uncsucks666", customer}
-	}; users* P_customers = customer_users;
 	timeSlots hourly_timeSlots[] = {
 		{1, 12.00, 15.00},
 		{2, 14.00, 17.00},
@@ -100,28 +82,16 @@ int main()
 		{5, 21.00, 0.00},
 		{6, 22.00, 1.00}
 	}; timeSlots* P_hourlyTimeSlots = hourly_timeSlots;
-	bookings appointments_schedule[] = {
-		{&hourly_timeSlots[0], true, 18, &customer_users[2], &experts[2], &services_available[0]},
-		{&hourly_timeSlots[1], true, 18, &customer_users[4], &experts[2], &services_available[0]},
-		{&hourly_timeSlots[2], true, 18, &customer_users[0], &experts[2], &services_available[3]},
-		{&hourly_timeSlots[3], true, 18, &customer_users[2], &experts[2], &services_available[0]},
-		{&hourly_timeSlots[4], true, 18, &customer_users[7], &experts[2], &services_available[3]},
-		{&hourly_timeSlots[5], true, 18, &customer_users[8], &experts[2], &services_available[3]},
-		{&hourly_timeSlots[2], true, 18, &customer_users[6], &experts[2], &services_available[3]},
-		{&hourly_timeSlots[2], true, 5, &customer_users[3], &experts[2], &services_available[0]},
-		{&hourly_timeSlots[1], true, 29, &customer_users[1], &experts[2], &services_available[1]},
-		{&hourly_timeSlots[1], true, 12, &customer_users[1], &experts[2], &services_available[2]}
-	}; bookings* P_appointments_schedule = appointments_schedule;
-	int numberofServices = sizeof(services_available) / sizeof(services_available)[0],
-		numberofCustomers = sizeof(customer_users) / sizeof(customer_users)[0], 
-		numberofExperts = sizeof(experts) / sizeof(experts)[0],
+	int totalCustomers = 0, totalExperts = 0, totalBookings = 0, 
+		numberofServices = sizeof(services_available) / sizeof(services_available)[0],
 		numberofTimeSlots = sizeof(hourly_timeSlots) / sizeof(hourly_timeSlots)[0], 
 		choice[] = { 0, 0, 0, 0 }, 
-		numberedlist = 1, * P_numberedlist = &numberedlist,
-		n = 0;
+		numberedlist = 1, * P_numberedlist = &numberedlist;
+	users* customer_users = new users[totalCustomers];
+	users* experts = new users[totalExperts];
+	bookings* appointments_schedules = new bookings[totalBookings];
 	char yesno = ' ';
-	string username = " ", password = " ";
-	int loggedinUsers = 0;
+	char password[50];	
 
 	// create account
 	//cout << "Got an account?\n1. Create account\n2. Log in\n3. Guest\nEnter choice : ";
@@ -171,20 +141,36 @@ int main()
 		return 1;
 	}
 
-	string input;
+	string loginCredential;
 	cout << "Enter username or email: ";
-	getline(cin, input);
+	getline(cin, loginCredential);
 
 	string line;
-	users u;
+	users loggedIn_customerUser;
 	bool found = false;
+	bool loginStatus = 0;
 
 	while (getline(inFile, line)) {
-		if (line.find(input) != string::npos) {
-			if (parseUserRecord(line, u)) {
+		if (line.find(loginCredential) != string::npos) {
+			if (parseUserRecord(line, loggedIn_customerUser)) {
 				found = true;
 				break; // stop after first match
 			}
+		}
+	}
+	cin.get(password, 50);
+	// loop over the cstring password, it has to match by case letter, symbols, everything
+	for (int i; i < sizeof(password) / sizeof(password)[1]; ++i)
+	{
+		if (password[i] != loggedIn_customerUser.user_password[i])
+		{
+			cout << "Wrong password, please try  again.\nEnter 0 to exit to main menu";
+			// boolean to break to main menu
+		} 
+		else
+		{
+			cout << "\nSuccessfully logged in ! ";
+			loginStatus = 1;
 		}
 	}
 
@@ -192,13 +178,13 @@ int main()
 
 	if (found) {
 		cout << "Found user:\n";
-		cout << u.userID << " | "
-			<< u.username << " | "
-			<< u.age << " | "
-			<< u.gender << " | "
-			<< u.user_email << " | "
-			<< u.user_password << " | "
-			<< (u.user_Type == customer ? "Customer" : "Expert")
+		cout << loggedIn_customerUser.userID << " | "
+			<< loggedIn_customerUser.username << " | "
+			<< loggedIn_customerUser.age << " | "
+			<< loggedIn_customerUser.gender << " | "
+			<< loggedIn_customerUser.user_email << " | "
+			<< loggedIn_customerUser.user_password << " | "
+			<< (loggedIn_customerUser.user_Type == customer ? "Customer" : "Expert")
 			<< endl;
 	}
 	else {
@@ -243,46 +229,48 @@ int getInput(int* P_numberedlist)
 		return static_cast<int>(value);
 	}
 }
-bool parseUserRecord(const string& line, users& u) {
-    size_t start = line.find('{');
-    size_t end   = line.find('}');
-    if (start == string::npos || end == string::npos) return false;
+bool parseUserRecord(const string& line, users& loggedin_customerUser, users customer_users[]) {
+	size_t start = line.find('{');
+	size_t end = line.find('}');
+	if (start == string::npos || end == string::npos) return false;
 
-    string inside = line.substr(start + 1, end - start - 1);
-    stringstream ss(inside);
-    string temp;
+	string inside = line.substr(start + 1, end - start - 1);
+	stringstream ss(inside);
+	string temp;
 
-    // userID
-    ss >> u.userID;
-    ss.ignore(2);
+	// userID
+	ss >> loggedin_customerUser.userID;
+	ss.ignore(2);
 
-    // username
-    getline(ss, u.username, ',');
-    if (!u.username.empty() && u.username.front() == '"')
-        u.username = u.username.substr(1, u.username.size() - 2);
+	// username
+	getline(ss, loggedin_customerUser.username, ',');
+	if (!loggedin_customerUser.username.empty() && loggedin_customerUser.username.front() == '"')
+		loggedin_customerUser.username = loggedin_customerUser.username.substr(1, loggedin_customerUser.username.size() - 2);
 
-    // age
-    ss >> u.age;
-    ss.ignore(2);
+	// age
+	ss >> loggedin_customerUser.age;
+	ss.ignore(2);
 
-    // gender
-    ss >> u.gender;
-    ss.ignore(2);
+	// gender
+	ss >> loggedin_customerUser.gender;
+	ss.ignore(2);
 
-    // email
-    getline(ss, u.user_email, ',');
-    if (!u.user_email.empty() && u.user_email.front() == '"')
-        u.user_email = u.user_email.substr(1, u.user_email.size() - 2);
+	// email
+	getline(ss, loggedin_customerUser.user_email, ',');
+	if (!loggedin_customerUser.user_email.empty() && loggedin_customerUser.user_email.front() == '"')
+		loggedin_customerUser.user_email = loggedin_customerUser.user_email.substr(1, loggedin_customerUser.user_email.size() - 2);
 
-    // password
-    ss.ignore();
-    getline(ss, u.user_password, ',');
-    if (!u.user_password.empty() && u.user_password.front() == '"')
-        u.user_password = u.user_password.substr(1, u.user_password.size() - 2);
+	// password
+	ss.ignore();
+	getline(ss, loggedin_customerUser.user_password, ',');
+	if (!loggedin_customerUser.user_password.empty() && loggedin_customerUser.user_password.front() == '"')
+		loggedin_customerUser.user_password = loggedin_customerUser.user_password.substr(1, loggedin_customerUser.user_password.size() - 2);
 
-    // user type
-    ss >> temp;
-    u.user_Type = (temp.find("customer") != string::npos) ? customer : expert;
+	// user type
+	ss >> temp;
+	loggedin_customerUser.user_Type = (temp.find("customer") != string::npos) ? customer : expert;
 
-    return true;
+	loggedin_customerUser
+
+	return true;
 }
