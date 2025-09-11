@@ -6,6 +6,7 @@
 #include<windows.h>
 #include<fstream>
 #include<sstream>
+#include<cctype>
 using namespace std;
 
 enum UserType { admin, expert, customer };
@@ -64,7 +65,7 @@ bool isNumeric(const char* stringVar) // to check if the input has *&%(*& symbol
 	return true;
 }
 int getInput(int* P_numberedlist);
-bool parseUserRecord(const string& line, users& loggedin_customerUser);
+bool parseUserRecord(const string& Fetched_Record, users& loggedin_customerUser);
 
 int main()
 {
@@ -85,19 +86,20 @@ int main()
 	int totalCustomers = 0, totalExperts = 0, totalBookings = 0, 
 		numberofServices = sizeof(services_available) / sizeof(services_available)[0],
 		numberofTimeSlots = sizeof(hourly_timeSlots) / sizeof(hourly_timeSlots)[0], 
-		choice[] = { 0, 0, 0, 0 }, 
+		choice[] = { 0, 0, 0, 0 }, varyingsize[] = { 0, 0 },
 		numberedlist = 1, * P_numberedlist = &numberedlist;
 	
 	users* customer_users = new users[totalCustomers];
 	users* experts = new users[totalExperts];
 	users loggedIn_customerUser;
 	bookings* appointments_schedules = new bookings[totalBookings];
-	string line, loginCredential;
-	bool found = false;
-	bool loginStatus = 0;
+	
+	string Fetched_Record;
+	bool found = false, loginStatus = 0;
 
 	char yesno = ' ';
-	char password[50];	
+	//char loginCredential[50], password[50];
+	string loginCredential = " ", password = " ";
 
 	ifstream inFile("User records.txt");
 	if (!inFile) {
@@ -107,31 +109,55 @@ int main()
 
 	cout << "Enter username or email: ";
 	getline(cin, loginCredential);
+	cout << loginCredential << endl;
+	
+	//varyingsize[0] = strlen(loginCredential);
+	//char* capitalizedCredential = new char[strlen(loginCredential)];
+	string capitalizedCredential = loginCredential;
+	for (size_t i = 0; i < capitalizedCredential.length(); i++) {
+		capitalizedCredential[i] = toupper((unsigned char)loginCredential[i]);
+	}
+	cout << capitalizedCredential << endl;
+	//for (int i = 0; i < sizeof(loginCredential) / sizeof(loginCredential)[1]; ++i)
+	//	capitalizedCredential[i] = static_cast<char>(toupper(capitalizedCredential[i]));
+	
+	//getline(inFile, Fetched_Record);
+	//cout << Fetched_Record << endl;
 
-	while (getline(inFile, line)) {
-		if (line.find(loginCredential) != string::npos) {
-			if (parseUserRecord(line, loggedIn_customerUser)) {
+	//varyingsize[1] = Fetched_Record.length();
+	//char* capitalizedFetchedRecord = new char[Fetched_Record.length()];
+	
+	                 // check which one is shorter, loginCredential? or the FetchedRecord?
+	/*for (int i = 0; i < ((strlen(loginCredential) < Fetched_Record.length()) ? strlen(loginCredential) : Fetched_Record.length()); ++i)
+	{
+		if (capitalizedFetchedRecord[i] != capitalizedCredential[i])
+		{
+			found = false;
+			break;
+		}
+	}*/
+	while (getline(inFile, Fetched_Record)) 
+	{
+		string capitalizedFetchedRecord = Fetched_Record;
+		for (size_t i = 0; i < Fetched_Record.length(); ++i) {
+			capitalizedFetchedRecord[i] = toupper((unsigned char)capitalizedFetchedRecord[i]);
+		}		
+		cout << capitalizedFetchedRecord << endl;
+			// comparison of the credential
+		if (capitalizedFetchedRecord.find(capitalizedCredential) != string::npos) 
+		{			
+			if (parseUserRecord(Fetched_Record, loggedIn_customerUser)) 
+			{
 				found = true;
 				break; // stop after first match
 			}
 		}
 	}
-	//cin.get(password, 50);
-	//// loop over the cstring password, it has to match by case letter, symbols, everything
-	//for (int i = 0; i < sizeof(password) / sizeof(password)[1]; ++i)
-	//{
-	//	if (password[i] != loggedIn_customerUser.user_password[i]) {
-	//		cout << "Wrong password, please try  again.\nEnter 0 to exit to main menu";
-	//		// boolean to break to main menu
-	//	} else {
-	//		cout << "\nSuccessfully logged in ! ";
-	//		loginStatus = 1;
-	//	}
-	//}
-
 	inFile.close();
-
-	if (found) {
+	
+	if (found)
+	{
+		parseUserRecord(Fetched_Record, loggedIn_customerUser);
 		cout << "Found user:\n";
 		cout << loggedIn_customerUser.userID << " | "
 			<< loggedIn_customerUser.username << " | "
@@ -142,9 +168,23 @@ int main()
 			<< (loggedIn_customerUser.user_Type == customer ? "Customer" : "Expert")
 			<< endl;
 	}
-	else {
-		cout << "No user found with username or email: " << loginCredential << endl;
-	}
+	else
+		cout << "No such username or email found." << endl;
+	
+	//cin.get(password, 50);
+	//// loop over the cstring password, it has to match by case letter, symbols, everything
+	//for (int i = 0; i < sizeof(password) / sizeof(password)[1]; ++i)
+	//{
+	//	if (password[i] != loggedIn_customerUser.user_password[i]) 
+	//	{
+	//		cout << "Wrong password, please try  again.\nEnter 0 to exit to main menu";
+	//		// boolean to break to main menu
+	//	} else {
+	//		cout << "\nSuccessfully logged in ! ";
+	//		loginStatus = 1;
+	//	}
+	//}
+
 
 	return 0;
 }
@@ -184,13 +224,15 @@ int getInput(int* P_numberedlist)
 		return static_cast<int>(value);
 	}
 }
-bool parseUserRecord(const string& line, users& loggedin_customerUser) {
-	size_t start = line.find('{');
-	size_t end = line.find('}');
+bool parseUserRecord(const string& Fetched_Record, users& loggedin_customerUser) 
+{
+	size_t start = Fetched_Record.find('{');
+	size_t end = Fetched_Record.find('}');
 	if (start == string::npos || end == string::npos) return false;
 
-	string inside = line.substr(start + 1, end - start - 1);
+	string inside = Fetched_Record.substr(start + 1, end - start - 1);
 	stringstream ss(inside);
+	cout << ss.str() << '\n';
 	string temp;
 
 	// userID
