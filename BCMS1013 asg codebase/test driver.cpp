@@ -149,22 +149,33 @@ int main()
 			<< endl;
 	}
 	else
-		cout << "No such username or email found." << endl;
+		cout << "\nNo such username or email found." << endl;
 	
-	//cin.get(password, 50);
-	//// loop over the cstring password, it has to match by case letter, symbols, everything
-	//for (int i = 0; i < sizeof(password) / sizeof(password)[1]; ++i)
-	//{
-	//	if (password[i] != loggedIn_customerUser.user_password[i]) 
-	//	{
-	//		cout << "Wrong password, please try  again.\nEnter 0 to exit to main menu";
-	//		// boolean to break to main menu
-	//	} else {
-	//		cout << "\nSuccessfully logged in ! ";
-	//		loginStatus = 1;
-	//	}
-	//}
-
+	// loop over the cstring password, it has to match by case letter, symbols, everything
+	while (true) 
+	{
+		cout << "\nEnter password: ";
+		getline(cin, password);
+		if (password != loggedIn_customerUser.user_password)
+		{
+			cout << "\nWrong password.\n1. Try again?\n2. Exit to main menu\n : ";
+			
+			*P_numberedlist = 3;
+			choice[0] = getInput(P_numberedlist);
+			*P_numberedlist = 1;
+		
+			if (choice[0] == 1)
+				continue;
+			else if(choice[0] == 2)
+				break;
+		}
+		else 
+		{
+			cout << "\nLogged in!\nWelcome " << loggedIn_customerUser.username << "!";
+			break;
+		}
+		// boolean to break to main menu
+	}
 
 	return 0;
 }
