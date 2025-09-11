@@ -258,7 +258,7 @@ bool parseUserRecord(const string& Fetched_Record, users& loggedin_customerUser)
 		loggedin_customerUser.user_email = loggedin_customerUser.user_email.substr(1, loggedin_customerUser.user_email.size() - 2);
 
 	// password
-	ss.ignore(1);\
+	ss.ignore(1);
 	getline(ss, loggedin_customerUser.user_password, ',');
 	if (!loggedin_customerUser.user_password.empty() && loggedin_customerUser.user_password.front() == '"')
 		loggedin_customerUser.user_password = loggedin_customerUser.user_password.substr(1, loggedin_customerUser.user_password.size() - 2);
