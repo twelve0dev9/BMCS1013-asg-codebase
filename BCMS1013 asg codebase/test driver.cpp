@@ -1,4 +1,4 @@
-#include<iostream>
+﻿#include<iostream>
 #include<iomanip>
 #include<string>
 #include<cstdlib>
@@ -6,7 +6,6 @@
 #include<windows.h>
 #include<fstream>
 #include<sstream>
-#include<cctype>
 using namespace std;
 
 enum UserType { admin, expert, customer };
@@ -65,8 +64,7 @@ bool isNumeric(const char* stringVar) // to check if the input has *&%(*& symbol
 	return true;
 }
 int getInput(int* P_numberedlist);
-bool parseBookingRecords(const string& Fetched_Record, bookings& appointments);
-bool createaccount();
+//bool parseBookingRecords(const string& Fetched_Record, bookings& appointments);
 
 int main()
 {
@@ -100,25 +98,67 @@ int main()
 
 	string loginCredential = " ", password = " ";
 
-	fstream rwFile("User records.txt", ios::in | ios::out);
+	fstream rwFile("User records.txt", ios::in | ios::app);
 	if (!rwFile) {
 		cout << "Error: Could not open file!" << endl;
 		return 1;
+	} // get login credential 
+	cout << "\nEnter username or email: ";
+	getline(cin, loginCredential, '\n');
+	if (loginCredential.find('@') != string::npos)
+	{	// check if the credential provided is an email, if so write into user struct var email field
+		loggedIn_customerUser.user_email = loginCredential;
+		cout << "Enter username for your new account >o<_/-  ";
+		getline(cin, loggedIn_customerUser.username, '\n'); // get username from user if they create account w\ email
+	} // me lazy to add another function to edit for account details not enuf time dy)
+	else
+		loggedIn_customerUser.username = loginCredential;
+	while (true)
+	{
+		cout << "Enter password : ";
+		getline(cin, password);
+		string password1 = " ";
+		// double confirm password entered is correct
+		cout << "Enter password again : ";
+		getline(cin, password1);
+		if (password1 != password)
+		{
+			cout << "\nPassword entered does not match! Try again.\n";
+			continue;
+		}
+		else break;
 	}
+	loggedIn_customerUser.user_password = password;
+	// populate as customer
+	loggedIn_customerUser.user_Type = customer;
+	// input prompt & populate for age
+	cout << "Enter your age : ";
+	*P_numberedlist = 100;
+	loggedIn_customerUser.age = getInput(P_numberedlist);
+	*P_numberedlist = 1;
+	// input prompt & populate for gender
+	do {
+		cout << "What's your gender?\n (M = Male or F = Female): ";
+		cin >> loggedIn_customerUser.gender;
+		loggedIn_customerUser.gender = toupper(loggedIn_customerUser.gender);
+		if (loggedIn_customerUser.gender != 'M' && loggedIn_customerUser.gender != 'F')
+			cout << "\nEnter valid value!";
+	} while (loggedIn_customerUser.gender != 'M' && loggedIn_customerUser.gender != 'F');
+
 	// section of code for getting the last line's userID
 		// --- move to end ---
 	rwFile.seekg(0, ios::end);
 	int fileSize = rwFile.tellg();
 	if (fileSize == 0) 
 	{
-		loggedIn_customerUser.userID = 1;  // empty file ? first user
+		loggedIn_customerUser.userID = 1;  // empty file means first user
 	}
 	else 
 	{
 		char ch;
 		string lastLine = "";
-
-		// walk backwards to find the last line
+		
+		// start reading from the last index of the entire file
 		for (int i = fileSize - 1; i >= 0; i--) 
 		{
 			rwFile.seekg(i);
@@ -138,43 +178,25 @@ int main()
 
 			int lastID;
 			ss >> lastID;
-			loggedIn_customerUser.userID = lastID + 1;
+			loggedIn_customerUser.userID = ++lastID;
 		}
 		else 
-		{
 			loggedIn_customerUser.userID = 1; // fallback
-		}
-	}
-
-
-	cout << "\nEnter username or email: ";
-	getline(cin, loginCredential);
-	if (loginCredential.find('@') != string::npos)
-		// check if the credential provided is an email, if so write into user struct var email field
-		loggedIn_customerUser.user_email = loginCredential;
-	else
-		loggedIn_customerUser.username = loginCredential;
-	while (true)
-	{
-		cout << "\nEnter password : ";
-		getline(cin, password);
-		string password1 = " ";
-		// double confirm password entered is correct
-		cout << "\nEnter password again : ";
-		getline(cin, password1);
-		if (password1 != password)
-		{
-			cout << "\nPassword entered does not match! Try again.";
-			continue;
-		}
-		else break;
-	}
-	loggedIn_customerUser.user_password = password;
-	loggedIn_customerUser.user_Type = customer;
-	cout << "\nEnter your age : ";
-	*P_numberedlist = 100;
-	loggedIn_customerUser.age = getInput(P_numberedlist);
-	
+	} 
+	rwFile.clear(); // clear EOF status
+	rwFile.seekp(0, ios::end);
+	// write into User records.txt
+	rwFile << endl;
+	rwFile << "{"
+		<< loggedIn_customerUser.userID << ", "
+		<< "\"" << loggedIn_customerUser.username << "\", "
+		<< loggedIn_customerUser.age << ", "
+		<< "'" << loggedIn_customerUser.gender << "', "
+		<< "\"" << loggedIn_customerUser.user_email << "\", "
+		<< "\"" << loggedIn_customerUser.user_password << "\", "
+		<< (loggedIn_customerUser.user_Type == customer ? "customer" : "expert")
+		<< "},";
+	rwFile.close();
 	return 0;
 }
 int getInput(int* P_numberedlist) 
@@ -213,17 +235,16 @@ int getInput(int* P_numberedlist)
 		return static_cast<int>(value);
 	}
 }
-bool parseBookingRecords(const string& Fetched_Record, bookings& appointments)
-{
-	size_t start = Fetched_Record.find('{');
-	size_t end = Fetched_Record.find('}');
-	if (start == string::npos || end == string::npos) return false;
-
-	string inside = Fetched_Record.substr(start + 1, end - start - 1);
-	stringstream ss(inside);
-	cout << ss.str() << '\n';
-	string temp;
-
-
-}
-bool createaccount()
+//bool parseBookingRecords(const string& Fetched_Record, bookings& appointments)
+//{
+//	size_t start = Fetched_Record.find('{');
+//	size_t end = Fetched_Record.find('}');
+//	if (start == string::npos || end == string::npos) return false;
+//
+//	string inside = Fetched_Record.substr(start + 1, end - start - 1);
+//	stringstream ss(inside);
+//	cout << ss.str() << '\n';
+//	string temp;
+//
+//
+//}

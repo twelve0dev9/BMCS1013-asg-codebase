@@ -54,17 +54,17 @@ bool parseUserRecord(const string& Fetched_Record, users& loggedin_customerUser)
 bool customerFunctionalities(int choice[], int* P_numberedlist, bool* exitStatus, 
 	int* numberofAppointments, int* numberofExperts, int* numberofServices, int* numberofTimeSlots,
 	services services_available[], users experts[], users customers[], timeSlots hourly_timeSlots[], bookings appointments_schedule[]);
-	bool createaccount();
-	bool custlogin(users loggedIn_customerUser, string loginCredential, string password, string Fetched_Record, 
-		bool found, bool loginStatus, int* P_numberedlist, int choice[]);
-	void viewServices(int* numberofServices, int* P_numberedlist, services services_available[]);
-	void viewExperts(int choice[], int* numberofExperts, int* P_numberedlist, int* filternumlist, int filteredIndices[], users experts[], services services_available[]);
-	void viewAvailable_days(int choice[], int filteredIndices[], services services_available[],
-		users experts[], users customers[], bookings appointments_schedule[], int* totalBookings);
-	void bookAppointment(int* numberofTimeSlots, int* numberofAppointments, int* P_numberedlist, int choice[], 
-		int filteredIndices[], services services_available[], users experts[], users customers[], timeSlots hourly_timeSlots[], bookings appointments_schedule[]);
-		bool payment(int choice[], int* numberedlist, services services_available[], users experts[], users customers[]);
-	void viewbookedSchedule();
+int custcreateacc(int* P_numberedlist, string loginCredential, string password, users newCustomerUser);
+bool custlogin(users loggedIn_customerUser, string loginCredential, string password, string Fetched_Record, 
+	bool found, bool loginStatus, int* P_numberedlist, int choice[]);
+void viewServices(int* numberofServices, int* P_numberedlist, services services_available[]);
+void viewExperts(int choice[], int* numberofExperts, int* P_numberedlist, int* filternumlist, int filteredIndices[], users experts[], services services_available[]);
+void viewAvailable_days(int choice[], int filteredIndices[], services services_available[],
+	users experts[], users customers[], bookings appointments_schedule[], int* totalBookings);
+void bookAppointment(int* numberofTimeSlots, int* numberofAppointments, int* P_numberedlist, int choice[], 
+	int filteredIndices[], services services_available[], users experts[], users customers[], timeSlots hourly_timeSlots[], bookings appointments_schedule[]);
+	bool payment(int choice[], int* numberedlist, services services_available[], users experts[], users customers[]);
+void viewbookedSchedule();
 
 
 int main() {
@@ -129,7 +129,7 @@ int main() {
 				exitStatus = customerFunctionalities(choice, &numberedlist, &exitStatus,
 					&numberofAppointments, &numberofExperts, &numberofServices, &numberofTimeSlots,
 					services_available, experts, customer_users, hourly_timeSlots, appointments_schedule);
-			} while (exitStatus == 0);
+			} while (exitStatus == 0); // keep on looping dis as long as exitStatus is still 0, which my cust function will return 1 as true, after breaking the selection structures in there
 			break;
 		case 2:
 			//admin_login();
@@ -193,15 +193,17 @@ $$ | \_/ $$ |\$$$$$$$\ $$ |  $$ |    $$$$$$$  |      $$$$$$$$\  $$$$$$  | $$$$$$
 	//read all from "User records.txt" file`
 		//if possible find ways to read from user records w\ username entered by user only, instead of reading all of the records
 	users loggedIn_customerUser;
+	users newCustomerUser;
 	string loginCredential = " ", password = " ", Fetched_Record;
 	bool found = false, loginStatus = 0;
-	cout << "\n1. Login\n2. Guest\n3. Create an account\n\n";
+	cout << "\n1. Login\n2. Guest\n3. Create an account\n4. Back to main menu\n\n";
 	*P_numberedlist = 3;
 	choice[0] = getInput(P_numberedlist);
 	*P_numberedlist = 1;
 	
-	if (choice[0] == 1) 
+	switch (choice[0]) 
 	{
+	case 1:
 		//compare the credentials with the read records
 		if (custlogin(loggedIn_customerUser, loginCredential, password, Fetched_Record, found, loginStatus
 			, P_numberedlist, choice))
@@ -253,12 +255,10 @@ $$ | \_/ $$ |\$$$$$$$\ $$ |  $$ |    $$$$$$$  |      $$$$$$$$\  $$$$$$  | $$$$$$
 		}
 		else 
 		{
-
+			custcreateacc(P_numberedlist, loginCredential, password, newCustomerUser);
 		}
-
-	}
-	else if (choice[0] == 2) 
-	{
+		break;
+	case 2:
 		do {
 			cout << "\n\n\n\nWelcome " << experts->username << "!\n--------------------------------------\n";
 			cout << "1. View our services\n2. View appointment availability\n3. Exit to main menu\n";
@@ -281,6 +281,10 @@ $$ | \_/ $$ |\$$$$$$$\ $$ |  $$ |    $$$$$$$  |      $$$$$$$$\  $$$$$$  | $$$$$$
 				break;
 			}
 		} while (choice[0] != 3);
+		break;
+	case 3:
+		custcreateacc(P_numberedlist, loginCredential, password, newCustomerUser);
+		break;
 	}
 	
 	return true;
@@ -432,7 +436,7 @@ bool payment(int choice[], int* numberedlist, services services_available[], use
 	string multiusestring, Banks[] = { "Ambank", "HongLeong Bank", "Public Bank", "Maybank", "Alliance Bank" };
 	LPCWSTR url = L"https://i.pinimg.com/736x/b7/c7/10/b7c71079775659e3f1413213706e6b0b.jpg";
 
-	cout << "------------------ Payment ------------------ \n"
+	cout << "------------------ Payment ------------------ \n"   // dis customer[1] thing change | display based on loggedin_CustomerUser
 		<< "Customer name : " << setw(10) << customers[1].username << endl
 		<< "Selected package : " << setw(10) << services_available[choice[1] - 1].service_name << endl
 		<< "Service Charge : " << setw(10) << "RM" << experts[choice[2] - 1].serviceCharge << endl
@@ -647,7 +651,7 @@ int getInput(int* P_numberedlist)
 	}
 }
 bool parseUserRecord(const string& Fetched_Record, users& loggedin_customerUser)
-{
+{ // decode the Fetched User record data
 	size_t start = Fetched_Record.find('{');
 	size_t end = Fetched_Record.find('}');
 	if (start == string::npos || end == string::npos) return false;
@@ -702,12 +706,15 @@ bool custlogin(users loggedIn_customerUser, string loginCredential, string passw
 	cout << "Enter username or email: ";
 	getline(cin, loginCredential);
 	string capitalizedCredential = loginCredential;
-	for (size_t i = 0; i < capitalizedCredential.length(); i++) {
+	for (size_t i = 0; i < capitalizedCredential.length(); i++) 
+	{ // capitalize loginCredential provided by user, for later case-insensitive comparison
 		capitalizedCredential[i] = toupper((unsigned char)loginCredential[i]);
-	}
-	while (getline(rUserRecords, Fetched_Record)) {
+	} 
+	while (getline(rUserRecords, Fetched_Record)) // keep on fetching until found is true, getline will stop at newline char '\n', so it goes thru the record line-by-line
+	{ // fetch User records.txt data to Fetched_Record for processing & comparison for login Credential (name or email)
 		string capitalizedFetchedRecord = Fetched_Record;
-		for (size_t i = 0; i < Fetched_Record.length(); ++i) {
+		for (size_t i = 0; i < Fetched_Record.length(); ++i) 
+		{  // capitalize all chars of the fetched line for case-insensitive comparison for login credential
 			capitalizedFetchedRecord[i] = toupper((unsigned char)capitalizedFetchedRecord[i]);
 		}
 		cout << capitalizedFetchedRecord << endl;
@@ -746,4 +753,108 @@ bool custlogin(users loggedIn_customerUser, string loginCredential, string passw
 		}
 	}
 	return true;
+}
+int custcreateacc(int* P_numberedlist, string loginCredential, string password, users newCustomerUser)
+{
+	fstream rwUserRecord("User records.txt", ios::in | ios::app);
+	if (!rwUserRecord) {
+		cout << "Error: Could not open file!" << endl;
+		return 1;
+	} // get login credential 
+	cout << "\nEnter username or email: ";
+	getline(cin, loginCredential, '\n');
+	if (loginCredential.find('@') != string::npos)
+	{	// check if the credential provided is an email, if so write into user struct var email field
+		newCustomerUser.user_email = loginCredential;
+		cout << "Enter username for your new account >o<_/-  ";
+		getline(cin, newCustomerUser.username, '\n'); // get username from user if they create account w\ email
+	} // me lazy to add another function to edit for account details not enuf time dy)
+	else
+		newCustomerUser.username = loginCredential;
+	while (true)
+	{
+		cout << "Enter password : ";
+		getline(cin, password);
+		string password1 = " ";
+		// double confirm password entered is correct
+		cout << "Enter password again : ";
+		getline(cin, password1);
+		if (password1 != password)
+		{
+			cout << "\nPassword entered does not match! Try again.\n";
+			continue;
+		}
+		else break;
+	}
+	newCustomerUser.user_password = password;
+	// populate as customer
+	newCustomerUser.user_Type = customer;
+	// input prompt & populate for age
+	cout << "Enter your age : ";
+	*P_numberedlist = 100;
+	newCustomerUser.age = getInput(P_numberedlist);
+	*P_numberedlist = 1;
+	// input prompt & populate for gender
+	do {
+		cout << "What's your gender?\n (M = Male or F = Female): ";
+		cin >> newCustomerUser.gender;
+		newCustomerUser.gender = toupper(newCustomerUser.gender);
+		if (newCustomerUser.gender != 'M' && newCustomerUser.gender != 'F')
+			cout << "\nEnter valid value!";
+	} while (newCustomerUser.gender != 'M' && newCustomerUser.gender != 'F');
+
+	// section of code for getting the last line's userID
+		// --- move to end ---
+	rwUserRecord.seekg(0, ios::end);
+	int fileSize = rwUserRecord.tellg();
+	if (fileSize == 0)
+	{
+		newCustomerUser.userID = 1;  // empty file means first user
+	}
+	else
+	{
+		char ch;
+		string lastLine = "";
+
+		// start reading from the last index of the entire file
+		for (int i = fileSize - 1; i >= 0; i--)
+		{
+			rwUserRecord.seekg(i);
+			rwUserRecord.get(ch);
+
+			if (ch == '\n' && !lastLine.empty()) break;
+			lastLine.insert(lastLine.begin(), ch);
+		}
+
+		// string manipultion TO cut the delimiters or separators TO extract userID from last line
+		size_t start = lastLine.find('{');
+		size_t end = lastLine.find('}');
+		if (start != string::npos && end != string::npos)
+		{
+			string inside = lastLine.substr(start + 1, end - start - 1);
+			stringstream ss(inside);
+
+			int lastID;
+			ss >> lastID;
+			newCustomerUser.userID = ++lastID;
+		}
+		else
+			newCustomerUser.userID = 1; // fallback
+	}
+	rwUserRecord.clear(); // clear EOF status
+	rwUserRecord.seekp(0, ios::end);
+	// write into User records.txt
+	rwUserRecord << endl;
+	rwUserRecord << "{"
+		<< newCustomerUser.userID << ", "
+		<< "\"" << newCustomerUser.username << "\", "
+		<< newCustomerUser.age << ", "
+		<< "'" << newCustomerUser.gender << "', "
+		<< "\"" << newCustomerUser.user_email << "\", "
+		<< "\"" << newCustomerUser.user_password << "\", "
+		<< (newCustomerUser.user_Type == customer ? "customer" : "expert")
+		<< "},";
+	rwUserRecord.close();
+
+	return 0;
 }
