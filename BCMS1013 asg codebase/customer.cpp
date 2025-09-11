@@ -47,7 +47,6 @@ struct bookings {
 
 void main_menu(int choice[], int* P_numberedlist);
 bool isAlphabet(const char* stringVar);
-bool isAlphaNum(const char* stringVar);
 bool isNumeric(const char* stringVar);
 int getInput(int* P_numberedlist);
 bool parseUserRecord(const string& Fetched_Record, users& loggedin_customerUser);
@@ -64,7 +63,7 @@ void viewAvailable_days(int choice[], int filteredIndices[], services services_a
 void bookAppointment(int* numberofTimeSlots, int* numberofAppointments, int* P_numberedlist, int choice[], 
 	int filteredIndices[], services services_available[], users experts[], users customers[], timeSlots hourly_timeSlots[], bookings appointments_schedule[]);
 	bool payment(int choice[], int* numberedlist, services services_available[], users experts[], users customers[]);
-void viewbookedSchedule();
+void viewbookedSchedule(int* numberofAppoinments, bookings appointments_schedule[]);
 
 
 int main() {
@@ -243,7 +242,7 @@ $$ | \_/ $$ |\$$$$$$$\ $$ |  $$ |    $$$$$$$  |      $$$$$$$$\  $$$$$$  | $$$$$$
 
 					break;
 				case 3:
-					viewbookedSchedule();
+					viewbookedSchedule(numberofAppointments, appointments_schedule);
 					break;
 				case 4:
 					cout << "\nWhat experts would you like check for their availability ?\n\n";
@@ -590,21 +589,60 @@ bool payment(int choice[], int* numberedlist, services services_available[], use
 	}
 	return true;
 }
-void viewbookedSchedule() {
+void viewbookedSchedule(int* numberofAppoinments, bookings appointments_schedule[]) 
+{
+	cout << fixed << setprecision(2);
+	cout << "\nBooked Appointments:\n";
+	cout << left
+		<< setw(5) << "ID"
+		<< setw(15) << "Customer"
+		<< setw(15) << "Expert"
+		<< setw(25) << "Service"
+		<< setw(10) << "Date"
+		<< setw(10) << "Start"
+		<< setw(10) << "End"
+		<< setw(10) << "Price"
+		<< "\n";
 
+	cout << string(100, '-') << "\n";
+
+	int totalAppointments = sizeof(appointments_schedule) / sizeof(appointments_schedule[0]);
+
+	for (int i = 0; i < totalAppointments; i++) {
+		if (appointments_schedule[i].booking_status) {
+			string start_time = to_string((int)appointments_schedule[i].timeslot->hours_start) + ":00";
+			string end_time;
+
+			// Handle 24-hour wrap-around
+			if (appointments_schedule[i].timeslot->hours_end == 0.0) {
+				end_time = "00:00";
+			}
+			else if (appointments_schedule[i].timeslot->hours_end >= 24.0) {
+				end_time = to_string((int)(appointments_schedule[i].timeslot->hours_end - 24)) + ":00";
+			}
+			else {
+				end_time = to_string((int)appointments_schedule[i].timeslot->hours_end) + ":00";
+			}
+
+			cout << left
+				<< setw(5) << appointments_schedule[i].timeslot->timeslotID
+				<< setw(15) << appointments_schedule[i].book_byCustomer->username
+				<< setw(15) << appointments_schedule[i].expert_booked->username
+				<< setw(25) << appointments_schedule[i].service_booked->service_name
+				<< setw(10) << appointments_schedule[i].booking_date
+				<< setw(10) << start_time
+				<< setw(10) << end_time
+				<< setw(10) << appointments_schedule[i].service_booked->servicePrice
+				<< "\n";
+		}
+	}
+	cout << "\n";
 }
 bool isAlphabet(const char* stringVar) // to check if the input is Alphabet or not
 {
 	for (int i = 0; stringVar[i] != '\0'; ++i) {
 		if (!isalpha(stringVar[i]))
 			return false;}
-	return true;
-}
-bool isAlphaNum(const char* stringVar) // to check if the input has *&%(*& symbols, non-alphabet, & non-numeric
-{
-	for (int i = 0; stringVar[i] != '\0'; ++i) {
-		if (!isalnum(stringVar[i])) 
-			return false; }
 	return true;
 }
 bool isNumeric(const char* stringVar) // false : Is not numeric
@@ -760,9 +798,11 @@ int custcreateacc(int* P_numberedlist, string loginCredential, string password, 
 	if (!rwUserRecord) {
 		cout << "Error: Could not open file!" << endl;
 		return 1;
-	} // get login credential 
+	} 
+	// get login credential 
 	cout << "\nEnter username or email: ";
 	getline(cin, loginCredential, '\n');
+	
 	if (loginCredential.find('@') != string::npos)
 	{	// check if the credential provided is an email, if so write into user struct var email field
 		newCustomerUser.user_email = loginCredential;
