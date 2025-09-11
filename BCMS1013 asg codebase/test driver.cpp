@@ -98,7 +98,6 @@ int main()
 	bool found = false, loginStatus = 0;
 
 	char yesno = ' ';
-	//char loginCredential[50], password[50];
 	string loginCredential = " ", password = " ";
 
 	ifstream inFile("User records.txt");
@@ -111,31 +110,12 @@ int main()
 	getline(cin, loginCredential);
 	cout << loginCredential << endl;
 	
-	//varyingsize[0] = strlen(loginCredential);
-	//char* capitalizedCredential = new char[strlen(loginCredential)];
 	string capitalizedCredential = loginCredential;
 	for (size_t i = 0; i < capitalizedCredential.length(); i++) {
 		capitalizedCredential[i] = toupper((unsigned char)loginCredential[i]);
 	}
 	cout << capitalizedCredential << endl;
-	//for (int i = 0; i < sizeof(loginCredential) / sizeof(loginCredential)[1]; ++i)
-	//	capitalizedCredential[i] = static_cast<char>(toupper(capitalizedCredential[i]));
 	
-	//getline(inFile, Fetched_Record);
-	//cout << Fetched_Record << endl;
-
-	//varyingsize[1] = Fetched_Record.length();
-	//char* capitalizedFetchedRecord = new char[Fetched_Record.length()];
-	
-	                 // check which one is shorter, loginCredential? or the FetchedRecord?
-	/*for (int i = 0; i < ((strlen(loginCredential) < Fetched_Record.length()) ? strlen(loginCredential) : Fetched_Record.length()); ++i)
-	{
-		if (capitalizedFetchedRecord[i] != capitalizedCredential[i])
-		{
-			found = false;
-			break;
-		}
-	}*/
 	while (getline(inFile, Fetched_Record)) 
 	{
 		string capitalizedFetchedRecord = Fetched_Record;
