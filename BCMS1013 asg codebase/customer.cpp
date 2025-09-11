@@ -62,8 +62,8 @@ void viewAvailable_days(int choice[], int filteredIndices[], services services_a
 	users experts[], users customers[], bookings appointments_schedule[], int* totalBookings);
 void bookAppointment(int* numberofTimeSlots, int* numberofAppointments, int* P_numberedlist, int choice[], 
 	int filteredIndices[], services services_available[], users experts[], users customers[], timeSlots hourly_timeSlots[], bookings appointments_schedule[]);
-	bool payment(int choice[], int* numberedlist, services services_available[], users experts[], users customers[]);
-void viewbookedSchedule(int* numberofAppoinments, bookings appointments_schedule[]);
+bool payment(int choice[], int* numberedlist, services services_available[], users experts[], users customers[]);
+void viewbookedSchedule(int* numberofAppointments, bookings appointments_schedule[]);
 
 
 int main() {
@@ -589,7 +589,7 @@ bool payment(int choice[], int* numberedlist, services services_available[], use
 	}
 	return true;
 }
-void viewbookedSchedule(int* numberofAppoinments, bookings appointments_schedule[]) 
+void viewbookedSchedule(int* numberofAppointments, bookings appointments_schedule[])
 {
 	cout << fixed << setprecision(2);
 	cout << "\nBooked Appointments:\n";
@@ -602,13 +602,11 @@ void viewbookedSchedule(int* numberofAppoinments, bookings appointments_schedule
 		<< setw(10) << "Start"
 		<< setw(10) << "End"
 		<< setw(10) << "Price"
-		<< "\n";
+		<< endl;
 
-	cout << string(100, '-') << "\n";
+	cout << string(100, '-') << endl;
 
-	int totalAppointments = sizeof(appointments_schedule) / sizeof(appointments_schedule[0]);
-
-	for (int i = 0; i < totalAppointments; i++) {
+	for (int i = 0; i < *numberofAppointments; i++) {
 		if (appointments_schedule[i].booking_status) {
 			string start_time = to_string((int)appointments_schedule[i].timeslot->hours_start) + ":00";
 			string end_time;
@@ -636,7 +634,7 @@ void viewbookedSchedule(int* numberofAppoinments, bookings appointments_schedule
 				<< "\n";
 		}
 	}
-	cout << "\n";
+	cout << endl;
 }
 bool isAlphabet(const char* stringVar) // to check if the input is Alphabet or not
 {

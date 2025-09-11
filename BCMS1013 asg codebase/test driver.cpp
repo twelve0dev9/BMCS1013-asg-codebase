@@ -27,7 +27,7 @@ struct users {
 	UserType user_Type;
 	services* specialization[2];
 	double serviceCharge = 0.00;
-};
+}; //we might need to divide the users struct into more nested struct, considering need to do sum manipulation w\ the emails,passwords, names, etc. If member access & pointers makes it difficult to access for modification
 struct timeSlots {
 	int timeslotID; // dis is gon correspond to the number
 	double hours_start; //24 hours time format
@@ -37,8 +37,8 @@ struct bookings {
 	timeSlots* timeslot;
 	bool booking_status = 0;
 	int booking_date; //have sum control structures for telling customer user to input valid date of booking this
-	int customerID;
-	int expertID;
+	users* book_byCustomer;
+	users* expert_booked;
 	services* service_booked;
 };
 
@@ -65,6 +65,7 @@ bool isNumeric(const char* stringVar) // to check if the input has *&%(*& symbol
 }
 int getInput(int* P_numberedlist);
 //bool parseBookingRecords(const string& Fetched_Record, bookings& appointments);
+void viewbookedSchedule(int* numberofAppointments, bookings appointments_schedule[]);
 
 int main()
 {
@@ -74,6 +75,24 @@ int main()
 		{3, "Facial Skin Care", 3, 120.00},
 		{4, "Massage Therapy", 3, 200.00}
 	}; services* P_services_available = services_available;
+	users experts[] = {
+		{3, "Hitler", 23, 'M', "sashimidelicious@gmail.com", "anitam4xw8n", expert, {&services_available[1], &services_available[3]}, 200.00},
+		{41, "John", 34, 'M', "johnwaynecas@gmail.com", "apovusbg876trds9", expert, {&services_available[1], &services_available[2]}, 250.00},
+		{29, "Aina", 24, 'F', "aina2312@gmail.com", "passwordbruh102", expert, {&services_available[0], &services_available[2]}, 100.00},
+		{42, "Beyonce", 34, 'F', "diddyparty@gmail.com", "nobabyoil", expert, {&services_available[2], &services_available[3]}, 70.00},
+		{10, "Hela", 30, 'M', "helathor@gmail.com", "oyud6759iu41", expert, {&services_available[0], &services_available[1]}, 200.00}
+	}; users* P_experts = experts;
+	users customer_users[] = {
+		{4, "Blaze", 16, 'M', "expertschaoheweui@gmail.com", "apopejakicetruck-89632", customer},
+		{5, "Thomas", 16, 'M', "thomaswayne@gmail.com", "utc4kt6d8vcuj", customer},
+		{6, "Bruce Wayne", 16, 'M', "brucewayne@gmail.com", "kyu6fv485k7f8tyu6+", customer},
+		{8, "Tommy", 16, 'M', "peakblinders4peak@gmail.com", "68kdcty786yuf", customer},
+		{9, "Jeremy", 16, 'M', "whostheboss@gmail.com", "yuf1h23vjk78y9i", customer},
+		{56, "Jeremiah", 16, 'M', "justanothercopy@gmail.com", "qwet786xfgh534", customer},
+		{12, "Harley", 16, 'F', "harleyquinnsucktbh@gmail.com", "ub78i6312ic6gh78k", customer},
+		{7, "Ashton Hall", 16, 'M', "ashtonhallunclosetoishowmeeat@gmail.com", "45pgyuijbk73po5ui", customer},
+		{5, "iShoeSpeed", 20, 'M', "ishowmeatfrfr@gmail.com", "uncsucks666", customer}
+	}; users* P_customers = customer_users;
 	timeSlots hourly_timeSlots[] = {
 		{1, 12.00, 15.00},
 		{2, 14.00, 17.00},
@@ -82,121 +101,32 @@ int main()
 		{5, 21.00, 0.00},
 		{6, 22.00, 1.00}
 	}; timeSlots* P_hourlyTimeSlots = hourly_timeSlots;
+	bookings appointments_schedule[] = {
+		{&hourly_timeSlots[0], true, 18, &customer_users[2], &experts[2], &services_available[0]},
+		{&hourly_timeSlots[1], true, 18, &customer_users[4], &experts[2], &services_available[0]},
+		{&hourly_timeSlots[2], true, 18, &customer_users[0], &experts[2], &services_available[3]},
+		{&hourly_timeSlots[3], true, 18, &customer_users[2], &experts[2], &services_available[0]},
+		{&hourly_timeSlots[4], true, 18, &customer_users[7], &experts[2], &services_available[3]},
+		{&hourly_timeSlots[5], true, 18, &customer_users[8], &experts[2], &services_available[3]},
+		{&hourly_timeSlots[2], true, 18, &customer_users[6], &experts[2], &services_available[3]},
+		{&hourly_timeSlots[2], true, 5, &customer_users[3], &experts[2], &services_available[0]},
+		{&hourly_timeSlots[1], true, 29, &customer_users[1], &experts[2], &services_available[1]},
+		{&hourly_timeSlots[1], true, 12, &customer_users[1], &experts[2], &services_available[2]}
+	}; bookings* P_appointments_schedule = appointments_schedule;
 	int totalCustomers = 0, totalExperts = 0, totalBookings = 0, 
+		numberofAppointments = sizeof(appointments_schedule) / sizeof(appointments_schedule)[0],
 		numberofServices = sizeof(services_available) / sizeof(services_available)[0],
 		numberofTimeSlots = sizeof(hourly_timeSlots) / sizeof(hourly_timeSlots)[0], 
 		choice[] = { 0, 0, 0, 0 }, 
 		numberedlist = 1, * P_numberedlist = &numberedlist;
 	
-	users* customer_users = new users[totalCustomers];
-	users* experts = new users[totalExperts];
+	//users* customer_users = new users[totalCustomers];
+	//users* experts = new users[totalExperts];
 	users loggedIn_customerUser;
-	bookings* appointments_schedules = new bookings[totalBookings];
+	//bookings* appointments_schedules = new bookings[totalBookings];
 	
-	string Fetched_Record;
-	bool found = false, loginStatus = 0;
-
 	string loginCredential = " ", password = " ";
-
-	fstream rwFile("User records.txt", ios::in | ios::app);
-	if (!rwFile) {
-		cout << "Error: Could not open file!" << endl;
-		return 1;
-	} // get login credential 
-	cout << "\nEnter username or email: ";
-	getline(cin, loginCredential, '\n');
-	if (loginCredential.find('@') != string::npos)
-	{	// check if the credential provided is an email, if so write into user struct var email field
-		loggedIn_customerUser.user_email = loginCredential;
-		cout << "Enter username for your new account >o<_/-  ";
-		getline(cin, loggedIn_customerUser.username, '\n'); // get username from user if they create account w\ email
-	} // me lazy to add another function to edit for account details not enuf time dy)
-	else
-		loggedIn_customerUser.username = loginCredential;
-	while (true)
-	{
-		cout << "Enter password : ";
-		getline(cin, password);
-		string password1 = " ";
-		// double confirm password entered is correct
-		cout << "Enter password again : ";
-		getline(cin, password1);
-		if (password1 != password)
-		{
-			cout << "\nPassword entered does not match! Try again.\n";
-			continue;
-		}
-		else break;
-	}
-	loggedIn_customerUser.user_password = password;
-	// populate as customer
-	loggedIn_customerUser.user_Type = customer;
-	// input prompt & populate for age
-	cout << "Enter your age : ";
-	*P_numberedlist = 100;
-	loggedIn_customerUser.age = getInput(P_numberedlist);
-	*P_numberedlist = 1;
-	// input prompt & populate for gender
-	do {
-		cout << "What's your gender?\n (M = Male or F = Female): ";
-		cin >> loggedIn_customerUser.gender;
-		loggedIn_customerUser.gender = toupper(loggedIn_customerUser.gender);
-		if (loggedIn_customerUser.gender != 'M' && loggedIn_customerUser.gender != 'F')
-			cout << "\nEnter valid value!";
-	} while (loggedIn_customerUser.gender != 'M' && loggedIn_customerUser.gender != 'F');
-
-	// section of code for getting the last line's userID
-		// --- move to end ---
-	rwFile.seekg(0, ios::end);
-	int fileSize = rwFile.tellg();
-	if (fileSize == 0) 
-	{
-		loggedIn_customerUser.userID = 1;  // empty file means first user
-	}
-	else 
-	{
-		char ch;
-		string lastLine = "";
-		
-		// start reading from the last index of the entire file
-		for (int i = fileSize - 1; i >= 0; i--) 
-		{
-			rwFile.seekg(i);
-			rwFile.get(ch);
-
-			if (ch == '\n' && !lastLine.empty()) break;
-			lastLine.insert(lastLine.begin(), ch);
-		}
-
-		// string manipultion TO cut the delimiters or separators TO extract userID from last line
-		size_t start = lastLine.find('{');
-		size_t end = lastLine.find('}');
-		if (start != string::npos && end != string::npos) 
-		{
-			string inside = lastLine.substr(start + 1, end - start - 1);
-			stringstream ss(inside);
-
-			int lastID;
-			ss >> lastID;
-			loggedIn_customerUser.userID = ++lastID;
-		}
-		else 
-			loggedIn_customerUser.userID = 1; // fallback
-	} 
-	rwFile.clear(); // clear EOF status
-	rwFile.seekp(0, ios::end);
-	// write into User records.txt
-	rwFile << endl;
-	rwFile << "{"
-		<< loggedIn_customerUser.userID << ", "
-		<< "\"" << loggedIn_customerUser.username << "\", "
-		<< loggedIn_customerUser.age << ", "
-		<< "'" << loggedIn_customerUser.gender << "', "
-		<< "\"" << loggedIn_customerUser.user_email << "\", "
-		<< "\"" << loggedIn_customerUser.user_password << "\", "
-		<< (loggedIn_customerUser.user_Type == customer ? "customer" : "expert")
-		<< "},";
-	rwFile.close();
+	viewbookedSchedule(&numberofAppointments, appointments_schedule);
 	return 0;
 }
 int getInput(int* P_numberedlist) 
@@ -248,3 +178,50 @@ int getInput(int* P_numberedlist)
 //
 //
 //}
+void viewbookedSchedule(int* numberofAppointments, bookings appointments_schedule[])
+{
+	cout << fixed << setprecision(2);
+	cout << "\nBooked Appointments:\n";
+	cout << left
+		<< setw(5) << "ID"
+		<< setw(15) << "Customer"
+		<< setw(15) << "Expert"
+		<< setw(25) << "Service"
+		<< setw(10) << "Date"
+		<< setw(10) << "Start"
+		<< setw(10) << "End"
+		<< setw(10) << "Price"
+		<< "\n";
+
+	cout << string(100, '-') << "\n";
+
+	for (int i = 0; i < *numberofAppointments; i++) {
+		if (appointments_schedule[i].booking_status) {
+			string start_time = to_string((int)appointments_schedule[i].timeslot->hours_start) + ":00";
+			string end_time;
+
+			// Handle 24-hour wrap-around
+			if (appointments_schedule[i].timeslot->hours_end == 0.0) {
+				end_time = "00:00";
+			}
+			else if (appointments_schedule[i].timeslot->hours_end >= 24.0) {
+				end_time = to_string((int)(appointments_schedule[i].timeslot->hours_end - 24)) + ":00";
+			}
+			else {
+				end_time = to_string((int)appointments_schedule[i].timeslot->hours_end) + ":00";
+			}
+
+			cout << left
+				<< setw(5) << appointments_schedule[i].timeslot->timeslotID
+				<< setw(15) << appointments_schedule[i].book_byCustomer->username
+				<< setw(15) << appointments_schedule[i].expert_booked->username
+				<< setw(25) << appointments_schedule[i].service_booked->service_name
+				<< setw(10) << appointments_schedule[i].booking_date
+				<< setw(10) << start_time
+				<< setw(10) << end_time
+				<< setw(10) << appointments_schedule[i].service_booked->servicePrice
+				<< "\n";
+		}
+	}
+	cout << "\n";
+}
