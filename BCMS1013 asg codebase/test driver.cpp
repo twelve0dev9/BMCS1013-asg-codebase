@@ -64,10 +64,14 @@ bool isNumeric(const char* stringVar) // to check if the input has *&%(*& symbol
 	return true;
 }
 int getInput(int* P_numberedlist);
+//void viewUserAppointments(users loggedIn_customerUser, timeSlots* hourlyTimeSlots,
+//	users* experts, services* services_available);
+int countAppointmentsInFile();
+int loadAppointments(bookings* appointments, int totalRecords,
+	timeSlots* hourlyTimeSlots, users* experts, services* services_available);
+void viewUserAppointments(users loggedIn_customerUser, bookings* appointments, int totalRecords);
 bool parseAppointmentRecord(const string& Fetched_Record, bookings& appointment,
 	timeSlots* hourlyTimeSlots, users* experts, services* services_available);
-void viewUserAppointments(users loggedIn_customerUser, timeSlots* hourlyTimeSlots,
-	users* experts, services* services_available);
 
 int main()
 {
@@ -115,7 +119,7 @@ int main()
 		{&hourly_timeSlots[1], true, 29, 2, &experts[2], &services_available[1]},
 		{&hourly_timeSlots[1], true, 12, 2, &experts[2], &services_available[2]}
 	}; bookings* P_appointments_schedule = appointments_schedule;
-	int totalCustomers = 0, totalExperts = 0, totalBookings = 0, 
+	int totalCustomers = 0, totalExperts = 0, 
 		numberofAppointments = sizeof(appointments_schedule) / sizeof(appointments_schedule)[0],
 		numberofServices = sizeof(services_available) / sizeof(services_available)[0],
 		numberofTimeSlots = sizeof(hourly_timeSlots) / sizeof(hourly_timeSlots)[0], 
@@ -125,8 +129,20 @@ int main()
 	//users* customer_users = new users[totalCustomers];
 	//users* experts = new users[totalExperts];
 	users loggedIn_customerUser = { 3, "Bruce Wayne", 16, 'M', "brucewayne@gmail.com", "kyu6fv485k7f8tyu6+", customer };
-	bookings* appointments_schedules = new bookings[totalBookings];
 
+
+	int totalBookings = countAppointmentsInFile();
+	if (totalBookings == 0) 
+	{
+		cout << "No appointments in file.\n";
+		return 0;
+	}
+	bookings* appointments = new bookings[totalBookings];
+	int loaded = loadAppointments(appointments, totalBookings, hourly_timeSlots, experts, services_available);
+	cout << loaded << " appointment records loaded.\n";
+
+	viewUserAppointments(loggedIn_customerUser, appointments, loaded);
+	delete[] appointments;
 	
 	return 0;
 }
@@ -166,65 +182,66 @@ int getInput(int* P_numberedlist)
 		return static_cast<int>(value);
 	}
 }
-void viewUserAppointments(timeSlots* hourlyTimeSlots, bookings* appointments, 
-	users* experts, services* services_available, users loggedIn_customerUser)
-{
-	ifstream rAppointments("Appointments.txt");
-	if (!rAppointments.is_open()) {
-		cout << "Error: Could not open Appointments.txt" << endl;
-		return;
-	}
-
-	// Count records first
-	int totalRecords = 0;
-	string Fetched_Record;
-	while (getline(rAppointments, Fetched_Record)) {
-		if (!Fetched_Record.empty()) totalRecords++;
-	}
-	rAppointments.close();
-
-	if (totalRecords == 0) {
-		cout << "No appointments found in the file.\n";
-		return;
-	}
-
-	// Allocate dynamically
-	/*bookings* appointments = new bookings[totalRecords];*/
-
-	// Parse into array
-	rAppointments.open("Appointments.txt");
-	int index = 0;
-	while (getline(rAppointments, Fetched_Record)) {
-		if (Fetched_Record.empty()) continue;
-		parseAppointmentRecord(Fetched_Record, appointments[index++], hourlyTimeSlots, experts, services_available);
-	}
-	rAppointments.close();
-
-	// Display for logged-in user
-	cout << "\n===== Your Appointments =====\n";
-	int recordCount = 0;
-	for (int i = 0; i < totalRecords; i++) 
-	{
-		if (appointments[i].book_byCustomer == loggedIn_customerUser.userID) {
-			recordCount++;
-			cout << "Appointment #" << recordCount << "\n";
-			cout << " Date (Day): " << appointments[i].booking_date << "\n";
-			cout << " Time: " << fixed << setprecision(2)
-				<< appointments[i].timeslot->hours_start << " - " << appointments[i].timeslot->hours_end << "\n";
-			cout << " Expert: " << appointments[i].expert_booked->username << "\n";
-			cout << " Service: " << appointments[i].service_booked->service_name
-				<< " ($" << appointments[i].service_booked->servicePrice << ")\n";
-			cout << " Status: " << (appointments[i].booking_status ? "Confirmed" : "Pending") << "\n";
-			cout << "-----------------------------\n";
-		}
-	}
-
-	if (recordCount == 0) {
-		cout << "No appointments found for you.\n";
-	}
-
-	delete[] appointments; // cleanup
-}
+//void viewUserAppointments(timeSlots* hourlyTimeSlots, bookings* appointments,
+//	users* experts, services* services_available, users loggedIn_customerUser)
+//{
+//	ifstream rAppointments("Appointments.txt");
+//	if (!rAppointments.is_open()) {
+//		cout << "Error: Could not open Appointments.txt" << endl;
+//		return;
+//	}
+//
+//	// Count records first
+//	int totalRecords = 0;
+//	string Fetched_Record;
+//	while (getline(rAppointments, Fetched_Record)) {
+//		if (!Fetched_Record.empty()) totalRecords++;
+//	}
+//	rAppointments.close();
+//
+//	if (totalRecords == 0) {
+//		cout << "No appointments found in the file.\n";
+//		return;
+//	}
+//
+//	// Allocate dynamically
+//	/*bookings* appointments = new bookings[totalRecords];*/
+//
+//	// Parse into array
+//	rAppointments.open("Appointments.txt");
+//	int index = 0;
+//	while (getline(rAppointments, Fetched_Record)) 
+//	{
+//		if (Fetched_Record.empty()) continue;
+//		parseAppointmentRecord(Fetched_Record, appointments[index++], hourlyTimeSlots, experts, services_available);
+//	}
+//	rAppointments.close();
+//
+//	// Display for logged-in user
+//	cout << "\n===== Your Appointments =====\n";
+//	int recordCount = 0;
+//	for (int i = 0; i < totalRecords; i++)
+//	{
+//		if (appointments[i].book_byCustomer == loggedIn_customerUser.userID) {
+//			recordCount++;
+//			cout << "Appointment #" << recordCount << "\n";
+//			cout << " Date (Day): " << appointments[i].booking_date << "\n";
+//			cout << " Time: " << fixed << setprecision(2)
+//				<< appointments[i].timeslot->hours_start << " - " << appointments[i].timeslot->hours_end << "\n";
+//			cout << " Expert: " << appointments[i].expert_booked->username << "\n";
+//			cout << " Service: " << appointments[i].service_booked->service_name
+//				<< " ($" << appointments[i].service_booked->servicePrice << ")\n";
+//			cout << " Status: " << (appointments[i].booking_status ? "Confirmed" : "Pending") << "\n";
+//			cout << "-----------------------------\n";
+//		}
+//	}
+//
+//	if (recordCount == 0) {
+//		cout << "No appointments found for you.\n";
+//	}
+//
+//	delete[] appointments; // cleanup
+//}
 bool parseAppointmentRecord(const string& Fetched_Record, bookings& appointment, 
 	timeSlots* hourlyTimeSlots, users* experts, services* services_available)
 {
@@ -232,7 +249,6 @@ bool parseAppointmentRecord(const string& Fetched_Record, bookings& appointment,
 	size_t end = Fetched_Record.find('}');
 	if (start == string::npos || end == string::npos) return false;
 
-	// isolate inside {...}
 	string inside = Fetched_Record.substr(start + 1, end - start - 1);
 	stringstream ss(inside);
 
@@ -274,4 +290,66 @@ bool parseAppointmentRecord(const string& Fetched_Record, bookings& appointment,
 	appointment.service_booked = &services_available[serviceIndex];
 
 	return true;
+}
+int loadAppointments(bookings* appointments, int totalRecords, 
+	timeSlots* hourlyTimeSlots, users* experts, services* services_available)
+{
+	ifstream rAppointments("Appointments.txt");
+	if (!rAppointments.is_open()) {
+		cout << "Error: Could not open Appointments.txt" << endl;
+		return 0;
+	}
+
+	string Fetched_Record;
+	int index = 0;
+
+	while (getline(rAppointments, Fetched_Record) && index < totalRecords) {
+		if (Fetched_Record.empty()) continue;
+		parseAppointmentRecord(Fetched_Record, appointments[index++], hourlyTimeSlots, experts, services_available);
+	}
+
+	rAppointments.close();
+	return index; // number of records successfully loaded
+}
+int countAppointmentsInFile() 
+{
+	ifstream rAppointments("Appointments.txt");
+	if (!rAppointments.is_open()) 
+	{
+		cout << "Error: Could not open file!" << endl;
+		return 1;
+	}
+
+	string Fetched_Record;
+	int count = 0;
+	while (getline(rAppointments, Fetched_Record))
+		if (!Fetched_Record.empty()) count++;
+	rAppointments.close();
+	return count;
+}
+void viewUserAppointments(users loggedIn_customerUser, bookings* appointments, int totalRecords) 
+{
+	cout << "\n===== Your Appointments =====\n";
+	int recordCount = 0;
+
+	for (int i = 0; i < totalRecords; i++) 
+	{
+		if (appointments[i].book_byCustomer == loggedIn_customerUser.userID) 
+		{
+			recordCount++;
+			cout << "Appointment #" << recordCount << "\n";
+			cout << " Date (Day): " << appointments[i].booking_date << "\n";
+			cout << " Time: " << fixed << setprecision(2)
+				<< appointments[i].timeslot->hours_start << " - " << appointments[i].timeslot->hours_end << "\n";
+			cout << " Expert: " << appointments[i].expert_booked->username << "\n";
+			cout << " Service: " << appointments[i].service_booked->service_name
+				<< " ($" << appointments[i].service_booked->servicePrice << ")\n";
+			cout << " Status: " << (appointments[i].booking_status ? "Confirmed" : "Pending") << "\n";
+			cout << "-----------------------------\n";
+		}
+	}
+
+	if (recordCount == 0) {
+		cout << "No appointments found for you.\n";
+	}
 }
