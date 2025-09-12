@@ -126,6 +126,7 @@
     <ClCompile Include="ansel%27s.cpp" />
     <ClCompile Include="expert.cpp" />
     <ClCompile Include="customer.cpp" />
+    <ClCompile Include="Merged.cpp" />
     <ClCompile Include="test driver.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

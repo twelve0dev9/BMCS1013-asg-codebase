@@ -27,5 +27,8 @@
     <ClCompile Include="expert.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Merged.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
