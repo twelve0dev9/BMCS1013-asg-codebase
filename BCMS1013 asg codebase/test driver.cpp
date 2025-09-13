@@ -74,6 +74,8 @@ bool parseAppointmentRecord(const string& Fetched_Record, bookings& appointment,
 	timeSlots* hourlyTimeSlots, users* experts, services* services_available);
 void writetoAppointmentRecords(bookings newAppointment,
 	timeSlots hourly_timeSlots[], users experts[], services services_available[]);
+bool testthing(int choice[], int* P_numberedlist);
+void main_menu(int choice[], int* P_numberedlist);
 
 int main()
 {
@@ -119,20 +121,30 @@ int main()
 	//users* experts = new users[totalExperts];
 	users loggedIn_customerUser = { 3, "Bruce Wayne", 16, 'M', "brucewayne@gmail.com", "kyu6fv485k7f8tyu6+", customer };
 
+	bool exitStatus = 0;
 
-	int totalBookings = countAppointmentsInFile();
-	if (totalBookings == 0) 
-	{
-		cout << "No appointments in file.\n";
-		return 0;
-	}
-	bookings* appointments = new bookings[totalBookings];
-	int loaded = loadAppointments(appointments, totalBookings, hourly_timeSlots, experts, services_available);
-	cout << loaded << " appointment records loaded.\n";
+	do {
+		main_menu(choice, &numberedlist);
+		switch (choice[0]) {
+		case 1:
+			do {
+				exitStatus = testthing(choice, P_numberedlist);
+			} while (exitStatus == 0); // keep on looping dis as long as exitStatus is still 0, which my cust function will return 1 as true, after breaking the selection structures in there
+			break;
+		case 2:
+			//admin_login();
+			break;
+		case 3:
+			//expert_login();
+			break;
+		case 4:
+			cout << "\n\n=== PROGRAM END ===\n\n";
+			break;
+		}
+	} while (choice[0] != 4);
+	return 0;
 
-	viewUserAppointments(loggedIn_customerUser, appointments, loaded);
-	delete[] appointments;
-	
+
 	return 0;
 }
 int getInput(int* P_numberedlist) 
@@ -373,4 +385,84 @@ void writetoAppointmentRecords(bookings newAppointment,
 		<< "}" << endl;
 
 	wAppointments.close();
+}
+bool testthing(int choice[], int* P_numberedlist)
+{
+	do {
+		cout << "\n1. Login\n2. Guest\n3. Create an account\n4. Back to main menu\n\n";
+		*P_numberedlist = 5;
+		choice[0] = getInput(P_numberedlist);
+		*P_numberedlist = 1;
+
+		switch (choice[0])
+		{
+		case 1:
+			do {
+				*P_numberedlist = 6;
+				cout << "\nEnter your choice (1 - " << *P_numberedlist - 1 << ") : ";
+				choice[0] = getInput(P_numberedlist);
+				*P_numberedlist = 1;
+
+				switch (choice[0])
+				{
+				case 1:
+					cout << "\ncase 1 choice 1";
+					break;
+				case 2:
+					cout << "\ncase 1 choice 2";
+					break;
+				case 3:
+					cout << "\ncase 1 choice 3";
+					break;
+				case 4:
+					cout << "\ncase 1 choice 4";
+					break;
+				}
+			} while (choice[0] != 5);
+			cout << "case 1 choice 5";
+			break;
+		case 2:
+			do {
+				cout << "\nWelcome, to our dearest customer!\n" << string(40, '-') << endl;
+				cout << "1. View our services\n2. View appointment availability\n3. Back to customer menu\n";
+
+				*P_numberedlist = 4;
+				cout << "\nEnter your choice (1 - " << *P_numberedlist - 1 << ") : ";
+				choice[0] = getInput(P_numberedlist);
+				*P_numberedlist = 1;
+
+				switch (choice[0])
+				{
+				case 1:
+					cout << "\ncase 2 choice 1";
+					break;
+				case 2:
+					cout << "\ncase 2 choice 2";
+					break;
+				}
+			} while (choice[0] != 3);
+			cout << "\ncase 2 choice 3";
+			break;
+		case 3:
+			cout << "\ncase 3";
+			break;
+		}
+	} while (choice[0] != 4);
+
+	return true;
+}
+void main_menu(int choice[], int* P_numberedlist)
+{
+	cout << "     MAIN MENU      " << endl;
+	cout << "--------------------" << endl;
+	cout << "Select Login: " << endl;
+	cout << "1. Customer Login" << endl;
+	cout << "2. Administrator Login" << endl;
+	cout << "3. Expert Login" << endl;
+	cout << "4. Exit Program" << endl;
+	cout << "-------------------" << endl;
+	cout << ">";
+	*P_numberedlist = 5;
+	choice[0] = getInput(P_numberedlist);
+	*P_numberedlist = 1;
 }
