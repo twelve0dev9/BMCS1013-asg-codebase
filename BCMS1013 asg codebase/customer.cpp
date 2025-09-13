@@ -434,7 +434,7 @@ void bookAppointment(int* numberofTimeSlots, int* numberofAppointments, int* P_n
 			newAppointment.book_byCustomer = loggedIn_customerUser.userID; // cust login pending
 			newAppointment.expert_booked = &experts [filteredIndices[choice[2]]];
 			newAppointment.service_booked = &services_available[choice[1] - 1];
-
+			writetoAppointmentRecords(newAppointment, hourly_timeSlots, experts, services_available);
 			cout << "\n\nAppointment booked !";
 			break;
 		}
@@ -847,7 +847,7 @@ int custcreateacc(int* P_numberedlist, string loginCredential, string password, 
 	*P_numberedlist = 1;
 	// input prompt & populate for gender
 	do {
-		cout << "What's your gender?\n (M = Male or F = Female): ";
+		cout << "What's your gender? (M = Male or F = Female): ";
 		cin >> newCustomerUser.gender;
 		newCustomerUser.gender = toupper(newCustomerUser.gender);
 		if (newCustomerUser.gender != 'M' && newCustomerUser.gender != 'F')
@@ -918,7 +918,6 @@ bool parseAppointmentRecord(const string& Fetched_Record, bookings& appointment,
 
 	string inside = Fetched_Record.substr(start + 1, end - start - 1);
 	stringstream ss(inside);
-
 	string temp;
 
 	// timeslot index
@@ -996,7 +995,7 @@ int countAppointmentsInFile()
 }
 void viewUserAppointments(users loggedIn_customerUser, bookings* appointments, int totalRecords)
 {
-	cout << string(40, '=') << " Your Appointments " << string(40, '=') << endl;
+	cout << string(40, '=') << " Your Appointments " << string(32, '=') << endl;
 
 	cout << left << setw(12) << "No."
 		<< setw(12) << "Date"
@@ -1042,13 +1041,13 @@ void writetoAppointmentRecords(bookings newAppointment,
 
 	// Write appointment in a structured format
 	wAppointments << "{"
-		<< "[ " << (newAppointment.timeslot - hourly_timeSlots) << " ], " // store timeslot index
+		<< "&hourly_timeSlots[" << (newAppointment.timeslot - hourly_timeSlots) << "], "
 		<< (newAppointment.booking_status ? "true" : "false") << ", "
 		<< newAppointment.booking_date << ", "
 		<< newAppointment.book_byCustomer << ", "
-		<< "[ " << (newAppointment.expert_booked - experts) << " ], "     // store expert index
-		<< "[ " << (newAppointment.service_booked - services_available) << " ]"
-		<< "}" << endl;
+		<< "&experts[" << (newAppointment.expert_booked - experts) << "], "
+		<< "&services_available[" << (newAppointment.service_booked - services_available) << "]"
+		<< "}," << endl;
 
 	wAppointments.close();
 }
