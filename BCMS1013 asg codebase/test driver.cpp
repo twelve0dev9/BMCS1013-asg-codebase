@@ -142,8 +142,6 @@ int main()
 			break;
 		}
 	} while (choice[0] != 4);
-	return 0;
-
 
 	return 0;
 }
@@ -388,22 +386,26 @@ void writetoAppointmentRecords(bookings newAppointment,
 }
 bool testthing(int choice[], int* P_numberedlist)
 {
-	do {
+	int localchoice;
+	do
+	{
 		cout << "\n1. Login\n2. Guest\n3. Create an account\n4. Back to main menu\n\n";
 		*P_numberedlist = 5;
-		choice[0] = getInput(P_numberedlist);
+		localchoice = getInput(P_numberedlist);
 		*P_numberedlist = 1;
 
-		switch (choice[0])
+		switch (localchoice)
 		{
 		case 1:
-			do {
+			int case1choice;
+			do 
+			{
 				*P_numberedlist = 6;
 				cout << "\nEnter your choice (1 - " << *P_numberedlist - 1 << ") : ";
-				choice[0] = getInput(P_numberedlist);
+				case1choice = getInput(P_numberedlist);
 				*P_numberedlist = 1;
 
-				switch (choice[0])
+				switch (case1choice)
 				{
 				case 1:
 					cout << "\ncase 1 choice 1";
@@ -418,20 +420,22 @@ bool testthing(int choice[], int* P_numberedlist)
 					cout << "\ncase 1 choice 4";
 					break;
 				}
-			} while (choice[0] != 5);
+			} while (case1choice != 5);
 			cout << "case 1 choice 5";
 			break;
 		case 2:
-			do {
+			int case2choice;
+			do 
+			{
 				cout << "\nWelcome, to our dearest customer!\n" << string(40, '-') << endl;
 				cout << "1. View our services\n2. View appointment availability\n3. Back to customer menu\n";
 
 				*P_numberedlist = 4;
 				cout << "\nEnter your choice (1 - " << *P_numberedlist - 1 << ") : ";
-				choice[0] = getInput(P_numberedlist);
+				case2choice = getInput(P_numberedlist);
 				*P_numberedlist = 1;
 
-				switch (choice[0])
+				switch (case2choice)
 				{
 				case 1:
 					cout << "\ncase 2 choice 1";
@@ -440,16 +444,19 @@ bool testthing(int choice[], int* P_numberedlist)
 					cout << "\ncase 2 choice 2";
 					break;
 				}
-			} while (choice[0] != 3);
+			} while (case2choice != 3);
 			cout << "\ncase 2 choice 3";
 			break;
 		case 3:
 			cout << "\ncase 3";
 			break;
+		case 4:
+			return true;
+			break;
 		}
-	} while (choice[0] != 4);
+	} while (localchoice != 4);
 
-	return true;
+	return false;
 }
 void main_menu(int choice[], int* P_numberedlist)
 {
