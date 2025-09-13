@@ -72,6 +72,8 @@ int loadAppointments(bookings* appointments, int totalRecords,
 void viewUserAppointments(users loggedIn_customerUser, bookings* appointments, int totalRecords);
 bool parseAppointmentRecord(const string& Fetched_Record, bookings& appointment,
 	timeSlots* hourlyTimeSlots, users* experts, services* services_available);
+void writetoAppointmentRecords(bookings newAppointment,
+	timeSlots hourly_timeSlots[], users experts[], services services_available[]);
 
 int main()
 {
@@ -350,4 +352,25 @@ void viewUserAppointments(users loggedIn_customerUser, bookings* appointments, i
 	if (recordCount == 0) {
 		cout << "No appointments found for you.\n";
 	}
+}
+void writetoAppointmentRecords(bookings newAppointment,
+	timeSlots hourly_timeSlots[], users experts[], services services_available[])
+{
+	ofstream wAppointments("Appointments.txt", ios::app);
+	if (!wAppointments.is_open()) {
+		cout << "Error: Could not open Appointments.txt for writing!" << endl;
+		return;
+	}
+
+	// Write appointment in a structured format
+	wAppointments << "{"
+		<< "[ " << (newAppointment.timeslot - hourly_timeSlots) << " ], " // store timeslot index
+		<< (newAppointment.booking_status ? "true" : "false") << ", "
+		<< newAppointment.booking_date << ", "
+		<< newAppointment.book_byCustomer << ", "
+		<< "[ " << (newAppointment.expert_booked - experts) << " ], "     // store expert index
+		<< "[ " << (newAppointment.service_booked - services_available) << " ]"
+		<< "}" << endl;
+
+	wAppointments.close();
 }

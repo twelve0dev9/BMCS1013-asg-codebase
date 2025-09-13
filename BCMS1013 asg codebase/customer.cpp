@@ -49,13 +49,13 @@ void main_menu(int choice[], int* P_numberedlist);
 bool isAlphabet(const char* stringVar);
 bool isNumeric(const char* stringVar);
 int getInput(int* P_numberedlist);
-bool parseUserRecord(const string& Fetched_Record, users& loggedIn_customerUser);
 bool customerFunctionalities(int choice[], int* P_numberedlist, bool* exitStatus, 
 	int* numberofAppointments, int* numberofExperts, int* numberofServices, int* numberofTimeSlots,
 	services services_available[], users experts[], users customers[], timeSlots hourly_timeSlots[], bookings appointments_schedule[]);
 int custcreateacc(int* P_numberedlist, string loginCredential, string password, users newCustomerUser);
-bool custlogin(users loggedIn_customerUser, string loginCredential, string password, string Fetched_Record, 
+bool custlogin(users loggedIn_customerUser, string loginCredential, string password, 
 	bool found, bool loginStatus, int* P_numberedlist, int choice[]);
+bool parseUserRecord(const string& Fetched_Record, users& loggedIn_customerUser);
 void viewServices(int* numberofServices, int* P_numberedlist, services services_available[]);
 void viewExperts(int choice[], int* numberofExperts, int* P_numberedlist, int* filternumlist, int filteredIndices[], users experts[], services services_available[]);
 void viewAvailable_days(int choice[], int filteredIndices[], services services_available[],
@@ -70,8 +70,10 @@ int countAppointmentsInFile();
 int loadAppointments(bookings* appointments, int totalRecords,
 	timeSlots* hourly_timeSlots, users* experts, services* services_available);
 void viewUserAppointments(users loggedIn_customerUser, bookings* appointments, int totalRecords);
-bool parseAppointmentRecord(const string& Fetched_Record, bookings& appointment,
+bool parseAppointmentRecord(const string& Fetched_Record, bookings& appointment, 
 	timeSlots* hourly_timeSlots, users* experts, services* services_available);
+void writetoAppointmentRecords(bookings newAppointment,
+	timeSlots hourly_timeSlots[], users experts[], services services_available[]);
 
 
 int main() {
@@ -201,7 +203,7 @@ $$ | \_/ $$ |\$$$$$$$\ $$ |  $$ |    $$$$$$$  |      $$$$$$$$\  $$$$$$  | $$$$$$
 		//if possible find ways to read from user records w\ username entered by user only, instead of reading all of the records
 	users loggedIn_customerUser;
 	users newCustomerUser;
-	string loginCredential = " ", password = " ", Fetched_Record;
+	string loginCredential = " ", password = " ";
 	bool found = false, loginStatus = 0;
 	cout << "\n1. Login\n2. Guest\n3. Create an account\n4. Back to main menu\n\n";
 	*P_numberedlist = 5;
@@ -212,8 +214,7 @@ $$ | \_/ $$ |\$$$$$$$\ $$ |  $$ |    $$$$$$$  |      $$$$$$$$\  $$$$$$  | $$$$$$
 	{
 	case 1:
 		//compare the credentials with the read records
-		if (custlogin(loggedIn_customerUser, loginCredential, password, Fetched_Record, found, loginStatus
-			, P_numberedlist, choice))
+		if (custlogin(loggedIn_customerUser, loginCredential, password, found, loginStatus, P_numberedlist, choice))
 		{
 			do {
 				cout << "\n\n\n\nWelcome " << experts->username << "!\n--------------------------------------\n";
@@ -352,7 +353,7 @@ void viewAvailable_days(int choice[], int filteredIndices[], services services_a
 		for (int j = 0; j < col; ++j)
 		{
 			int date = time_slotsDay[i][j];
-			std::ostringstream oss; // put the printables dates into buffer to prevent uneven spaces, setw() is insufficient
+			ostringstream oss; // put the printables dates into buffer to prevent uneven spaces, setw() is insufficient
 			oss << setw(3) << date;
 			if (date == 0) continue;
 
@@ -369,14 +370,14 @@ void bookAppointment(int* numberofTimeSlots, int* numberofAppointments, int* P_n
 	int filteredIndices[], services services_available[], users experts[], users customers[], users loggedIn_customerUser, 
 	timeSlots hourly_timeSlots[], bookings appointments_schedule[])
 {
-	int book_Date = 0; char yesno = ' ';
+	int book_Date = 0; char yesno = ' '; bookings newAppointment;
 	*P_numberedlist = 32;
 
 	cout << "\nPick the day you'd like to book (1 - " << *P_numberedlist - 1 << ") : ";
 	book_Date = getInput(P_numberedlist);
 	*P_numberedlist = 1;
 
-	cout << "\nTimeslots available at " << book_Date << "th : \n----------------------------------------\n";
+	cout << "\nTimeslots available at " << book_Date << "th : \n" << string(80, '-') << endl;
 	for (int i = 0; i < *numberofTimeSlots; ++i)
 	{
 		cout << *P_numberedlist << ". " << fixed << setprecision(2) 
@@ -392,14 +393,13 @@ void bookAppointment(int* numberofTimeSlots, int* numberofAppointments, int* P_n
 	{
 		if (payment(choice, P_numberedlist, services_available, experts, customers, loggedIn_customerUser))
 		{
-			// change this, use file
-			// { &hourly_timeSlots[1], true, 29, & customer_users[1], & experts[2], & services_available[1] },
-			appointments_schedule[-1].timeslot = &hourly_timeSlots[choice[3]];
-			appointments_schedule[-1].booking_status = true;
-			appointments_schedule[-1].booking_date = book_Date;
-			appointments_schedule[-1].book_byCustomer = loggedIn_customerUser.userID; // cust login pending
-			appointments_schedule[-1].expert_booked = &experts [filteredIndices[choice[2]]];
-			appointments_schedule[-1].service_booked = &services_available[choice[1]];
+			newAppointment.timeslot = &hourly_timeSlots[choice[3] - 1];
+			newAppointment.booking_status = true;
+			newAppointment.booking_date = book_Date;
+			newAppointment.book_byCustomer = loggedIn_customerUser.userID; // cust login pending
+			newAppointment.expert_booked = &experts [filteredIndices[choice[2]]];
+			newAppointment.service_booked = &services_available[choice[1] - 1];
+
 			cout << "\n\nAppointment booked !";
 			break;
 		}
@@ -706,17 +706,21 @@ bool parseUserRecord(const string& Fetched_Record, users& loggedIn_customerUser)
 
 	return true;
 }
-bool custlogin(users loggedIn_customerUser, string loginCredential, string password, string Fetched_Record,
+bool custlogin(users loggedIn_customerUser, string loginCredential, string password,
 	bool found, bool loginStatus, int* P_numberedlist, int choice[])
 {
 	ifstream rUserRecords("User records.txt");
+	string Fetched_Record;
+	
 	if (!rUserRecords) {
 		cout << "Error: Could not open file!" << endl;
 		return 1;
 	}
+
 	cout << "Enter username or email: ";
 	getline(cin, loginCredential);
 	string capitalizedCredential = loginCredential;
+	
 	for (size_t i = 0; i < capitalizedCredential.length(); i++) 
 	{ // capitalize loginCredential provided by user, for later case-insensitive comparison
 		capitalizedCredential[i] = toupper((unsigned char)loginCredential[i]);
@@ -957,7 +961,7 @@ int countAppointmentsInFile()
 }
 void viewUserAppointments(users loggedIn_customerUser, bookings* appointments, int totalRecords)
 {
-	cout << "\n===== Your Appointments =====\n";
+	cout << string(40, '=') << " Your Appointments " << string(40, '=') << endl;
 
 	cout << left << setw(12) << "No."
 		<< setw(12) << "Date"
@@ -991,4 +995,25 @@ void viewUserAppointments(users loggedIn_customerUser, bookings* appointments, i
 	if (recordCount == 0) {
 		cout << "No appointments found for you.\n";
 	}
+}
+void writetoAppointmentRecords(bookings newAppointment,
+	timeSlots hourly_timeSlots[], users experts[], services services_available[])
+{
+	ofstream wAppointments("Appointments.txt", ios::app);
+	if (!wAppointments.is_open()) {
+		cout << "Error: Could not open Appointments.txt for writing!" << endl;
+		return;
+	}
+
+	// Write appointment in a structured format
+	wAppointments << "{"
+		<< "[ " << (newAppointment.timeslot - hourly_timeSlots) << " ], " // store timeslot index
+		<< (newAppointment.booking_status ? "true" : "false") << ", "
+		<< newAppointment.booking_date << ", "
+		<< newAppointment.book_byCustomer << ", "
+		<< "[ " << (newAppointment.expert_booked - experts) << " ], "     // store expert index
+		<< "[ " << (newAppointment.service_booked - services_available) << " ]"
+		<< "}" << endl;
+
+	wAppointments.close();
 }
