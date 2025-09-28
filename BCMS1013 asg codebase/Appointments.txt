@@ -110,4 +110,3 @@
 {&hourly_timeSlots[0], true, 12, 16, &experts[1], &services_available[1]},
 {&hourly_timeSlots[0], true, 12, 16, &experts[2], &services_available[2]},
 {&hourly_timeSlots[1], true, 1, 16, &experts[3], &services_available[2]},
-{&hourly_timeSlots[0], true, 1, 16, &experts[0], &services_available[1]},
